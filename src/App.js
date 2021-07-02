@@ -7,18 +7,27 @@ import {Container} from "react-bootstrap";
 
 function SearchBar(){
     const [searchQuery, setSearchQuery] = React.useState();
+    const[responseData, setResponseData] = React.useState([]);
 
     const handleChange = e => {
-        setSearchQuery(e.target)
+        setSearchQuery(e.target.value)
     }
 
     const handleInput = e => {
-
-        setSearchQuery('')
+        api.queryManga({title: searchQuery})
+        .then((response) => {
+            setResponseData(response.data)
+            console.log(response.data)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    setSearchQuery('')
     }
 
     return(
-        <div>
+        <div class="container">
+            <h1>Manga Lib</h1>
             <input size={60} type='text' placeholder='Find a Manga!' onChange={handleChange}/>
             <Button onClick={handleInput}>Search</Button>
         </div>
@@ -26,40 +35,11 @@ function SearchBar(){
 }
 
 function App() {
-  
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     isLoaded: false,
-  //     ...apiResp.createMangaResponse()
-  //   }
-  // }
-  //
-  // componentDidMount(){
-  //   api.getRandomManga()
-  //   .then((response) => {
-  //     console.log(response.data)
-  //     this.setState({
-  //       isLoaded: true,
-  //       respID: response.data.data.id,
-  //       respType: response.data.data.type,
-  //       respAttr: response.data.data.attributes
-  //     });
-  //   })
-  //   .catch((error) => {
-  //     console.log(error)
-  //     this.setState({
-  //       isLoaded: false,
-  //       error
-  //     });
-  //   })
-    
-  //}
 
     return (
-      <div>
+      <div className="search-manga">
           <Container>
-            <SearchBar></SearchBar>
+            <SearchBar/>
           </Container>
       </div>
     );
