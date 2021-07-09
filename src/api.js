@@ -32,7 +32,7 @@ const base_url = 'https://api.mangadex.org'
             url: base_url + '/manga',
             responseType: 'json',
             params: {
-                limit: 100,
+                limit: 30,
                 ...queryParams
             }
         })
