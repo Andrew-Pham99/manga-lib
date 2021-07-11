@@ -23,6 +23,7 @@ function SearchBar(props){
     const [searchQuery, setSearchQuery] = React.useState();
     const[responseData, setResponseData] = React.useState([]);
     const[offset, setOffset] = React.useState(0);
+    const[showButton, setShowButton] = React.useState(false);
     const[len, setLen] = React.useState(0)
     
     const handleChange = e => {
@@ -31,11 +32,15 @@ function SearchBar(props){
     }
 
     const handleInput = e => {
-        console.log('The search query is '+ {searchQuery})
         setOffset(30)
+        setShowButton(true)
         api.queryManga({title: searchQuery})
         .then((response) => {
             setResponseData(response.data.results)
+            console.log(response.data)
+            if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
+                setShowButton(false) 
+            }
             console.log(response.data)
         })
         .catch((error) => {
@@ -47,10 +52,14 @@ function SearchBar(props){
     const onEnter = e => {  
         if (e.key === 'Enter'){
             setOffset(30)
+            setShowButton(true)
             api.queryManga({title: searchQuery})
             .then((response) => {
                 setResponseData(response.data.results)
                 console.log(response.data)
+                if(response.data.results.length < api.limit || response.data.offset + api.limit == response.data.total) {
+                    setShowButton(false)
+                }
             })
             .catch((error) => {
                 console.log(error)
@@ -68,6 +77,9 @@ function SearchBar(props){
         api.queryManga({title: searchQuery, offset:offset})
         .then((response) => {
             setResponseData(responseData.concat(response.data.results))
+            if(response.data.results.length < api.limit || response.data.offset + api.limit == response.data.total) {
+                setShowButton(false)
+            }
             console.log(responseData)
         })
         .catch((error) => {
@@ -99,7 +111,7 @@ function SearchBar(props){
                     </Grid>
                 </Grid>
             </ul>
-            <button onClick={loadMore}>
+            <button onClick={loadMore} style={{visibility: showButton ? 'visible' : 'hidden' }}>
                 Load More
             </button>
             
