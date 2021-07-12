@@ -8,6 +8,7 @@ Optimal to use larger batch requests than smaller individual ones.
 //TODO: RETRIEVE IMAGES FROM CHAPTERS, COVER ART, ETC.
 
 const base_url = 'https://api.mangadex.org'
+const limit = 30;
 /**
  * @returns {Promise} GET response as a Promise
  */
@@ -32,7 +33,7 @@ const base_url = 'https://api.mangadex.org'
             url: base_url + '/manga',
             responseType: 'json',
             params: {
-                limit: 100,
+                limit: limit,
                 ...queryParams
             }
         })
@@ -80,7 +81,8 @@ const base_url = 'https://api.mangadex.org'
         getRandomManga,
         queryManga,
         getCoverArtList,
-        getChapterList
+        getChapterList,
+        limit
     };
 
     export default api;
