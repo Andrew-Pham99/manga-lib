@@ -1,17 +1,22 @@
+import Button from 'react-bootstrap/Button'
+
 const SearchBar = ({onChange, placeholder, onClick, onKeyDown}) => {
     return (
-      <div className="Search">
+      <div className="Search" class="form-group">
         <span className="SearchSpan">
         </span>
         <input
-          size={60}
+          size={75}
           className="SearchInput"
           type="text"
           onChange={onChange}
           placeholder={placeholder}
+          style={{height:37}}
           onKeyDown={onKeyDown}
         />
-        <button onClick={onClick} type="submit" style={{marginLeft:10}}>search</button>
+        <br/>
+        <Button variant="primary" onClick={onClick} type="submit" style={{marginTop:20, marginBottom:20}}>Search</Button>
+        <Button variant="primary"  type="submit" style={{marginLeft:10, marginTop:20, marginBottom:20}}>Random</Button>
       </div>
     );
   };

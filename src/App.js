@@ -33,7 +33,7 @@ function SearchBar(props){
 
     const handleInput = e => {
         setOffset(30)
-        setShowButton(true)
+        setShowButton(false)
         api.queryManga({title: searchQuery})
         .then((response) => {
             setResponseData(response.data.results)
@@ -41,6 +41,7 @@ function SearchBar(props){
             if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
                 setShowButton(false) 
             }
+            else {setShowButton(true)}
             console.log(response.data)
         })
         .catch((error) => {
@@ -52,7 +53,7 @@ function SearchBar(props){
     const onEnter = e => {  
         if (e.key === 'Enter'){
             setOffset(30)
-            setShowButton(true)
+            setShowButton(false)
             api.queryManga({title: searchQuery})
             .then((response) => {
                 setResponseData(response.data.results)
@@ -60,14 +61,12 @@ function SearchBar(props){
                 if(response.data.results.length < api.limit || response.data.offset + api.limit == response.data.total) {
                     setShowButton(false)
                 }
+                else {setShowButton(true)}
             })
             .catch((error) => {
                 console.log(error)
             })
         }
-    }
-    const reset = e => {
-        setResponseData([])
     }
 
     const loadMore = e => {
@@ -87,7 +86,6 @@ function SearchBar(props){
         })
 
     }
-
 
     return(
         <div>
