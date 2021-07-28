@@ -57,13 +57,22 @@ const limit = 30;
         })
     }
 
+    const getCoverArt = (coverId) => {
+        console.log("executing GET request for cover art")
+        return axios({
+            method: 'get',
+            url: base_url + '/cover/' + coverId,
+            responseType: 'json'
+        })
+    }
+
     /**
      * 
      * @param {Array} queryParams 
      * @returns {Promise} GET response as a Promise 
      */
     const getChapterList = (queryParams) => {
-        console.log("executig GET request for chapter lists...")
+        console.log("executing GET request for chapter lists...")
         return axios({
             method: 'get',
             url: base_url + '/chapter',
@@ -82,6 +91,7 @@ const limit = 30;
         queryManga,
         getCoverArtList,
         getChapterList,
+        getCoverArt,
         limit
     };
 

@@ -17,14 +17,16 @@ function MangaCard(props){
     // I can add onClick functions to handle the view transformation with you want to keep everything
     //  on the same page, or we can have the button route to a new page.
     return(
-        <Card style={{width: '25rem'}}>
-            <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail"} width={"350px"}/>
+        <Card style={{width: '25rem', marginLeft:10, marginBottom:10}}>
+            <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail"} width={"50px"}/>
             <Card.Body>
                 <Card.Title>
-                    <h1>{props.name}</h1>
+                    {props.name}
                 </Card.Title>
                 <Card.Text>
-                    <p>{props.description}</p>
+                    <div style={{overflowY:"auto", height:200, textAlign:"center"}}>
+                    <p style={{fontSize:"smaller"}}>{props.description}</p>
+                    </div>
                 </Card.Text>
             </Card.Body>
             <Button variant={"primary"}>
@@ -39,7 +41,7 @@ function SearchBar(props){
     const[responseData, setResponseData] = React.useState([]);
     const[offset, setOffset] = React.useState(0);
     const[showButton, setShowButton] = React.useState(false);
-    const[len, setLen] = React.useState(0)
+    const[img, setImg] = React.useState(placeholderImage)
     
     const handleChange = e => {
         setSearchQuery(e.target.value)
@@ -48,7 +50,7 @@ function SearchBar(props){
 
     const handleInput = e => {
         setOffset(30)
-        setShowButton(true)
+        setShowButton(false)
         api.queryManga({title: searchQuery})
         .then((response) => {
             setResponseData(response.data.results)
@@ -56,6 +58,7 @@ function SearchBar(props){
             if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
                 setShowButton(false) 
             }
+            else {setShowButton(true)}
             console.log(response.data)
         })
         .catch((error) => {
@@ -67,22 +70,20 @@ function SearchBar(props){
     const onEnter = e => {  
         if (e.key === 'Enter'){
             setOffset(30)
-            setShowButton(true)
+            setShowButton(false)
             api.queryManga({title: searchQuery})
             .then((response) => {
                 setResponseData(response.data.results)
                 console.log(response.data)
-                if(response.data.results.length < api.limit || response.data.offset + api.limit == response.data.total) {
+                if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
                     setShowButton(false)
                 }
+                else {setShowButton(true)}
             })
             .catch((error) => {
                 console.log(error)
             })
         }
-    }
-    const reset = e => {
-        setResponseData([])
     }
 
     const loadMore = e => {
@@ -92,7 +93,7 @@ function SearchBar(props){
         api.queryManga({title: searchQuery, offset:offset})
         .then((response) => {
             setResponseData(responseData.concat(response.data.results))
-            if(response.data.results.length < api.limit || response.data.offset + api.limit == response.data.total) {
+            if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
                 setShowButton(false)
             }
             console.log(responseData)
@@ -113,15 +114,15 @@ function SearchBar(props){
             onKeyDown={onEnter}
             />
             <ul>
-                <Grid container className="recipe-space" spacing={2}>
-                    <Grid item md={8}>
-                        <Grid container justify="center" spacing={1}>
+                <Grid container className="recipe-space" spacing={3}>
+                    <Grid item md={12}>
+                        <Grid container justify="center" spacing={0.05}>
                             {responseData.map((item,index) =>(
                             <MangaCard
                                 key={index}
                                 name={item.data.attributes.title.en}
-                                img={placeholderImage}
-                                description={"This is a placeholder description"}
+                                img="https://uploads.mangadex.org/covers/8f3e1818-a015-491d-bd81-3addc4d7d56a/4113e972-d228-4172-a885-cb30baffff97.jpg.256.jpg"
+                                description={item.data.attributes.description.en}
                             />
                             ))}
                         </Grid>
@@ -135,6 +136,7 @@ function SearchBar(props){
         </div>
     );
 }
+
 
 function App() {
 
