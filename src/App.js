@@ -18,7 +18,7 @@ function MangaCard(props){
     //  on the same page, or we can have the button route to a new page.
     return(
         <Card style={{width: '25rem', marginLeft:10, marginBottom:10}}>
-            <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail"} width={"50px"}/>
+            <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail"} width={100}/>
             <Card.Body>
                 <Card.Title>
                     {props.name}
@@ -41,8 +41,13 @@ function SearchBar(props){
     const[responseData, setResponseData] = React.useState([]);
     const[offset, setOffset] = React.useState(0);
     const[showButton, setShowButton] = React.useState(false);
-    const[img, setImg] = React.useState(placeholderImage)
-    
+
+
+    const[imgUrl, setImg] = React.useState()
+    const[imgId, setImgId] = React.useState();
+    const[fileName, setFileName] = React.useState();
+    const[mangaId, setMangaId] = React.useState();
+
     const handleChange = e => {
         setSearchQuery(e.target.value)
 
@@ -55,16 +60,39 @@ function SearchBar(props){
         .then((response) => {
             setResponseData(response.data.results)
             console.log(response.data)
+            setMangaId(response.data.results[0].data.id)
             if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
                 setShowButton(false) 
             }
             else {setShowButton(true)}
-            console.log(response.data)
+            response.data.results[0].relationships.forEach(element => {
+                if(element.type == "cover_art") {
+                    setImgId(element.id)
+                    console.log("ELEMENT ID " + element.id) //Cover art ID
+                    api.getCoverArt(element.id)
+                    .then((CoverResponse) => {
+                        console.log("COVER SUCCESS")
+                        console.log("COVER FILENAME " + CoverResponse.data.data.attributes.fileName)
+                        console.log("MANGA_ID " + response.data.results[0].data.id)
+                        console.log(`https://uploads.mangadex.org/covers/${response.data.results[0].data.id}/${CoverResponse.data.data.attributes.fileName}`)
+                        setImg(`https://uploads.mangadex.org/covers/${response.data.results[0].data.id}/${CoverResponse.data.data.attributes.fileName}`)
+                    })
+                    .catch((CoverError) => {
+                        console.log("COVER FAIL")
+                        console.log("Error Cover Art")
+                        console.log(CoverError)
+                    })
+                }
+            })
+                    
         })
         .catch((error) => {
+
             console.log(error)
         })
-    
+
+
+      
     }
 
     const onEnter = e => {  
@@ -118,10 +146,11 @@ function SearchBar(props){
                     <Grid item md={12}>
                         <Grid container justify="center" spacing={0.05}>
                             {responseData.map((item,index) =>(
+                                console.log("imageurl " + imgUrl),
                             <MangaCard
                                 key={index}
                                 name={item.data.attributes.title.en}
-                                img="https://uploads.mangadex.org/covers/8f3e1818-a015-491d-bd81-3addc4d7d56a/4113e972-d228-4172-a885-cb30baffff97.jpg.256.jpg"
+                                img={imgUrl}
                                 description={item.data.attributes.description.en}
                             />
                             ))}
@@ -137,7 +166,7 @@ function SearchBar(props){
     );
 }
 
-
+//"https://uploads.mangadex.org/covers/8f3e1818-a015-491d-bd81-3addc4d7d56a/4113e972-d228-4172-a885-cb30baffff97.jpg.256.jpg"
 function App() {
 
     return (
