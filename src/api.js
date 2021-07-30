@@ -45,7 +45,7 @@ const limit = 30;
      * @returns {Promise} GET response as a Promise containing cover art files
      */
     const getCoverArtList = (coverIds) => {
-        console.log("executing GET request for cover art...")
+        console.log("executing GET request for cover art list...")
         return axios({
             method: 'get',
             url: base_url + '/cover',
