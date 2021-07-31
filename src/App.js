@@ -37,7 +37,7 @@ function MangaCard(props){
 }
 
 function SearchBar(props){
-    const [searchQuery, setSearchQuery] = React.useState();
+    const[searchQuery, setSearchQuery] = React.useState();
     const[responseData, setResponseData] = React.useState([]);
     const[offset, setOffset] = React.useState(0);
     const[showButton, setShowButton] = React.useState(false);
@@ -59,65 +59,74 @@ function SearchBar(props){
         setOffset(30)
         setShowButton(false)
         setCoverFileList([])
+        setMangaIdList([])
         api.queryManga({title: searchQuery})
         .then((response) => {
             setResponseData(response.data.results)
             console.log(response.data)
-            setMangaId(response.data.results[0].data.id)
             if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
-                setShowButton(false) 
+                setShowButton(false)
             }
             else {setShowButton(true)}
-
             // Code for grabbing many covers
-            response.data.results.map(tempObj => { // Preprocess cover art ids for api query
-                tempObj.relationships.forEach(mid => {
-                    if(mid.type == "cover_art") {
-                        mangaIdList.push(mid.id)
-                    }
+            //
+                response.data.results.map(result => { // Preprocess cover art ids for api query
+                    result.relationships.map(relationship => {
+                        if (relationship.type == "cover_art") {
+                            mangaIdList.push(relationship.id)
+                        }
+                    })
                 })
+            //
+            //     // Batch version of code == faster
+            //     console.log("Manga id List:")
+            //     console.log(mangaIdList)
+            //     api.getCoverArtList(mangaIdList.slice(0,15)) // Change the subset grabbing once testing is done
+            //         .then((CoverListResponse) => {
+            //             console.log(CoverListResponse)
+            //             CoverListResponse.data.results.map(coverFile => {
+            //                 coverFile.relationships.map(relationship => {
+            //                     if(relationship.type == "manga") {
+            //                         setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`])
+            //                         response.data.results.forEach(result => {
+            //                             if(result.data.id == relationship.id){
+            //                                 result.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`
+            //                             }
+            //                         })
+            //                     }
+            //                 })
+            //             })
+            //             setResponseData(response.data.results)
+            //         })
+            //         .catch((CoverListError) => {
+            //             console.log(CoverListError)
+            //         })
+            //
+            //
+            // Code for Returning single cover
+            mangaIdList.forEach(result => {
+                api.getCoverArt(result)
+                    .then((CoverResponse) => {
+                        CoverResponse.data.relationships.map(relationship => {
+                            if(relationship.type == "manga") {
+                                setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${CoverResponse.data.data.attributes.fileName}`])
+                                response.data.results.forEach(result => {
+                                    if(result.data.id == relationship.id){
+                                        result.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship.id}/${CoverResponse.data.data.attributes.fileName}`
+                                    }
+                                })
+                            }
+                        })
+                    })
+                    .catch((CoverError) => {
+                        console.log("COVER FAIL")
+                        console.log("Error Cover Art")
+                        console.log(CoverError)
+                    })
             })
             //
-            console.log(mangaIdList)
-            api.getCoverArtList(mangaIdList.slice(0,15)) // Change the subset grabbing once testing is done
-                .then((CoverListResponse) => {
-                    console.log("Cover List Response Success!")
-                    console.log(CoverListResponse)
-                    CoverListResponse.data.results.map((coverFile, index) => {
-                        coverFileList.push(`https://uploads.mangadex.org/covers/${response.data.results[index].data.id}/${coverFile.data.attributes.fileName}`)
-                    })
-                    console.log(coverFileList)
-                })
-                .catch((CoverListError) => {
-                    console.log("Cover List Response Failure!")
-                    console.log(CoverListError)
-                })
-            console.log("Exiting api")
-
-            // Code for Returning single cover
-            // response.data.results[0].relationships.forEach(element => {
-            //     if(element.type == "cover_art") {
-            //         setImgId(element.id)
-            //         console.log("ELEMENT ID " + element.id) //Cover art ID
-            //         api.getCoverArt(element.id)
-            //         .then((CoverResponse) => {
-            //             console.log("COVER SUCCESS")
-            //             console.log("COVER FILENAME " + CoverResponse.data.data.attributes.fileName)
-            //             console.log("MANGA_ID " + response.data.results[0].data.id)
-            //             console.log(`https://uploads.mangadex.org/covers/${response.data.results[0].data.id}/${CoverResponse.data.data.attributes.fileName}`)
-            //             setImg(`https://uploads.mangadex.org/covers/${response.data.results[0].data.id}/${CoverResponse.data.data.attributes.fileName}`)
-            //         })
-            //         .catch((CoverError) => {
-            //             console.log("COVER FAIL")
-            //             console.log("Error Cover Art")
-            //             console.log(CoverError)
-            //         })
-            //     }
-            // })
-                    
         })
         .catch((error) => {
-
             console.log(error)
         })
 
@@ -176,11 +185,11 @@ function SearchBar(props){
                     <Grid item md={12}>
                         <Grid container justify="center" spacing={0.05}>
                             {responseData.map((item,index) =>(
-                                console.log("imageurl " + coverFileList[0]),
+                                //console.log("IMAGEURL " + coverFileList[index]),
                             <MangaCard
                                 key={index}
                                 name={item.data.attributes.title.en}
-                                img={coverFileList[index]}
+                                img={item.data.coverFile}
                                 description={item.data.attributes.description.en}
                             />
                             ))}
