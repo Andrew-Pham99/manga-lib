@@ -18,7 +18,7 @@ function MangaCard(props){
     //  on the same page, or we can have the button route to a new page.
     return(
         <Card style={{width: '25rem', marginLeft:10, marginBottom:10}}>
-            <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail"} width={100}/>
+            <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail"} width={100} height={550}/>
             <Card.Body>
                 <Card.Title>
                     {props.name}
@@ -39,7 +39,7 @@ function MangaCard(props){
 function SearchBar(props){
     const[searchQuery, setSearchQuery] = React.useState();
     const[responseData, setResponseData] = React.useState([]);
-    const[offset, setOffset] = React.useState(0);
+    const[offset, setOffset] = React.useState(30);
     const[showButton, setShowButton] = React.useState(false);
 
 
@@ -52,7 +52,6 @@ function SearchBar(props){
 
     const handleChange = e => {
         setSearchQuery(e.target.value)
-
     }
 
     const handleInput = e => {
@@ -62,6 +61,7 @@ function SearchBar(props){
         setMangaIdList([])
         api.queryManga({title: searchQuery})
         .then((response) => {
+            setOffset(30)
             setResponseData(response.data.results)
             console.log(response.data)
             if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
@@ -70,91 +70,135 @@ function SearchBar(props){
             else {setShowButton(true)}
             // Code for grabbing many covers
             //
-                response.data.results.map(result => { // Preprocess cover art ids for api query
-                    result.relationships.map(relationship => {
-                        if (relationship.type == "cover_art") {
-                            mangaIdList.push(relationship.id)
-                        }
-                    })
+            response.data.results.map(result => { // Preprocess cover art ids for api query
+                result.relationships.map(relationship => {
+                    if (relationship.type == "cover_art") {
+                        mangaIdList.push(relationship.id)
+                    }
                 })
+            })
             //
             //     // Batch version of code == faster
-            //     console.log("Manga id List:")
-            //     console.log(mangaIdList)
-            //     api.getCoverArtList(mangaIdList.slice(0,15)) // Change the subset grabbing once testing is done
-            //         .then((CoverListResponse) => {
-            //             console.log(CoverListResponse)
-            //             CoverListResponse.data.results.map(coverFile => {
-            //                 coverFile.relationships.map(relationship => {
-            //                     if(relationship.type == "manga") {
-            //                         setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`])
-            //                         response.data.results.forEach(result => {
-            //                             if(result.data.id == relationship.id){
-            //                                 result.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`
-            //                             }
-            //                         })
-            //                     }
-            //                 })
-            //             })
-            //             setResponseData(response.data.results)
-            //         })
-            //         .catch((CoverListError) => {
-            //             console.log(CoverListError)
-            //         })
-            //
-            //
-            // Code for Returning single cover
-            mangaIdList.forEach(result => {
-                api.getCoverArt(result)
-                    .then((CoverResponse) => {
-                        CoverResponse.data.relationships.map(relationship => {
+            api.getCoverArtList(mangaIdList.slice(offset - 30, offset / 2)) // Change the subset grabbing once testing is done
+                .then((CoverListResponse) => {
+                    console.log(CoverListResponse)
+                    CoverListResponse.data.results.map(coverFile => {
+                        coverFile.relationships.map(relationship => {
                             if(relationship.type == "manga") {
-                                setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${CoverResponse.data.data.attributes.fileName}`])
+                                setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`])
                                 response.data.results.forEach(result => {
                                     if(result.data.id == relationship.id){
-                                        result.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship.id}/${CoverResponse.data.data.attributes.fileName}`
+                                        result.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`
                                     }
                                 })
                             }
                         })
                     })
-                    .catch((CoverError) => {
-                        console.log("COVER FAIL")
-                        console.log("Error Cover Art")
-                        console.log(CoverError)
+                    return api.getCoverArtList(mangaIdList.slice(offset / 2, offset))
+                }) // We can solve the batch loading character limit in the query by splitting it into two requests and chaining the promises
+                .then((CoverListResponse2) => {
+                    CoverListResponse2.data.results.map(coverFile2 => {
+                        coverFile2.relationships.map(relationship2 => {
+                            if(relationship2.type == "manga") {
+                                setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`])
+                                response.data.results.forEach(result2 => {
+                                    if(result2.data.id == relationship2.id) {
+                                        result2.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`
+                                    }
+                                })
+                            }
+                        })
                     })
-            })
-            //
+                    // Set the response data to the updated values after we append coverFile to the json objects
+                    setResponseData(response.data.results)
+                    console.log(responseData)
+
+                })
+                .catch((CoverListError) => {
+                    console.log(CoverListError)
+                })
         })
         .catch((error) => {
             console.log(error)
         })
-
-
-      
     }
 
-    const onEnter = e => {  
-        if (e.key === 'Enter'){
+    const onEnter = e => {
+        if (e.key === 'Enter') {
             setOffset(30)
             setShowButton(false)
+            setCoverFileList([])
+            setMangaIdList([])
             api.queryManga({title: searchQuery})
-            .then((response) => {
-                setResponseData(response.data.results)
-                console.log(response.data)
-                if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
-                    setShowButton(false)
-                }
-                else {setShowButton(true)}
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+                .then((response) => {
+                    setOffset(30)
+                    setResponseData(response.data.results)
+                    console.log(response.data)
+                    if (response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
+                        setShowButton(false)
+                    } else {
+                        setShowButton(true)
+                    }
+                    // Code for grabbing many covers
+                    //
+                    response.data.results.map(result => { // Preprocess cover art ids for api query
+                        result.relationships.map(relationship => {
+                            if (relationship.type == "cover_art") {
+                                mangaIdList.push(relationship.id)
+                            }
+                        })
+                    })
+                    //
+                    //     // Batch version of code == faster
+                    api.getCoverArtList(mangaIdList.slice(offset - 30, offset / 2)) // Change the subset grabbing once testing is done
+                        .then((CoverListResponse) => {
+                            console.log(CoverListResponse)
+                            CoverListResponse.data.results.map(coverFile => {
+                                coverFile.relationships.map(relationship => {
+                                    if (relationship.type == "manga") {
+                                        setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`])
+                                        response.data.results.forEach(result => {
+                                            if (result.data.id == relationship.id) {
+                                                result.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`
+                                            }
+                                        })
+                                    }
+                                })
+                            })
+                            return api.getCoverArtList(mangaIdList.slice(offset / 2, offset))
+                        }) // We can solve the batch loading charater limit in the query by splitting it into two requests and chaining the promises
+                        .then((CoverListResponse2) => {
+                            CoverListResponse2.data.results.map(coverFile2 => {
+                                coverFile2.relationships.map(relationship2 => {
+                                    if (relationship2.type == "manga") {
+                                        setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`])
+                                        response.data.results.forEach(result2 => {
+                                            if (result2.data.id == relationship2.id) {
+                                                result2.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`
+                                            }
+                                        })
+                                    }
+                                })
+                            })
+                            // Set the response data to the updated values after we append coverFile to the json objects
+                            setResponseData(response.data.results)
+                            console.log(responseData)
+                        })
+                        .catch((CoverListError) => {
+                            console.log(CoverListError)
+                        })
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
         }
     }
 
     const loadMore = e => {
         setOffset(offset+30)
+        setShowButton(false)
+        setCoverFileList([])
+        setMangaIdList([])
         console.log('loading more...')
         console.log(offset)
         api.queryManga({title: searchQuery, offset:offset})
@@ -164,6 +208,51 @@ function SearchBar(props){
                 setShowButton(false)
             }
             console.log(responseData)
+            response.data.results.map(result => { // Preprocess cover art ids for api query
+                result.relationships.map(relationship => {
+                    if (relationship.type == "cover_art") {
+                        mangaIdList.push(relationship.id)
+                    }
+                })
+            })
+            api.getCoverArtList(mangaIdList.slice(offset - 30, offset / 2)) // Change the subset grabbing once testing is done
+                .then((CoverListResponse) => {
+                    console.log(CoverListResponse)
+                    CoverListResponse.data.results.map(coverFile => {
+                        coverFile.relationships.map(relationship => {
+                            if(relationship.type == "manga") {
+                                setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`])
+                                response.data.results.forEach(result => {
+                                    if(result.data.id == relationship.id){
+                                        result.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`
+                                    }
+                                })
+                            }
+                        })
+                    })
+                    return api.getCoverArtList(mangaIdList.slice(offset / 2, offset))
+                }) // We can solve the batch loading character limit in the query by splitting it into two requests and chaining the promises
+                .then((CoverListResponse2) => {
+                    CoverListResponse2.data.results.map(coverFile2 => {
+                        coverFile2.relationships.map(relationship2 => {
+                            if(relationship2.type == "manga") {
+                                setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`])
+                                response.data.results.forEach(result2 => {
+                                    if(result2.data.id == relationship2.id) {
+                                        result2.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`
+                                    }
+                                })
+                            }
+                        })
+                    })
+                    // Set the response data to the updated values after we append coverFile to the json objects
+                    setResponseData(responseData.concat(response.data.results))
+                    console.log(responseData)
+
+                })
+                .catch((CoverListError) => {
+                    console.log(CoverListError)
+                })
         })
         .catch((error) => {
             console.log(error)
@@ -205,7 +294,6 @@ function SearchBar(props){
     );
 }
 
-//"https://uploads.mangadex.org/covers/8f3e1818-a015-491d-bd81-3addc4d7d56a/4113e972-d228-4172-a885-cb30baffff97.jpg.256.jpg"
 function App() {
 
     return (
