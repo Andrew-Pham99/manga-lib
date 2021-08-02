@@ -45,13 +45,13 @@ const limit = 30;
      * @returns {Promise} GET response as a Promise containing cover art files
      */
     const getCoverArtList = (coverIds) => {
-        console.log("executing GET request for cover art list...")
+        console.log("executing GET request for cover art...")
         return axios({
             method: 'get',
             url: base_url + '/cover',
             responseType: 'json',
             params: {
-                limit: 100,
+                limit: limit,
                 ids: coverIds
             }
         })
@@ -66,11 +66,45 @@ const limit = 30;
         })
     }
 
+
+    /* Retrieving pages from the MangaDex@home Network
+    *  Four fields required to retrieve chapter image
+    *  .data.id                    -  API Chapter ID
+    *  .data.attributes.hash       -  MangaDex@home Chapter Hash
+    *  .data.attributes.data       -  data quality mode filenames
+    *  .data.attributes.dataSaver  -  data-saver quality mode filenames
+    * 
+    *  If the server you have been assigned fails to serve images, you are allowed to call the 
+    *  /at-home/server/{ chapter id } endpoint again to get another server.
+    */
+    
+
     /**
      * 
      * @param {Array} queryParams 
      * @returns {Promise} GET response as a Promise 
+     * 
      */
+
+    //  {
+    //    ...,
+    //    "data": {
+    //      "id": "e46e5118-80ce-4382-a506-f61a24865166",
+    //      ...,
+    //      "attributes": {
+    //        ...,
+    //        "hash": "e199c7d73af7a58e8a4d0263f03db660",
+    //        "data": [
+    //          "x1-b765e86d5ecbc932cf3f517a8604f6ac6d8a7f379b0277a117dc7c09c53d041e.png",
+    //          ...
+    //        ],
+    //        "dataSaver": [
+    //          "x1-ab2b7c8f30c843aa3a53c29bc8c0e204fba4ab3e75985d761921eb6a52ff6159.jpg",
+    //          ...
+    //        ]
+    //      }
+    //    }
+    //  }
     const getChapterList = (queryParams) => {
         console.log("executing GET request for chapter lists...")
         return axios({
@@ -84,6 +118,35 @@ const limit = 30;
             }
         })
     }
+    
+    /**
+     * @param {string} chapterID
+     * @returns {Promise} GET response as a Promise 
+     * 
+     */
+    
+    // {
+    //     "baseUrl" : "string"
+    // }
+
+    const getBaseUrl = (chapterID) => {
+        return axios({
+            method: 'get',
+            url: `/at-home/server/${chapterID}`,
+            responseType: 'json'
+        })
+    }
+
+
+    /**
+     * qualityMode = {'data', 'dataSaver'}
+     * @returns {string} Image Url for corresponding Chapter
+     */
+    
+    const getChapterImgUrl = (baseUrl, qualityMode, chapterHash, fileName) => {
+        return `${baseUrl}/${qualityMode}/${chapterHash}/${fileName}`
+    }
+
 
 
     const api = {
@@ -92,6 +155,8 @@ const limit = 30;
         getCoverArtList,
         getChapterList,
         getCoverArt,
+        getBaseUrl,
+        getChapterImgUrl,
         limit
     };
 
