@@ -2,7 +2,7 @@ import Button from 'react-bootstrap/Button'
 
 const SearchBar = ({onChange, placeholder, onClick, onKeyDown}) => {
     return (
-      <div className="Search" class="form-group">
+      <div className="Search">
         <span className="SearchSpan">
         </span>
         <input

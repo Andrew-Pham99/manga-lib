@@ -4,12 +4,8 @@ import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card';
 import api from './api'
 import components from './components/components'
-import apiResp from './apiResp'
 import {Container} from "react-bootstrap";
 import Grid from '@material-ui/core/Grid'
-
-// Remove this when you no longer need a placeholder image
-import placeholderImage from "./images/Broda.jpg"
 
 
 function MangaCard(props){
@@ -41,13 +37,9 @@ function SearchBar(props){
     const[responseData, setResponseData] = React.useState([]);
     const[offset, setOffset] = React.useState(30);
     const[showButton, setShowButton] = React.useState(false);
-
-
-    const[imgUrl, setImg] = React.useState()
-    const[imgId, setImgId] = React.useState();
-    const[fileName, setFileName] = React.useState();
-    const[mangaId, setMangaId] = React.useState();
     const[mangaIdList, setMangaIdList] = React.useState([]);
+
+    //not used? idk
     const[coverFileList, setCoverFileList] = React.useState([])
 
     const handleChange = e => {
@@ -72,7 +64,7 @@ function SearchBar(props){
             //
             response.data.results.map(result => { // Preprocess cover art ids for api query
                 result.relationships.map(relationship => {
-                    if (relationship.type == "cover_art") {
+                    if (relationship.type === "cover_art") {
                         mangaIdList.push(relationship.id)
                     }
                 })
@@ -84,10 +76,10 @@ function SearchBar(props){
                     console.log(CoverListResponse)
                     CoverListResponse.data.results.map(coverFile => {
                         coverFile.relationships.map(relationship => {
-                            if(relationship.type == "manga") {
+                            if(relationship.type === "manga") {
                                 setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`])
                                 response.data.results.forEach(result => {
-                                    if(result.data.id == relationship.id){
+                                    if(result.data.id === relationship.id){
                                         result.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`
                                     }
                                 })
@@ -99,10 +91,10 @@ function SearchBar(props){
                 .then((CoverListResponse2) => {
                     CoverListResponse2.data.results.map(coverFile2 => {
                         coverFile2.relationships.map(relationship2 => {
-                            if(relationship2.type == "manga") {
+                            if(relationship2.type === "manga") {
                                 setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`])
                                 response.data.results.forEach(result2 => {
-                                    if(result2.data.id == relationship2.id) {
+                                    if(result2.data.id === relationship2.id) {
                                         result2.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`
                                     }
                                 })
@@ -143,7 +135,7 @@ function SearchBar(props){
                     //
                     response.data.results.map(result => { // Preprocess cover art ids for api query
                         result.relationships.map(relationship => {
-                            if (relationship.type == "cover_art") {
+                            if (relationship.type === "cover_art") {
                                 mangaIdList.push(relationship.id)
                             }
                         })
@@ -155,10 +147,10 @@ function SearchBar(props){
                             console.log(CoverListResponse)
                             CoverListResponse.data.results.map(coverFile => {
                                 coverFile.relationships.map(relationship => {
-                                    if (relationship.type == "manga") {
+                                    if (relationship.type === "manga") {
                                         setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`])
                                         response.data.results.forEach(result => {
-                                            if (result.data.id == relationship.id) {
+                                            if (result.data.id === relationship.id) {
                                                 result.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`
                                             }
                                         })
@@ -170,10 +162,10 @@ function SearchBar(props){
                         .then((CoverListResponse2) => {
                             CoverListResponse2.data.results.map(coverFile2 => {
                                 coverFile2.relationships.map(relationship2 => {
-                                    if (relationship2.type == "manga") {
+                                    if (relationship2.type === "manga") {
                                         setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`])
                                         response.data.results.forEach(result2 => {
-                                            if (result2.data.id == relationship2.id) {
+                                            if (result2.data.id === relationship2.id) {
                                                 result2.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`
                                             }
                                         })
@@ -196,7 +188,9 @@ function SearchBar(props){
 
     const loadMore = e => {
         setOffset(offset+30)
-        setShowButton(false)
+
+        setShowButton(true)
+
         setCoverFileList([])
         setMangaIdList([])
         console.log('loading more...')
@@ -210,35 +204,35 @@ function SearchBar(props){
             console.log(responseData)
             response.data.results.map(result => { // Preprocess cover art ids for api query
                 result.relationships.map(relationship => {
-                    if (relationship.type == "cover_art") {
+                    if (relationship.type === "cover_art") {
                         mangaIdList.push(relationship.id)
                     }
                 })
             })
-            api.getCoverArtList(mangaIdList.slice(offset - 30, offset / 2)) // Change the subset grabbing once testing is done
+            api.getCoverArtList(mangaIdList.slice(api.limit - 30, api.limit / 2)) // Change the subset grabbing once testing is done
                 .then((CoverListResponse) => {
                     console.log(CoverListResponse)
                     CoverListResponse.data.results.map(coverFile => {
                         coverFile.relationships.map(relationship => {
-                            if(relationship.type == "manga") {
+                            if(relationship.type === "manga") {
                                 setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`])
                                 response.data.results.forEach(result => {
-                                    if(result.data.id == relationship.id){
+                                    if(result.data.id === relationship.id){
                                         result.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`
                                     }
                                 })
                             }
                         })
                     })
-                    return api.getCoverArtList(mangaIdList.slice(offset / 2, offset))
+                    return api.getCoverArtList(mangaIdList.slice(api.limit / 2, api.limit))
                 }) // We can solve the batch loading character limit in the query by splitting it into two requests and chaining the promises
                 .then((CoverListResponse2) => {
                     CoverListResponse2.data.results.map(coverFile2 => {
                         coverFile2.relationships.map(relationship2 => {
-                            if(relationship2.type == "manga") {
+                            if(relationship2.type === "manga") {
                                 setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`])
                                 response.data.results.forEach(result2 => {
-                                    if(result2.data.id == relationship2.id) {
+                                    if(result2.data.id === relationship2.id) {
                                         result2.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`
                                     }
                                 })
@@ -270,11 +264,10 @@ function SearchBar(props){
             onKeyDown={onEnter}
             />
             <ul>
-                <Grid container className="recipe-space" spacing={3}>
+                <Grid container spacing={3}>
                     <Grid item md={12}>
-                        <Grid container justify="center" spacing={0.05}>
+                        <Grid container justifyContent="center" spacing={2}>
                             {responseData.map((item,index) =>(
-                                //console.log("IMAGEURL " + coverFileList[index]),
                             <MangaCard
                                 key={index}
                                 name={item.data.attributes.title.en}
@@ -286,9 +279,9 @@ function SearchBar(props){
                     </Grid>
                 </Grid>
             </ul>
-            <button onClick={loadMore} style={{visibility: showButton ? 'visible' : 'hidden' }}>
+            <Button variant="primary" onClick={loadMore} style={{visibility: showButton ? 'visible' : 'hidden' }}>
                 Load More
-            </button>
+            </Button>
             
         </div>
     );
