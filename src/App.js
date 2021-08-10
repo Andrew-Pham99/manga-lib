@@ -6,12 +6,14 @@ import api from './api'
 import components from './components/components'
 import {Container} from "react-bootstrap";
 import Grid from '@material-ui/core/Grid'
+import Routes from "./Routes"
 
 
 function MangaCard(props){
     // For this to work you need to add 2 props: description and img from the api
     // I can add onClick functions to handle the view transformation with you want to keep everything
     //  on the same page, or we can have the button route to a new page.
+
     return(
         <Card style={{width: '25rem', marginLeft:10, marginBottom:10}}>
             <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail"} width={100} height={550}/>
@@ -62,8 +64,8 @@ function SearchBar(props){
             else {setShowButton(true)}
             // Code for grabbing many covers
             //
-            response.data.results.map(result => { // Preprocess cover art ids for api query
-                result.relationships.map(relationship => {
+            response.data.results.forEach(result => { // Preprocess cover art ids for api query
+                result.relationships.forEach(relationship => {
                     if (relationship.type === "cover_art") {
                         mangaIdList.push(relationship.id)
                     }
@@ -74,8 +76,8 @@ function SearchBar(props){
             api.getCoverArtList(mangaIdList.slice(offset - 30, offset / 2)) // Change the subset grabbing once testing is done
                 .then((CoverListResponse) => {
                     console.log(CoverListResponse)
-                    CoverListResponse.data.results.map(coverFile => {
-                        coverFile.relationships.map(relationship => {
+                    CoverListResponse.data.results.forEach(coverFile => {
+                        coverFile.relationships.forEach(relationship => {
                             if(relationship.type === "manga") {
                                 setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`])
                                 response.data.results.forEach(result => {
@@ -89,8 +91,8 @@ function SearchBar(props){
                     return api.getCoverArtList(mangaIdList.slice(offset / 2, offset))
                 }) // We can solve the batch loading character limit in the query by splitting it into two requests and chaining the promises
                 .then((CoverListResponse2) => {
-                    CoverListResponse2.data.results.map(coverFile2 => {
-                        coverFile2.relationships.map(relationship2 => {
+                    CoverListResponse2.data.results.forEach(coverFile2 => {
+                        coverFile2.relationships.forEach(relationship2 => {
                             if(relationship2.type === "manga") {
                                 setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`])
                                 response.data.results.forEach(result2 => {
@@ -133,8 +135,8 @@ function SearchBar(props){
                     }
                     // Code for grabbing many covers
                     //
-                    response.data.results.map(result => { // Preprocess cover art ids for api query
-                        result.relationships.map(relationship => {
+                    response.data.results.forEach(result => { // Preprocess cover art ids for api query
+                        result.relationships.forEach(relationship => {
                             if (relationship.type === "cover_art") {
                                 mangaIdList.push(relationship.id)
                             }
@@ -145,8 +147,8 @@ function SearchBar(props){
                     api.getCoverArtList(mangaIdList.slice(offset - 30, offset / 2)) // Change the subset grabbing once testing is done
                         .then((CoverListResponse) => {
                             console.log(CoverListResponse)
-                            CoverListResponse.data.results.map(coverFile => {
-                                coverFile.relationships.map(relationship => {
+                            CoverListResponse.data.results.forEach(coverFile => {
+                                coverFile.relationships.forEach(relationship => {
                                     if (relationship.type === "manga") {
                                         setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`])
                                         response.data.results.forEach(result => {
@@ -160,8 +162,8 @@ function SearchBar(props){
                             return api.getCoverArtList(mangaIdList.slice(offset / 2, offset))
                         }) // We can solve the batch loading charater limit in the query by splitting it into two requests and chaining the promises
                         .then((CoverListResponse2) => {
-                            CoverListResponse2.data.results.map(coverFile2 => {
-                                coverFile2.relationships.map(relationship2 => {
+                            CoverListResponse2.data.results.forEach(coverFile2 => {
+                                coverFile2.relationships.forEach(relationship2 => {
                                     if (relationship2.type === "manga") {
                                         setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`])
                                         response.data.results.forEach(result2 => {
@@ -202,8 +204,8 @@ function SearchBar(props){
                 setShowButton(false)
             }
             console.log(responseData)
-            response.data.results.map(result => { // Preprocess cover art ids for api query
-                result.relationships.map(relationship => {
+            response.data.results.forEach(result => { // Preprocess cover art ids for api query
+                result.relationships.forEach(relationship => {
                     if (relationship.type === "cover_art") {
                         mangaIdList.push(relationship.id)
                     }
@@ -212,8 +214,8 @@ function SearchBar(props){
             api.getCoverArtList(mangaIdList.slice(api.limit - 30, api.limit / 2)) // Change the subset grabbing once testing is done
                 .then((CoverListResponse) => {
                     console.log(CoverListResponse)
-                    CoverListResponse.data.results.map(coverFile => {
-                        coverFile.relationships.map(relationship => {
+                    CoverListResponse.data.results.forEach(coverFile => {
+                        coverFile.relationships.forEach(relationship => {
                             if(relationship.type === "manga") {
                                 setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`])
                                 response.data.results.forEach(result => {
@@ -227,8 +229,8 @@ function SearchBar(props){
                     return api.getCoverArtList(mangaIdList.slice(api.limit / 2, api.limit))
                 }) // We can solve the batch loading character limit in the query by splitting it into two requests and chaining the promises
                 .then((CoverListResponse2) => {
-                    CoverListResponse2.data.results.map(coverFile2 => {
-                        coverFile2.relationships.map(relationship2 => {
+                    CoverListResponse2.data.results.forEach(coverFile2 => {
+                        coverFile2.relationships.forEach(relationship2 => {
                             if(relationship2.type === "manga") {
                                 setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`])
                                 response.data.results.forEach(result2 => {
