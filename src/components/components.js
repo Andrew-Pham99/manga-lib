@@ -1,6 +1,6 @@
 import Button from 'react-bootstrap/Button'
 
-const SearchBar = ({onChange, placeholder, onClick, onKeyDown}) => {
+const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => {
     return (
       <div className="Search">
         <span className="SearchSpan">
@@ -16,7 +16,7 @@ const SearchBar = ({onChange, placeholder, onClick, onKeyDown}) => {
         />
         <br/>
         <Button variant="primary" onClick={onClick} type="submit" style={{marginTop:20, marginBottom:20}}>Search</Button>
-        <Button variant="primary"  type="submit" style={{marginLeft:10, marginTop:20, marginBottom:20}}>Random</Button>
+        <Button variant="primary"  onClick={onClickRand} type="submit" style={{marginLeft:10, marginTop:20, marginBottom:20}}>Random</Button>
       </div>
     );
   };
