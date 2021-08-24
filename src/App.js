@@ -1,21 +1,18 @@
 import './App.css';
-import React from 'react'
-import Button from 'react-bootstrap/Button'
+import React from 'react';
+import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import api from './api'
-import components from './components/components'
+import api from './api';
+import components from './components/components';
 import {Container} from "react-bootstrap";
-import Grid from '@material-ui/core/Grid'
-import Routes from "./Routes"
+import Grid from '@material-ui/core/Grid';
+import {Link} from 'react-router-dom';
 
 
 function MangaCard(props){
-    // For this to work you need to add 2 props: description and img from the api
-    // I can add onClick functions to handle the view transformation with you want to keep everything
-    //  on the same page, or we can have the button route to a new page.
 
     return(
-        <Card style={{width: '25rem', marginLeft:10, marginBottom:10}}>
+        <Card style={{width: '25rem', marginLeft:10, marginBottom:10}} key={props.key} id={props.id}>
             <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail"} width={100} height={550}/>
             <Card.Body>
                 <Card.Title>
@@ -26,10 +23,12 @@ function MangaCard(props){
                     <p style={{fontSize:"smaller"}}>{props.description}</p>
                     </div>
                 </Card.Text>
+                <Link to={{pathname:`/Reader/manga=${props.id}`, state:props}}>
+                    <Button variant={"primary"}>
+                        Read {props.name}
+                    </Button>
+                </Link>
             </Card.Body>
-            <Button variant={"primary"}>
-                Read {props.name}
-            </Button>
         </Card>
     );
 }
@@ -41,7 +40,7 @@ function SearchBar(props){
     const[showButton, setShowButton] = React.useState(false);
     const[mangaIdList, setMangaIdList] = React.useState([]);
 
-    //not used? idk
+    //not used? idk  <-- This hook is used to append the image file to the original json
     const[coverFileList, setCoverFileList] = React.useState([])
 
     const handleChange = e => {
@@ -275,6 +274,7 @@ function SearchBar(props){
                                 name={item.data.attributes.title.en}
                                 img={item.data.coverFile}
                                 description={item.data.attributes.description.en}
+                                id={item.data.id}
                             />
                             ))}
                         </Grid>
@@ -284,18 +284,16 @@ function SearchBar(props){
             <Button variant="primary" onClick={loadMore} style={{visibility: showButton ? 'visible' : 'hidden' }}>
                 Load More
             </Button>
-            
         </div>
     );
 }
 
 function App() {
-
     return (
       <div className="search-manga">
           <h1>Manga Lib</h1>
           <Container>
-            <SearchBar/>
+              <SearchBar/>
           </Container>
       </div>
     );

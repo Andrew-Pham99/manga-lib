@@ -1,4 +1,6 @@
 import Button from 'react-bootstrap/Button'
+import Routes from "../Routes";
+import React from "react";
 
 const SearchBar = ({onChange, placeholder, onClick, onKeyDown}) => {
     return (
