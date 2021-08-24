@@ -47,6 +47,39 @@ function SearchBar(props){
         setSearchQuery(e.target.value)
     }
 
+    const handleRand = e => {
+        setCoverFileList([])
+        setMangaIdList([])
+        setShowButton(false)
+        
+        api.getRandomManga()
+        .then((response) => {
+
+            
+            response.data.relationships.forEach(relationship => {
+                if (relationship.type === "cover_art") {
+                    mangaIdList.push(relationship.id)
+                    
+                }
+            })
+            
+            api.getCoverArt(mangaIdList[0])
+            .then((coverResp) => {
+                console.log(`https://uploads.mangadex.org/covers/${response.data.data.id}/${coverResp.data.data.attributes.fileName}`)
+                response.data.data["coverFile"] = `https://uploads.mangadex.org/covers/${response.data.data.id}/${coverResp.data.data.attributes.fileName}`
+                setResponseData([response.data])
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+       
+           
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    }
+
     const handleInput = e => {
         setOffset(30)
         setShowButton(false)
@@ -263,12 +296,14 @@ function SearchBar(props){
             onChange={handleChange}
             onClick={handleInput}
             onKeyDown={onEnter}
+            onClickRand={handleRand}
             />
             <ul>
                 <Grid container spacing={3}>
                     <Grid item md={12}>
                         <Grid container justifyContent="center" spacing={2}>
                             {responseData.map((item,index) =>(
+                                console.log(responseData),
                             <MangaCard
                                 key={index}
                                 name={item.data.attributes.title.en}
