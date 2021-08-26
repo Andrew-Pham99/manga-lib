@@ -3,11 +3,11 @@ import api from './api'
 import components from './components/components'
 import {useLocation} from 'react-router-dom'
 import './Reader.css'
-import {Navbar, Nav} from "react-bootstrap";
+import {Navbar, Nav, Container} from "react-bootstrap";
 
 function ChapterListNav() {
     const [context, setContext] = React.useState(useLocation());
-    const [chapterList, setChapterList] = React.useState();
+    const [chapterList, setChapterList] = React.useState([]);
     const getChapterList = () => {
         console.log("xd")
         api.getChapterList({manga:context.state.id})
@@ -41,9 +41,11 @@ function Reader(props) {
 
     return (
         <div className="Reader">
-            <h1>{context.state.name}</h1>
-            <img src={context.state.img} width={250} />
-            <ChapterListNav/>
+            <Container>
+                <h1>{context.state.name}</h1>
+                <img src={context.state.img} width={250} />
+                <ChapterListNav/>
+            </Container>
         </div>
     );
 };
