@@ -303,7 +303,6 @@ function SearchBar(props){
                     <Grid item md={12}>
                         <Grid container justifyContent="center" spacing={2}>
                             {responseData.map((item,index) =>(
-                                console.log(responseData),
                             <MangaCard
                                 key={index}
                                 name={item.data.attributes.title.en}

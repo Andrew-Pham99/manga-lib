@@ -1,4 +1,5 @@
 import axios from "axios"
+import qs from "qs"
 /*
 Global rate limit of 5 requests a second per IP address in affect for most requests.
 Optimal to use larger batch requests than smaller individual ones.
@@ -107,17 +108,25 @@ const limit = 30;
     //  }
     const getChapterList = (queryParams) => {
         console.log("executing GET request for chapter lists...")
+
         return axios({
             method: 'get',
             url: base_url + '/chapter',
             responseType:'json',
             params: {
                 limit: 100,
-                translatedLanguage: 'en',
+                translatedLanguage: ['en'],
+                order: {
+                    chapter: 'asc'
+                   },
                 ...queryParams
-            }
+            },
+            paramsSerializer: params => {
+                return qs.stringify(params)
+              }
         })
     }
+    //order['chapter'] = asc
     
     /**
      * @param {string} chapterID
