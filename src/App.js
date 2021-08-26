@@ -10,7 +10,6 @@ import {Link} from 'react-router-dom';
 
 
 function MangaCard(props){
-
     return(
         <Card style={{width: '25rem', marginLeft:10, marginBottom:10}} key={props.key} id={props.id}>
             <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail"} width={100} height={550}/>
