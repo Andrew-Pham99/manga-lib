@@ -141,7 +141,7 @@ const limit = 30;
     const getBaseUrl = (chapterID) => {
         return axios({
             method: 'get',
-            url: `/at-home/server/${chapterID}`,
+            url: base_url + `/at-home/server/${chapterID}`,
             responseType: 'json'
         })
     }
