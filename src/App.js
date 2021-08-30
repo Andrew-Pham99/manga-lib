@@ -22,7 +22,7 @@ function MangaCard(props){
                         <p style={{fontSize:"smaller"}}>{props.description}</p>
                     </div>
                 </Card.Text>
-                <Link to={{pathname:`/Reader/manga=${props.id}`, state:props}}>
+                <Link to={{pathname:`/Info/manga=${props.id}`, state:props}}>
                     <Button variant={"primary"}>
                         Read {props.name}
                     </Button>
