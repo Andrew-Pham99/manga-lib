@@ -2,6 +2,7 @@ import React from 'react'
 import {Route, Switch, Link, Router} from 'react-router-dom'
 import App from "./App"
 import MangaInfo from "./MangaInfo"
+import Reader from "./Reader"
 import NotFound from "./NotFound"
 
 export default function Routes() {
@@ -13,8 +14,8 @@ export default function Routes() {
           <Route path={"/Info/:manga"}>
               <MangaInfo/>
           </Route>
-          <Route path={"/MangaInfo/:manga/:chapter"}>
-              <MangaInfo/>
+          <Route path={"/Reader/:manga/:chapter"}>
+              <Reader/>
           </Route>
           <Route>
               <NotFound/>
