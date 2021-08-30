@@ -30,13 +30,12 @@ function ChapterListNav() {
                 {chapterList.map((chapter, index) => (
                     <Nav.Item key={index}>
                         <Nav.Link>
-                            <Link to={{pathname:`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`, state:{manga:context.state, curChapter:chapter}}}>
+                            <Link to={{pathname:`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`, state:{manga:context.state, curChapter:chapter, chapterList:chapterList}}}>
                                 {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
                                     `Chapter ${chapter.data.attributes.chapter}`}
                             </Link>
                         </Nav.Link>
                     </Nav.Item>
-
                 ))}
                 </Nav>
             </Navbar>
