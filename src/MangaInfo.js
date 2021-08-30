@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 import api from './api'
 import components from './components/components'
 import {useLocation} from 'react-router-dom'
-import './Reader.css'
+import './MangaInfo.css'
 import {Navbar, Nav, Container} from "react-bootstrap";
 
 function ChapterListNav() {
@@ -40,13 +40,17 @@ function ChapterListNav() {
 
 
     return (
-        <div>
+        <div className="ChapterList">
             <Navbar>
                 <Nav className={"flex-column"}>
                 {chapterList.map((chapter, index) => (
                     <Nav.Item key={index} onClick={() => getChapterImages(index)}>
-                        <Nav.Link>Chapter {chapter.data.attributes.chapter}</Nav.Link>
+                        <Nav.Link>
+                            {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
+                            `Chapter ${chapter.data.attributes.chapter}`}
+                        </Nav.Link>
                     </Nav.Item>
+                    
                 ))}
                 </Nav>
             </Navbar>
@@ -57,7 +61,7 @@ function ChapterListNav() {
 function MangaInfo() {
     const [context, setContext] = React.useState(useLocation());
     return (
-        <div className="<MangaInfo>">
+        <div className="MangaInfo">
             <Container>
                 <h1>{context.state.name}</h1>
                 <img src={context.state.img} width={250} alt={"Not Found"} />
