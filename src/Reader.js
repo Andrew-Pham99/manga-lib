@@ -2,6 +2,7 @@ import React from "react"
 import api from "./api"
 import {useLocation} from "react-router-dom";
 import {Container, Image} from "react-bootstrap";
+import components from "./components/components";
 
 function ChapterImages() {
     const [context, setContext] = React.useState(useLocation());
@@ -38,6 +39,9 @@ function Reader() {
     console.log(context)
     return (
       <div className={"Reader"}>
+          <components.TopNavBar
+              placeholder={"Find a Manga!"}
+          />
           <Container>
             <h1>You are reading {context.state.manga.name} Chapter {context.state.curChapter.data.attributes.chapter}</h1>
             <ChapterImages/>

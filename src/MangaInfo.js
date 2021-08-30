@@ -48,6 +48,9 @@ function MangaInfo() {
     const [context, setContext] = React.useState(useLocation());
     return (
         <div className="MangaInfo">
+            <components.TopNavBar
+                placeholder={"Find a Manga!"}
+            />
             <Container>
                 <h1>{context.state.name}</h1>
                 <img src={context.state.img} width={250} alt={"Not Found"} />
