@@ -40,8 +40,8 @@ function ChapterListNav() {
 
 
     return (
-        <div className="ChapterList">
-            <Navbar>
+        <div >
+            <Navbar  className="ChapterList">
                 <Nav className={"flex-column"}>
                 {chapterList.map((chapter, index) => (
                     <Nav.Item key={index} onClick={() => getChapterImages(index)}>
