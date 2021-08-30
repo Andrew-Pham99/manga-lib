@@ -1,7 +1,7 @@
 import React from "react"
 import api from "./api"
-import {useLocation} from "react-router-dom";
-import {Container, Image} from "react-bootstrap";
+import {Link, useLocation} from "react-router-dom";
+import {Container, Image, Navbar, Nav} from "react-bootstrap";
 import components from "./components/components";
 
 function ChapterImages() {
@@ -21,7 +21,7 @@ function ChapterImages() {
             })
     }
     React.useEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [])
-    React.useEffect(() => console.log(chapterImgUrlList), [chapterImgUrlList]) // Logs every time the url list updates, remove if annoying
+    //React.useEffect(() => console.log(chapterImgUrlList), [chapterImgUrlList]) // Logs every time the url list updates, remove if annoying
 
     return (
         <div>
@@ -34,19 +34,27 @@ function ChapterImages() {
     )
 }
 
+function ChapterListHamburgerMenu() { // Make the chapter list hamburger menu in here
+    return (
+        <div>
+        </div>
+    )
+}
+
 function Reader() {
     const [context, setContext] = React.useState(useLocation());
-    console.log(context)
+    React.useEffect(()=> console.log(context),[context])
     return (
-      <div className={"Reader"}>
-          <components.TopNavBar
+        <div className={"Reader"}>
+            <components.TopNavBar
               placeholder={"Find a Manga!"}
-          />
-          <Container>
-            <h1>You are reading {context.state.manga.name} Chapter {context.state.curChapter.data.attributes.chapter}</h1>
-            <ChapterImages/>
-          </Container>
-      </div>
+            />
+            <Container>
+                <h1>You are reading {context.state.manga.name} Chapter {context.state.curChapter.data.attributes.chapter}</h1>
+                <ChapterListHamburgerMenu/>
+                <ChapterImages/>
+            </Container>
+        </div>
     );
 }
 
