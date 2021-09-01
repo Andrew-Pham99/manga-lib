@@ -24,3 +24,12 @@
   background-color: rgba(162, 202, 167, 0.541);
   background-position: center;
 }
+
+.chapter{
+  text-decoration: none;
+  color: gray;
+}
+
+.chapter:hover + div{
+  color:blue;
+}
