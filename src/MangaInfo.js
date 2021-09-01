@@ -1,10 +1,12 @@
 import React, {useEffect} from 'react'
 import api from './api'
 import components from './components/components'
-import {useLocation, Link} from 'react-router-dom'
+import {useLocation, useHistory, Link} from 'react-router-dom'
 import './MangaInfo.css'
 import {Navbar, Nav, Container} from "react-bootstrap"
 import {Card,Row, Col} from 'react-bootstrap'
+
+
 
 function Info(props) {
     return(
@@ -49,8 +51,7 @@ function ChapterListNav() {
                 {chapterList.map((chapter, index) => (
                     <Nav.Item key={index}>
                         <Nav.Link>
-                            <Link className="chapter" to={{pathname:`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`, state:{manga:context.state, curChapter:chapter, chapterList:chapterList}}}
-                            >
+                            <Link className="chapter" to={{pathname:`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`, state:{manga:context.state, curChapter:chapter, chapterList:chapterList}}}>
                                 {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
                                     `Chapter ${chapter.data.attributes.chapter}`}
                             </Link>
@@ -67,11 +68,9 @@ function MangaInfo() {
     const [context, setContext] = React.useState(useLocation());
     return (
         <div className="MangaInfo">
-            <components.TopNavBar
-                placeholder={"Find a Manga!"}
-            />
+            <components.TopNavBar/>
             <Container>
-            <Info 
+            <Info
                 description={context.state.description}
                 img={context.state.img}
                 title={context.state.name}/>

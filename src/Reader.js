@@ -46,9 +46,7 @@ function Reader() {
     React.useEffect(()=> console.log(context),[context])
     return (
         <div className={"Reader"}>
-            <components.TopNavBar
-              placeholder={"Find a Manga!"}
-            />
+            <components.TopNavBar/>
             <Container>
                 <h1>You are reading {context.state.manga.name} Chapter {context.state.curChapter.data.attributes.chapter}</h1>
                 <ChapterListHamburgerMenu/>
