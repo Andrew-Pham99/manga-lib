@@ -7,3 +7,20 @@
   text-align: center;
   display: inline-block
 }
+
+
+
+.info-img{
+  margin:0;
+  display:flex;
+  border: 5px solid #333;
+
+  margin-bottom: 2rem;
+}
+
+.info-text{
+  flex: 1;
+  background-size: cover;
+  background-color: rgba(162, 202, 167, 0.541);
+  background-position: center;
+}

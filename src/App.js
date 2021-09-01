@@ -287,7 +287,9 @@ function SearchBar(props){
 
     }
 
+    
 
+    //added a regex.
     return(
         <div>
             <components.SearchBar
@@ -304,10 +306,11 @@ function SearchBar(props){
                             {responseData.map((item,index) =>(
                             <MangaCard
                                 key={index}
-                                name={item.data.attributes.title.en}
+                                name={item.data.attributes.title.en ? item.data.attributes.title.en : item.data.attributes.title.jp}
                                 img={item.data.coverFile}
-                                description={item.data.attributes.description.en}
+                                description={item.data.attributes.description.en.replace(/[^.]*\[.*/g, '')}
                                 id={item.data.id}
+                                relationships={item.relationships}
                             />
                             ))}
                         </Grid>

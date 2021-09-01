@@ -3,7 +3,26 @@ import api from './api'
 import components from './components/components'
 import {useLocation, Link} from 'react-router-dom'
 import './MangaInfo.css'
-import {Navbar, Nav, Container} from "react-bootstrap";
+import {Navbar, Nav, Container} from "react-bootstrap"
+import {Card,Row, Col} from 'react-bootstrap'
+
+function Info(props) {
+    return(
+        <Card width={300} style={{marginTop:20}}>
+            <Row >
+                <Col xs={6} md={3}>
+                    <Card.Img  src={props.img} rounded ></Card.Img>
+                </Col>
+                <Col>
+                    <Card.Body variant="right">
+                        <Card.Title style={{fontSize:32}}>{props.title}</Card.Title>
+                        <Card.Text>{props.description}</Card.Text>
+                    </Card.Body>
+                </Col>
+            </Row>
+        </Card>
+    )
+}
 
 function ChapterListNav() {
     const [context, setContext] = React.useState(useLocation());
@@ -51,8 +70,10 @@ function MangaInfo() {
                 placeholder={"Find a Manga!"}
             />
             <Container>
-                <h1>{context.state.name}</h1>
-                <img src={context.state.img} width={250} alt={"Not Found"} />
+            <Info 
+                description={context.state.description}
+                img={context.state.img}
+                title={context.state.name}/>
                 <ChapterListNav/>
             </Container>
         </div>
