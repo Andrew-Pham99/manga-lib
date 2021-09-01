@@ -288,8 +288,6 @@ function SearchBar(props){
     }
 
     
-
-    //added a regex.
     return(
         <div>
             <components.SearchBar
