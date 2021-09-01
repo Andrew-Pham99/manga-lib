@@ -6,7 +6,7 @@ import api from './api';
 import components from './components/components';
 import {Container} from "react-bootstrap";
 import Grid from '@material-ui/core/Grid';
-import {Link} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 
 
 function MangaCard(props){
@@ -33,6 +33,7 @@ function MangaCard(props){
 }
 
 function SearchBar(props){
+    const[context, setContext] = React.useState(useLocation());
     const[searchQuery, setSearchQuery] = React.useState();
     const[responseData, setResponseData] = React.useState([]);
     const[offset, setOffset] = React.useState(30);
@@ -285,6 +286,19 @@ function SearchBar(props){
             console.log(error)
         })
 
+    }
+
+    if(context.state != null){
+        if(context.state.randSearch != null){
+            console.log("Rand search request received from another page.")
+            handleRand();
+        }
+        else {
+            console.log("Search request received from another page. Search query is: " + context.state.searchQuery)
+            setSearchQuery(context.state.searchQuery);
+            handleInput();
+        }
+        context.state = null;
     }
 
     
