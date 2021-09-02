@@ -10,6 +10,7 @@ Optimal to use larger batch requests than smaller individual ones.
 
 const base_url = 'https://api.mangadex.org'
 const limit = 30;
+const ch_limit = 25;
 /**
  * @returns {Promise} GET response as a Promise
  */
@@ -106,6 +107,8 @@ const limit = 30;
     //      }
     //    }
     //  }
+
+    //limit:100 def
     const getChapterList = (queryParams) => {
         console.log("executing GET request for chapter lists...")
 
@@ -114,7 +117,7 @@ const limit = 30;
             url: base_url + '/chapter',
             responseType:'json',
             params: {
-                limit: 100,
+                limit: ch_limit,
                 translatedLanguage: ['en'],
                 order: {
                     chapter: 'asc'
@@ -166,7 +169,8 @@ const limit = 30;
         getCoverArt,
         getBaseUrl,
         getChapterImgUrl,
-        limit
+        limit,
+        ch_limit
     };
 
     export default api;

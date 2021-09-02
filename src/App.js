@@ -9,6 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import {Link, useLocation} from 'react-router-dom';
 
 
+
 function MangaCard(props){
     return(
         <Card style={{width: '25rem', marginLeft:10, marginBottom:10}} key={props.key} id={props.id}>
@@ -302,9 +303,11 @@ function SearchBar(props){
             context.state = null;
         }
     }
+
     React.useEffect(() => {checkForExternalQueries();}, [context])
 
     //added a regex.
+
     return(
         <div>
             <components.SearchBar
