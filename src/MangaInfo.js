@@ -5,7 +5,7 @@ import {useLocation, useHistory, Link} from 'react-router-dom'
 import './MangaInfo.css'
 import {Navbar, Nav, Container} from "react-bootstrap"
 import {Card,Row, Col} from 'react-bootstrap'
-
+import ReactPaginate from 'react-paginate';
 
 
 function Info(props) {
@@ -29,12 +29,21 @@ function Info(props) {
 function ChapterListNav() {
     const [context, setContext] = React.useState(useLocation());
     const [chapterList, setChapterList] = React.useState([]);
+    const [pageLength, setPageLength] = React.useState(0);
+    const [currentPage, setCurrentPage] = React.useState(0);
+    const [pageVis, setPageVis] = React.useState(false);
+    const [bottomPageVis, setBottomPageVis] = React.useState(false);
     const getChapterList = () => {
         setChapterList([])
         api.getChapterList({manga: context.state.id})
             .then((getChapterListResponse) => {
                 console.log(getChapterListResponse)
                 setChapterList(chapterList => getChapterListResponse.data.results);
+                setPageLength(Math.ceil(getChapterListResponse.data.total/api.ch_limit))
+                if(Math.ceil(getChapterListResponse.data.total/api.ch_limit) > 1)
+                {
+                    setPageVis(true)
+                }
             })
             .catch((error) => {
                 console.log(error)
@@ -42,10 +51,40 @@ function ChapterListNav() {
     }
     React.useEffect(() => {getChapterList();}, []);
     React.useEffect(() => console.log(chapterList), [chapterList]) // Logs every time the chapter list updates, remove if annoying
+    
 
-
+    const handlePageClick = (e) => {
+        setBottomPageVis(false)
+        setChapterList([])
+        const selectedPage = e.selected;
+        setCurrentPage(selectedPage)
+        api.getChapterList({manga: context.state.id, offset:selectedPage*api.ch_limit})
+            .then((getChapterListResponse) => {
+                setChapterList(chapterList => getChapterListResponse.data.results)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+        setBottomPageVis(true)
+    }
     return (
-        <div >
+        <div className>
+        <ReactPaginate 
+            previousLabel={"<"}
+            nextLabel={">"}
+            breakLabel={"..."}
+            breakClassName={"break-me"}
+            initialPage={0}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            pageCount={pageLength}
+            forcePage={currentPage}
+            containerClassName={(pageVis? "pagination" : "pagination hidden"  )}
+            onPageChange={handlePageClick}
+            subContainerClassName={"pages pagination"}
+            activeClassName={"active"}/>      
+
+
             <Navbar  className="ChapterList">
                 <Nav className={"flex-column"}>
                 {chapterList.map((chapter, index) => (
@@ -60,6 +99,22 @@ function ChapterListNav() {
                 ))}
                 </Nav>
             </Navbar>
+
+            <ReactPaginate
+                previousLabel={"<"}
+                nextLabel={">"}
+                breakLabel={"..."}
+                breakClassName={"break-me"}
+                initialPage={0}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                pageCount={pageLength}
+                forcePage={currentPage}
+                containerClassName={(pageVis && bottomPageVis? "pagination" : "pagination hidden" )}
+                onPageChange={handlePageClick}
+                subContainerClassName={"pages pagination"}
+                activeClassName={"active"}/>  
+            
         </div>
     );
 }
