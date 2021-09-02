@@ -36,13 +36,23 @@ const TopNavBar = () => {
 
     const TopNavBarButtonSearch = () => {
         console.log(searchQuery)
-        history.push({pathname:`/`, state:{searchQuery:searchQuery}})
+        if(searchQuery == null){
+            history.push({pathname:`/`, state:{searchEmptyString:true}})
+        }
+        else {
+            history.push({pathname:`/`, state:{searchQuery:searchQuery}})
+        }
     }
 
     const TopNavBarOnEnterSearch = (e) => {
         if(e.key === 'Enter') {
             console.log(searchQuery);
-            history.push({pathname:`/`, state:{searchQuery:searchQuery}})
+            if(searchQuery == null){
+                history.push({pathname:`/`, state:{searchEmptyString:true}})
+            }
+            else {
+                history.push({pathname:`/`, state:{searchQuery:searchQuery}})
+            }
         }
     }
 

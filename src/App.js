@@ -79,8 +79,7 @@ function SearchBar(props){
         setShowButton(false)
         setCoverFileList([])
         setMangaIdList([])
-        console.log("Inside handle input, search query is: " + searchQuery)
-        api.queryManga(context.state.searchQuery != null ? {title:context.state.searchQuery} : {title: searchQuery})
+        api.queryManga(context.state != null ? (context.state.searchQuery != null ? {title:context.state.searchQuery} : {title:searchQuery}) : {title:searchQuery})
         .then((response) => {
             setOffset(30)
             setResponseData(response.data.results)
@@ -217,9 +216,7 @@ function SearchBar(props){
 
     const loadMore = e => {
         setOffset(offset+30)
-
         setShowButton(true)
-
         setCoverFileList([])
         setMangaIdList([])
         console.log('loading more...')
@@ -288,12 +285,20 @@ function SearchBar(props){
             if(context.state.randSearch != null){
                 console.log("Rand search request received from another page.")
                 handleRand();
+                context.state.randSearch = null;
             }
             else if(context.state.searchQuery != null) {
                 console.log("Search request received from another page. Search query is: " + context.state.searchQuery)
                 setSearchQuery(context.state.searchQuery);
                 handleInput();
+                context.state.searchQuery = null;
             }
+            else if(context.state.searchEmptyString != null) {
+                console.log("Empty string search request received from another page.")
+                handleInput();
+                context.state.searchEmptyString = null;
+            }
+            console.log(context.state);
             context.state = null;
         }
     }
