@@ -42,43 +42,37 @@ function SearchBar(props){
     const[mangaIdList, setMangaIdList] = React.useState([]);
 
     //not used? idk  <-- This hook is used to append the image file to the original json
-    const[coverFileList, setCoverFileList] = React.useState([])
+    const[coverFileList, setCoverFileList] = React.useState([]);
 
     const handleChange = e => {
         setSearchQuery(e.target.value)
     }
 
     const handleRand = e => {
-        setCoverFileList([])
-        setMangaIdList([])
-        setShowButton(false)
-        
+        setCoverFileList([]);
+        setMangaIdList([]);
+        setShowButton(false);
+
         api.getRandomManga()
         .then((response) => {
-
-            
             response.data.relationships.forEach(relationship => {
                 if (relationship.type === "cover_art") {
-                    mangaIdList.push(relationship.id)
-                    
+                    mangaIdList.push(relationship.id);
                 }
-            })
-            
+            });
             api.getCoverArt(mangaIdList[0])
             .then((coverResp) => {
-                console.log(`https://uploads.mangadex.org/covers/${response.data.data.id}/${coverResp.data.data.attributes.fileName}`)
-                response.data.data["coverFile"] = `https://uploads.mangadex.org/covers/${response.data.data.id}/${coverResp.data.data.attributes.fileName}`
-                setResponseData([response.data])
+                console.log(`https://uploads.mangadex.org/covers/${response.data.data.id}/${coverResp.data.data.attributes.fileName}`);
+                response.data.data["coverFile"] = `https://uploads.mangadex.org/covers/${response.data.data.id}/${coverResp.data.data.attributes.fileName}`;
+                setResponseData([response.data]);
             })
             .catch((error) => {
                 console.log(error)
-            })
-       
-           
+            });
         })
         .catch((error) => {
             console.log(error)
-        })
+        });
     }
 
     const handleInput = e => {
@@ -86,7 +80,7 @@ function SearchBar(props){
         setShowButton(false)
         setCoverFileList([])
         setMangaIdList([])
-        api.queryManga({title: searchQuery})
+        api.queryManga(context.state != null ? (context.state.searchQuery != null ? {title:context.state.searchQuery} : {title:searchQuery}) : {title:searchQuery})
         .then((response) => {
             setOffset(30)
             setResponseData(response.data.results)
@@ -223,9 +217,7 @@ function SearchBar(props){
 
     const loadMore = e => {
         setOffset(offset+30)
-
         setShowButton(true)
-
         setCoverFileList([])
         setMangaIdList([])
         console.log('loading more...')
@@ -289,20 +281,33 @@ function SearchBar(props){
 
     }
 
-    if(context.state != null){
-        if(context.state.randSearch != null){
-            console.log("Rand search request received from another page.")
-            handleRand();
+    const checkForExternalQueries = () => {
+        if(context.state != null){
+            if(context.state.randSearch != null){
+                console.log("Rand search request received from another page.")
+                handleRand();
+                context.state.randSearch = null;
+            }
+            else if(context.state.searchQuery != null) {
+                console.log("Search request received from another page. Search query is: " + context.state.searchQuery)
+                setSearchQuery(context.state.searchQuery);
+                handleInput();
+                context.state.searchQuery = null;
+            }
+            else if(context.state.searchEmptyString != null) {
+                console.log("Empty string search request received from another page.")
+                handleInput();
+                context.state.searchEmptyString = null;
+            }
+            console.log(context.state);
+            context.state = null;
         }
-        else {
-            console.log("Search request received from another page. Search query is: " + context.state.searchQuery)
-            setSearchQuery(context.state.searchQuery);
-            handleInput();
-        }
-        context.state = null;
     }
 
-    
+    React.useEffect(() => {checkForExternalQueries();}, [context])
+
+    //added a regex.
+
     return(
         <div>
             <components.SearchBar
