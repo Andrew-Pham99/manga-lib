@@ -5,7 +5,7 @@ import {Container, Image, Navbar, Nav} from "react-bootstrap";
 import components from "./components/components";
 
 function ChapterImages() {
-    const [context, setContext] = React.useState(useLocation());
+    const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
     const [chapterImgUrlList, setChapterImgUrlList] = React.useState([]);
     const getChapterImages = (chapterId) => {
@@ -22,25 +22,21 @@ function ChapterImages() {
             })
     }
     const HandleChapterChange = newChapter => {
-        // PLEASE MAKE THIS WORK!!!!!!
-        console.log(newChapter)
         history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
-        setContext(useLocation());
     }
     React.useEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context])
-    React.useEffect(() => {console.log(context);}, [context])
+    // React.useEffect(() => {console.log(context);}, [context])
+    // React.useEffect(() => {console.log(history);}, [history])
 
     return (
         <div>
-            <Navbar  className="ChapterList">
+            <Navbar className="ChapterList">
                 <Nav className={"flex-column"}>
                     {context.state.chapterList.map((chapter, index) => (
-                        <Nav.Item key={index} onClick={() => HandleChapterChange(chapter)} >
+                        <Nav.Item key={index} onClick={()=>HandleChapterChange(chapter)}>
                             <Nav.Link>
-                                <Link className="chapter">
-                                    {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
-                                        `Chapter ${chapter.data.attributes.chapter}`}
-                                </Link>
+                                {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
+                                    `Chapter ${chapter.data.attributes.chapter}`}
                             </Nav.Link>
                         </Nav.Item>
                     ))}
