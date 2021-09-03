@@ -303,7 +303,6 @@ function SearchBar(props){
             context.state = null;
         }
     }
-
     React.useEffect(() => {checkForExternalQueries();}, [context])
 
     //added a regex.

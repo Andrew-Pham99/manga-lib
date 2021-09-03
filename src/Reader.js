@@ -1,11 +1,12 @@
-import React from "react"
+import React, {useEffect} from "react"
 import api from "./api"
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useHistory} from "react-router-dom";
 import {Container, Image, Navbar, Nav} from "react-bootstrap";
 import components from "./components/components";
 
 function ChapterImages() {
     const [context, setContext] = React.useState(useLocation());
+    const [history, setHistory] = React.useState(useHistory());
     const [chapterImgUrlList, setChapterImgUrlList] = React.useState([]);
     const getChapterImages = (chapterId) => {
         setChapterImgUrlList([])
@@ -20,11 +21,31 @@ function ChapterImages() {
                 console.log(error)
             })
     }
-    React.useEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [])
-    //React.useEffect(() => console.log(chapterImgUrlList), [chapterImgUrlList]) // Logs every time the url list updates, remove if annoying
+    const HandleChapterChange = newChapter => {
+        // PLEASE MAKE THIS WORK!!!!!!
+        console.log(newChapter)
+        history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
+        setContext(useLocation());
+    }
+    React.useEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context])
+    React.useEffect(() => {console.log(context);}, [context])
 
     return (
         <div>
+            <Navbar  className="ChapterList">
+                <Nav className={"flex-column"}>
+                    {context.state.chapterList.map((chapter, index) => (
+                        <Nav.Item key={index} onClick={() => HandleChapterChange(chapter)} >
+                            <Nav.Link>
+                                <Link className="chapter">
+                                    {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
+                                        `Chapter ${chapter.data.attributes.chapter}`}
+                                </Link>
+                            </Nav.Link>
+                        </Nav.Item>
+                    ))}
+                </Nav>
+            </Navbar>
             <Container>
                 {chapterImgUrlList.map((chapterImg, index) => (
                     <Image src={chapterImg} key={index} alt={"Not Found"}></Image>
@@ -35,8 +56,23 @@ function ChapterImages() {
 }
 
 function ChapterListHamburgerMenu() { // Make the chapter list hamburger menu in here
+    const [context, setContext] = React.useState(useLocation());
     return (
         <div>
+            <Navbar  className="ChapterList">
+                <Nav className={"flex-column"}>
+                    {context.state.chapterList.map((chapter, index) => (
+                        <Nav.Item key={index}>
+                            <Nav.Link>
+                                <Link className="chapter" to={{pathname:`/Reader/manga=${context.state.manga.id}/chapter=${chapter.data.attributes.chapter}`, state:{manga:context.state, curChapter:chapter, chapterList:context.state.chapterList}}}>
+                                    {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
+                                        `Chapter ${chapter.data.attributes.chapter}`}
+                                </Link>
+                            </Nav.Link>
+                        </Nav.Item>
+                    ))}
+                </Nav>
+            </Navbar>
         </div>
     )
 }
@@ -49,7 +85,6 @@ function Reader() {
             <components.TopNavBar/>
             <Container>
                 <h1>You are reading {context.state.manga.name} Chapter {context.state.curChapter.data.attributes.chapter}</h1>
-                <ChapterListHamburgerMenu/>
                 <ChapterImages/>
             </Container>
         </div>
