@@ -1,7 +1,7 @@
 import React, {useEffect} from "react"
 import api from "./api"
 import {Link, useLocation, useHistory} from "react-router-dom";
-import {Container, Image, Navbar, Nav} from "react-bootstrap";
+import {Container, Image, Navbar, Nav, Button} from "react-bootstrap";
 import components from "./components/components";
 
 function ChapterImages() {
@@ -36,14 +36,58 @@ function ChapterImages() {
     )
 }
 
+function NextChapterButtons() {
+    const context = useLocation();
+    const [history, setHistory] = React.useState(useHistory());
+
+    const FindNextChapter = () => {
+        if(context.state.curChapter.listId + 1 >= context.state.chapterList.length){
+            return context.state.curChapter;
+        }
+        for(let idx = context.state.curChapter.listId + 1; idx < context.state.chapterList.length; idx++){
+            if(context.state.chapterList[idx].data.attributes.chapter > context.state.curChapter.data.attributes.chapter){
+                console.log(idx);
+                return {data:context.state.chapterList[idx].data, relationships:context.state.chapterList[idx].relationships, result:context.state.chapterList[idx].result, listId:idx};
+            }
+        }
+    }
+
+    const FindPrevChapter = () => {
+        if(context.state.curChapter.listId - 1 < 0){
+            return context.state.curChapter;
+        }
+        for(let idx = context.state.curChapter.listId - 1; idx < context.state.chapterList.length; --idx){
+            if(context.state.chapterList[idx].data.attributes.chapter < context.state.curChapter.data.attributes.chapter){
+                console.log(idx);
+                return {data:context.state.chapterList[idx].data, relationships:context.state.chapterList[idx].relationships, result:context.state.chapterList[idx].result, listId:idx};
+            }
+        }
+    }
+
+    const HandleChapterChange = newChapter => {
+        history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
+    }
+    // Finish styling for this element
+    return (
+        <div>
+            <Button onClick={() => HandleChapterChange(FindPrevChapter())}>
+                Prev
+            </Button>
+            <Button onClick={() => HandleChapterChange(FindNextChapter())}>
+                Next
+            </Button>
+        </div>
+    )
+}
+
 function ChapterListHamburgerMenu() { // Make the chapter list hamburger menu in here
-    const context =useLocation();
+    const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
 
     const HandleChapterChange = newChapter => {
         history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
     }
-
+    // Finish the styling for this element
     return (
         <div>
             <Navbar  className="ChapterList">
@@ -63,13 +107,15 @@ function ChapterListHamburgerMenu() { // Make the chapter list hamburger menu in
 }
 
 function Reader() {
-    const [context, setContext] = React.useState(useLocation());
+    const context = useLocation();
     React.useEffect(()=> console.log(context),[context])
+    console.log(context);
     return (
         <div className={"Reader"}>
             <components.TopNavBar/>
             <Container>
                 <h1>You are reading {context.state.manga.name} Chapter {context.state.curChapter.data.attributes.chapter}</h1>
+                <NextChapterButtons/>
                 <ChapterListHamburgerMenu/>
                 <ChapterImages/>
             </Container>
