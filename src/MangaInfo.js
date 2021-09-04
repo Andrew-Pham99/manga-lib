@@ -33,6 +33,7 @@ function ChapterListNav() {
     const [currentPage, setCurrentPage] = React.useState(0);
     const [pageVis, setPageVis] = React.useState(false);
     const [bottomPageVis, setBottomPageVis] = React.useState(false);
+
     const getChapterList = () => {
         setChapterList([])
         api.getChapterList({manga: context.state.id})
@@ -52,6 +53,7 @@ function ChapterListNav() {
             })
     }
     React.useEffect(() => {getChapterList();}, []);
+    React.useEffect(()=>{console.log(chapterList);}, [chapterList])
 
     const handlePageClick = (e) => {
         setBottomPageVis(false)
@@ -60,13 +62,16 @@ function ChapterListNav() {
         setCurrentPage(selectedPage)
         api.getChapterList({manga: context.state.id, offset:selectedPage*api.ch_limit})
             .then((getChapterListResponse) => {
-                setChapterList(chapterList => getChapterListResponse.data.results)
+                getChapterListResponse.data.results.forEach((chapter, index) => {
+                    setChapterList(chapterList => [...chapterList, {data:chapter.data, relationships: chapter.relationships, result:chapter.result, listId:index}])
+                })
             })
             .catch((error) => {
                 console.log(error)
             })
         setBottomPageVis(true)
     }
+
     return (
         <div className>
         <ReactPaginate 

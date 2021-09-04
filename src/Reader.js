@@ -44,25 +44,26 @@ function NextChapterButtons() {
         }
         for(let idx = context.state.curChapter.listId + 1; idx < context.state.chapterList.length; idx++){
             if(context.state.chapterList[idx].data.attributes.chapter > context.state.curChapter.data.attributes.chapter){
-                return {data:context.state.chapterList[idx].data, relationships:context.state.chapterList[idx].relationships, result:context.state.chapterList[idx].result, listId:idx};
+                return context.state.chapterList[idx];
             }
         }
     }
 
-    const FindPrevChapter = () => {
+    function FindPrevChapter(){
         if(context.state.curChapter.listId - 1 < 0){
             return context.state.curChapter;
         }
         for(let idx = context.state.curChapter.listId - 1; idx < context.state.chapterList.length; --idx){
             if(context.state.chapterList[idx].data.attributes.chapter < context.state.curChapter.data.attributes.chapter){
-                return {data:context.state.chapterList[idx].data, relationships:context.state.chapterList[idx].relationships, result:context.state.chapterList[idx].result, listId:idx};
+                return context.state.chapterList[idx];
             }
         }
     }
 
-    const HandleChapterChange = newChapter => {
+    const HandleChapterChange = (newChapter) => {
         history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
     }
+    console.log(context);
     // Finish styling for this element
     return (
         <div>
