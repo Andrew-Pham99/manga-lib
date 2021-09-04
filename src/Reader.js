@@ -1,4 +1,4 @@
-import React, {useEffect} from "react"
+import React from "react"
 import api from "./api"
 import {Link, useLocation, useHistory} from "react-router-dom";
 import {Container, Image, Navbar, Nav, Button} from "react-bootstrap";
@@ -22,8 +22,6 @@ function ChapterImages() {
             })
     }
     React.useEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context])
-    // React.useEffect(() => {console.log(context);}, [context])
-    // React.useEffect(() => {console.log(history);}, [history])
 
     return (
         <div>
@@ -46,7 +44,6 @@ function NextChapterButtons() {
         }
         for(let idx = context.state.curChapter.listId + 1; idx < context.state.chapterList.length; idx++){
             if(context.state.chapterList[idx].data.attributes.chapter > context.state.curChapter.data.attributes.chapter){
-                console.log(idx);
                 return {data:context.state.chapterList[idx].data, relationships:context.state.chapterList[idx].relationships, result:context.state.chapterList[idx].result, listId:idx};
             }
         }
@@ -58,7 +55,6 @@ function NextChapterButtons() {
         }
         for(let idx = context.state.curChapter.listId - 1; idx < context.state.chapterList.length; --idx){
             if(context.state.chapterList[idx].data.attributes.chapter < context.state.curChapter.data.attributes.chapter){
-                console.log(idx);
                 return {data:context.state.chapterList[idx].data, relationships:context.state.chapterList[idx].relationships, result:context.state.chapterList[idx].result, listId:idx};
             }
         }
@@ -109,7 +105,6 @@ function ChapterListHamburgerMenu() { // Make the chapter list hamburger menu in
 function Reader() {
     const context = useLocation();
     React.useEffect(()=> console.log(context),[context])
-    console.log(context);
     return (
         <div className={"Reader"}>
             <components.TopNavBar/>

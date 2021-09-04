@@ -52,8 +52,6 @@ function ChapterListNav() {
             })
     }
     React.useEffect(() => {getChapterList();}, []);
-    //React.useEffect(() => console.log(chapterList), [chapterList]) // Logs every time the chapter list updates, remove if annoying
-    
 
     const handlePageClick = (e) => {
         setBottomPageVis(false)

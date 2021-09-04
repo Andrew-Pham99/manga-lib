@@ -89,8 +89,6 @@ function SearchBar(props){
                 setShowButton(false)
             }
             else {setShowButton(true)}
-            // Code for grabbing many covers
-            //
             response.data.results.forEach(result => { // Preprocess cover art ids for api query
                 result.relationships.forEach(relationship => {
                     if (relationship.type === "cover_art") {
@@ -98,8 +96,6 @@ function SearchBar(props){
                     }
                 })
             })
-            //
-            //     // Batch version of code == faster
             api.getCoverArtList(mangaIdList.slice(offset - 30, offset / 2)) // Change the subset grabbing once testing is done
                 .then((CoverListResponse) => {
                     console.log(CoverListResponse)
@@ -160,8 +156,6 @@ function SearchBar(props){
                     } else {
                         setShowButton(true)
                     }
-                    // Code for grabbing many covers
-                    //
                     response.data.results.forEach(result => { // Preprocess cover art ids for api query
                         result.relationships.forEach(relationship => {
                             if (relationship.type === "cover_art") {
@@ -169,8 +163,6 @@ function SearchBar(props){
                             }
                         })
                     })
-                    //
-                    //     // Batch version of code == faster
                     api.getCoverArtList(mangaIdList.slice(offset - 30, offset / 2)) // Change the subset grabbing once testing is done
                         .then((CoverListResponse) => {
                             console.log(CoverListResponse)
