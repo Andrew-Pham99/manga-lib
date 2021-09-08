@@ -9,6 +9,33 @@ import ReactPaginate from 'react-paginate';
 
 
 function Info(props) {
+    let author, artist = 'N/A'
+    let themes = []
+    let genres = []
+    let format = []
+
+    props.relationships.forEach(element => {
+        if(element.type === "author"){
+            author = element.attributes ? element.attributes.name: 'N/A'
+        }
+        if(element.type === "artist"){
+            artist = element.attributes ? element.attributes.name: 'N/A'
+        }
+    })
+    props.tags.forEach(tag => {
+        console.log("TAGS HERE:")
+        console.log(tag)
+        if(tag.attributes.group === "theme"){
+            themes.push(tag.attributes.name.en)
+        }
+        if(tag.attributes.group === "genre"){
+            genres.push(tag.attributes.name.en)
+        }
+        if(tag.attributes.group === "format"){
+            format.push(tag.attributes.name.en)
+        }
+    })
+
     return(
         <Card width={300} style={{marginTop:20}}>
             <Row >
@@ -16,9 +43,20 @@ function Info(props) {
                     <Card.Img  src={props.img} rounded ></Card.Img>
                 </Col>
                 <Col>
-                    <Card.Body variant="right">
-                        <Card.Title style={{fontSize:32}}>{props.title}</Card.Title>
+                    <Card.Body variant="right" className="card_body">
+                        <Card.Title style={{fontSize:32, marginBottom:2}}>{props.title}</Card.Title>
+                        <Card.Subtitle>Publication Status:</Card.Subtitle>
+                        <Card.Text>{props.status.charAt(0).toUpperCase() + props.status.slice(1)}</Card.Text>
+                        <Card.Subtitle>Author(s):</Card.Subtitle>
+                        <Card.Text>{author}</Card.Text>
+                        <Card.Subtitle>Artist(s):</Card.Subtitle>
+                        <Card.Text>{artist}</Card.Text>
+                        <Card.Subtitle>Description:</Card.Subtitle>
                         <Card.Text>{props.description}</Card.Text>
+                        <Card.Text>THEMES: {themes.join(', ')}</Card.Text>
+                        <Card.Text>GENRES: {genres.join(', ')}</Card.Text>
+                        <Card.Text>FORMAT: {format.join(', ')}</Card.Text>
+
                     </Card.Body>
                 </Col>
             </Row>
@@ -33,15 +71,17 @@ function ChapterListNav() {
     const [currentPage, setCurrentPage] = React.useState(0);
     const [pageVis, setPageVis] = React.useState(false);
     const [bottomPageVis, setBottomPageVis] = React.useState(false);
+
     const getChapterList = () => {
         setChapterList([])
         api.getChapterList({manga: context.state.id})
             .then((getChapterListResponse) => {
+                getChapterListResponse.data.results.forEach((chapter, index) => {
+                    setChapterList(chapterList => [...chapterList, {data:chapter.data, relationships: chapter.relationships, result:chapter.result, listId:index}])
+                })
                 console.log(getChapterListResponse)
-                setChapterList(chapterList => getChapterListResponse.data.results);
                 setPageLength(Math.ceil(getChapterListResponse.data.total/api.ch_limit))
-                if(Math.ceil(getChapterListResponse.data.total/api.ch_limit) > 1)
-                {
+                if(Math.ceil(getChapterListResponse.data.total/api.ch_limit) > 1) {
                     setPageVis(true)
                 }
             })
@@ -50,8 +90,6 @@ function ChapterListNav() {
             })
     }
     React.useEffect(() => {getChapterList();}, []);
-    React.useEffect(() => console.log(chapterList), [chapterList]) // Logs every time the chapter list updates, remove if annoying
-    
 
     const handlePageClick = (e) => {
         setBottomPageVis(false)
@@ -60,13 +98,16 @@ function ChapterListNav() {
         setCurrentPage(selectedPage)
         api.getChapterList({manga: context.state.id, offset:selectedPage*api.ch_limit})
             .then((getChapterListResponse) => {
-                setChapterList(chapterList => getChapterListResponse.data.results)
+                getChapterListResponse.data.results.forEach((chapter, index) => {
+                    setChapterList(chapterList => [...chapterList, {data:chapter.data, relationships: chapter.relationships, result:chapter.result, listId:index}])
+                })
             })
             .catch((error) => {
                 console.log(error)
             })
         setBottomPageVis(true)
     }
+
     return (
         <div className>
         <ReactPaginate 
@@ -84,13 +125,13 @@ function ChapterListNav() {
             subContainerClassName={"pages pagination"}
             activeClassName={"active"}/>      
 
-
             <Navbar  className="ChapterList">
                 <Nav className={"flex-column"}>
                 {chapterList.map((chapter, index) => (
                     <Nav.Item key={index}>
                         <Nav.Link>
-                            <Link className="chapter" to={{pathname:`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`, state:{manga:context.state, curChapter:chapter, chapterList:chapterList}}}>
+                            <Link className="chapter" to={{pathname:`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`,
+                                state:{manga:context.state, curChapter:chapter, chapterList:chapterList}}}>
                                 {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
                                     `Chapter ${chapter.data.attributes.chapter}`}
                             </Link>
@@ -128,7 +169,12 @@ function MangaInfo() {
             <Info
                 description={context.state.description}
                 img={context.state.img}
-                title={context.state.name}/>
+                title={context.state.name}
+                status={context.state.status} 
+                demographic={context.state.demographic}
+                relationships={context.state.relationships}
+                tags={context.state.tags}
+                />
                 <ChapterListNav/>
             </Container>
         </div>

@@ -4,6 +4,7 @@ import React from "react";
 import {Nav, Navbar, Container, Image} from "react-bootstrap";
 import {LinkContainer} from "react-router-bootstrap"
 import {useHistory} from "react-router-dom";
+import logo from "../images/logo.png";
 
 const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => {
     return (
@@ -68,7 +69,7 @@ const TopNavBar = () => {
                     <LinkContainer to={"/"}>
                         <Navbar.Brand>
                             <Image
-                                src={""}
+                                src={logo}
                                 width={"30"}
                                 height={"30"}
                                 style={{marginRight:10, marginLeft:10}}

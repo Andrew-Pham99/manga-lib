@@ -39,35 +39,22 @@ function SearchBar(props){
     const[responseData, setResponseData] = React.useState([]);
     const[offset, setOffset] = React.useState(30);
     const[showButton, setShowButton] = React.useState(false);
-    const[mangaIdList, setMangaIdList] = React.useState([]);
-
-    //not used? idk  <-- This hook is used to append the image file to the original json
-    const[coverFileList, setCoverFileList] = React.useState([]);
 
     const handleChange = e => {
         setSearchQuery(e.target.value)
     }
 
     const handleRand = e => {
-        setCoverFileList([]);
-        setMangaIdList([]);
         setShowButton(false);
 
         api.getRandomManga()
         .then((response) => {
+            console.log(response)
             response.data.relationships.forEach(relationship => {
                 if (relationship.type === "cover_art") {
-                    mangaIdList.push(relationship.id);
+                    response.data.data["coverFile"] = `https://uploads.mangadex.org/covers/${response.data.data.id}/${relationship.attributes.fileName}`;
+                    setResponseData([response.data]);
                 }
-            });
-            api.getCoverArt(mangaIdList[0])
-            .then((coverResp) => {
-                console.log(`https://uploads.mangadex.org/covers/${response.data.data.id}/${coverResp.data.data.attributes.fileName}`);
-                response.data.data["coverFile"] = `https://uploads.mangadex.org/covers/${response.data.data.id}/${coverResp.data.data.attributes.fileName}`;
-                setResponseData([response.data]);
-            })
-            .catch((error) => {
-                console.log(error)
             });
         })
         .catch((error) => {
@@ -78,66 +65,22 @@ function SearchBar(props){
     const handleInput = e => {
         setOffset(30)
         setShowButton(false)
-        setCoverFileList([])
-        setMangaIdList([])
         api.queryManga(context.state != null ? (context.state.searchQuery != null ? {title:context.state.searchQuery} : {title:searchQuery}) : {title:searchQuery})
         .then((response) => {
             setOffset(30)
-            setResponseData(response.data.results)
             console.log(response.data)
             if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
-                setShowButton(false)
+                setShowButton(false);
             }
-            else {setShowButton(true)}
-            // Code for grabbing many covers
-            //
-            response.data.results.forEach(result => { // Preprocess cover art ids for api query
+            else {setShowButton(true)};
+            response.data.results.forEach(result => {
                 result.relationships.forEach(relationship => {
                     if (relationship.type === "cover_art") {
-                        mangaIdList.push(relationship.id)
+                        result.data["coverFile"] = `https://uploads.mangadex.org/covers/${result.data.id}/${relationship.attributes.fileName}`;
                     }
                 })
             })
-            //
-            //     // Batch version of code == faster
-            api.getCoverArtList(mangaIdList.slice(offset - 30, offset / 2)) // Change the subset grabbing once testing is done
-                .then((CoverListResponse) => {
-                    console.log(CoverListResponse)
-                    CoverListResponse.data.results.forEach(coverFile => {
-                        coverFile.relationships.forEach(relationship => {
-                            if(relationship.type === "manga") {
-                                setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`])
-                                response.data.results.forEach(result => {
-                                    if(result.data.id === relationship.id){
-                                        result.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`
-                                    }
-                                })
-                            }
-                        })
-                    })
-                    return api.getCoverArtList(mangaIdList.slice(offset / 2, offset))
-                }) // We can solve the batch loading character limit in the query by splitting it into two requests and chaining the promises
-                .then((CoverListResponse2) => {
-                    CoverListResponse2.data.results.forEach(coverFile2 => {
-                        coverFile2.relationships.forEach(relationship2 => {
-                            if(relationship2.type === "manga") {
-                                setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`])
-                                response.data.results.forEach(result2 => {
-                                    if(result2.data.id === relationship2.id) {
-                                        result2.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`
-                                    }
-                                })
-                            }
-                        })
-                    })
-                    // Set the response data to the updated values after we append coverFile to the json objects
-                    setResponseData(response.data.results)
-                    console.log(responseData)
-
-                })
-                .catch((CoverListError) => {
-                    console.log(CoverListError)
-                })
+            setResponseData(response.data.results)
         })
         .catch((error) => {
             console.log(error)
@@ -148,66 +91,24 @@ function SearchBar(props){
         if (e.key === 'Enter') {
             setOffset(30)
             setShowButton(false)
-            setCoverFileList([])
-            setMangaIdList([])
-            api.queryManga({title: searchQuery})
+            api.queryManga(context.state != null ? (context.state.searchQuery != null ? {title:context.state.searchQuery} : {title:searchQuery}) : {title:searchQuery})
                 .then((response) => {
                     setOffset(30)
-                    setResponseData(response.data.results)
                     console.log(response.data)
-                    if (response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
-                        setShowButton(false)
-                    } else {
-                        setShowButton(true)
+                    if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
+                        setShowButton(false);
                     }
-                    // Code for grabbing many covers
-                    //
-                    response.data.results.forEach(result => { // Preprocess cover art ids for api query
+                    else {
+                        setShowButton(true);
+                    };
+                    response.data.results.forEach(result => {
                         result.relationships.forEach(relationship => {
                             if (relationship.type === "cover_art") {
-                                mangaIdList.push(relationship.id)
+                                result.data["coverFile"] = `https://uploads.mangadex.org/covers/${result.data.id}/${relationship.attributes.fileName}`;
                             }
                         })
                     })
-                    //
-                    //     // Batch version of code == faster
-                    api.getCoverArtList(mangaIdList.slice(offset - 30, offset / 2)) // Change the subset grabbing once testing is done
-                        .then((CoverListResponse) => {
-                            console.log(CoverListResponse)
-                            CoverListResponse.data.results.forEach(coverFile => {
-                                coverFile.relationships.forEach(relationship => {
-                                    if (relationship.type === "manga") {
-                                        setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`])
-                                        response.data.results.forEach(result => {
-                                            if (result.data.id === relationship.id) {
-                                                result.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`
-                                            }
-                                        })
-                                    }
-                                })
-                            })
-                            return api.getCoverArtList(mangaIdList.slice(offset / 2, offset))
-                        }) // We can solve the batch loading charater limit in the query by splitting it into two requests and chaining the promises
-                        .then((CoverListResponse2) => {
-                            CoverListResponse2.data.results.forEach(coverFile2 => {
-                                coverFile2.relationships.forEach(relationship2 => {
-                                    if (relationship2.type === "manga") {
-                                        setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`])
-                                        response.data.results.forEach(result2 => {
-                                            if (result2.data.id === relationship2.id) {
-                                                result2.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`
-                                            }
-                                        })
-                                    }
-                                })
-                            })
-                            // Set the response data to the updated values after we append coverFile to the json objects
-                            setResponseData(response.data.results)
-                            console.log(responseData)
-                        })
-                        .catch((CoverListError) => {
-                            console.log(CoverListError)
-                        })
+                    setResponseData(response.data.results)
                 })
                 .catch((error) => {
                     console.log(error)
@@ -218,62 +119,21 @@ function SearchBar(props){
     const loadMore = e => {
         setOffset(offset+30)
         setShowButton(true)
-        setCoverFileList([])
-        setMangaIdList([])
         console.log('loading more...')
-        console.log(offset)
-        api.queryManga({title: searchQuery, offset:offset})
+        api.queryManga({title:searchQuery, offset:offset})
         .then((response) => {
-            setResponseData(responseData.concat(response.data.results))
-            if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
+            if (response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
                 setShowButton(false)
             }
-            console.log(responseData)
             response.data.results.forEach(result => { // Preprocess cover art ids for api query
                 result.relationships.forEach(relationship => {
                     if (relationship.type === "cover_art") {
-                        mangaIdList.push(relationship.id)
+                        result.data["coverFile"] = `https://uploads.mangadex.org/covers/${result.data.id}/${relationship.attributes.fileName}`;
                     }
                 })
             })
-            api.getCoverArtList(mangaIdList.slice(api.limit - 30, api.limit / 2)) // Change the subset grabbing once testing is done
-                .then((CoverListResponse) => {
-                    console.log(CoverListResponse)
-                    CoverListResponse.data.results.forEach(coverFile => {
-                        coverFile.relationships.forEach(relationship => {
-                            if(relationship.type === "manga") {
-                                setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`])
-                                response.data.results.forEach(result => {
-                                    if(result.data.id === relationship.id){
-                                        result.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship.id}/${coverFile.data.attributes.fileName}`
-                                    }
-                                })
-                            }
-                        })
-                    })
-                    return api.getCoverArtList(mangaIdList.slice(api.limit / 2, api.limit))
-                }) // We can solve the batch loading character limit in the query by splitting it into two requests and chaining the promises
-                .then((CoverListResponse2) => {
-                    CoverListResponse2.data.results.forEach(coverFile2 => {
-                        coverFile2.relationships.forEach(relationship2 => {
-                            if(relationship2.type === "manga") {
-                                setCoverFileList(coverFileList => [...coverFileList, `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`])
-                                response.data.results.forEach(result2 => {
-                                    if(result2.data.id === relationship2.id) {
-                                        result2.data["coverFile"] = `https://uploads.mangadex.org/covers/${relationship2.id}/${coverFile2.data.attributes.fileName}`
-                                    }
-                                })
-                            }
-                        })
-                    })
-                    // Set the response data to the updated values after we append coverFile to the json objects
-                    setResponseData(responseData.concat(response.data.results))
-                    console.log(responseData)
-
-                })
-                .catch((CoverListError) => {
-                    console.log(CoverListError)
-                })
+            // Set the response data to the updated values after we append coverFile to the json objects
+            setResponseData(responseData.concat(response.data.results));
         })
         .catch((error) => {
             console.log(error)
@@ -303,7 +163,6 @@ function SearchBar(props){
             context.state = null;
         }
     }
-
     React.useEffect(() => {checkForExternalQueries();}, [context])
 
     //added a regex.
@@ -326,9 +185,12 @@ function SearchBar(props){
                                 key={index}
                                 name={item.data.attributes.title.en ? item.data.attributes.title.en : item.data.attributes.title.jp}
                                 img={item.data.coverFile}
-                                description={item.data.attributes.description.en.replace(/[^.]*\[.*/g, '')}
+                                description={item.data.attributes.description.en? item.data.attributes.description.en.replace(/[^.]*\[.*/g, ''): ''}
                                 id={item.data.id}
                                 relationships={item.relationships}
+                                status={item.data.attributes.status}
+                                demographic={item.data.attributes.publicationDemographic? item.data.attributes.publicationDemographic :'N/A'}
+                                tags={item.data.attributes.tags}
                             />
                             ))}
                         </Grid>

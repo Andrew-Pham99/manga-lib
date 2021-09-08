@@ -71,3 +71,7 @@
 .paging {
   text-align: center;
 }
+
+.card_body{
+  text-align: left;
+}
