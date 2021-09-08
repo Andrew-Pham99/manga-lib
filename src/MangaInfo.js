@@ -9,8 +9,11 @@ import ReactPaginate from 'react-paginate';
 
 
 function Info(props) {
-    let author = 'N/A'
-    let artist = 'N/A'
+    let author, artist = 'N/A'
+    let themes = []
+    let genres = []
+    let format = []
+
     props.relationships.forEach(element => {
         if(element.type === "author"){
             author = element.attributes? element.attributes.name: 'N/A'
@@ -19,6 +22,21 @@ function Info(props) {
             artist = element.attributes? element.attributes.name: 'N/A'
         }
     })
+    props.tags.forEach(tag => {
+        console.log("TAGS HERE:")
+        console.log(tag)
+        if(tag.attributes.group === "theme"){
+            themes.push(tag.attributes.name.en)
+        }
+        if(tag.attributes.group === "genre"){
+            genres.push(tag.attributes.name.en)
+        }
+        if(tag.attributes.group === "format"){
+            format.push(tag.attributes.name.en)
+        }
+
+
+    })
     return(
         <Card width={300} style={{marginTop:20}}>
             <Row >
@@ -26,15 +44,20 @@ function Info(props) {
                     <Card.Img  src={props.img} rounded ></Card.Img>
                 </Col>
                 <Col>
-                    <Card.Body variant="right">
-                        <Card.Title style={{fontSize:32}}>{props.title}</Card.Title>
+                    <Card.Body variant="right" className="card_body">
+                        <Card.Title style={{fontSize:32, marginBottom:2}}>{props.title}</Card.Title>
+                        <Card.Subtitle>Publication Status:</Card.Subtitle>
+                        <Card.Text>{props.status.charAt(0).toUpperCase() + props.status.slice(1)}</Card.Text>
+                        <Card.Subtitle>Author(s):</Card.Subtitle>
+                        <Card.Text>{author}</Card.Text>
+                        <Card.Subtitle>Artist(s):</Card.Subtitle>
+                        <Card.Text>{artist}</Card.Text>
+                        <Card.Subtitle>Description:</Card.Subtitle>
                         <Card.Text>{props.description}</Card.Text>
-                        <Card.Text>PUBLICATION: {props.status.toUpperCase()}</Card.Text>
-                        <Card.Text>DEMOGRAPHIC: {props.demographic.toUpperCase()}</Card.Text>
-                        <Row>
-                            <Card.Text>AUTHOR: {author}</Card.Text>
-                            <Card.Text>ARTIST: {artist}</Card.Text>
-                        </Row>
+                        <Card.Text>THEMES: {themes.join(', ')}</Card.Text>
+                        <Card.Text>GENRES: {genres.join(', ')}</Card.Text>
+                        <Card.Text>FORMAT: {format.join(', ')}</Card.Text>
+
                     </Card.Body>
                 </Col>
             </Row>
@@ -69,7 +92,7 @@ function ChapterListNav() {
             })
     }
     React.useEffect(() => {getChapterList();}, []);
-    React.useEffect(()=>{console.log(chapterList);}, [chapterList])
+    //React.useEffect(()=>{console.log(chapterList);}, [chapterList])
 
     const handlePageClick = (e) => {
         setBottomPageVis(false)
@@ -143,7 +166,6 @@ function ChapterListNav() {
 
 function MangaInfo() {
     const [context, setContext] = React.useState(useLocation());
-    console.log("MANGAINFO!")
     return (
         <div className="MangaInfo">
             <components.TopNavBar/>
