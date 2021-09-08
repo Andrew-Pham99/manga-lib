@@ -8,8 +8,6 @@ import {Container} from "react-bootstrap";
 import Grid from '@material-ui/core/Grid';
 import {Link, useLocation} from 'react-router-dom';
 
-
-
 function MangaCard(props){
     return(
         <Card style={{width: '25rem', marginLeft:10, marginBottom:10}} key={props.key} id={props.id}>
@@ -206,12 +204,12 @@ function SearchBar(props){
 
 function App() {
     return (
-      <div className="search-manga">
-          <h1>Manga Lib</h1>
-          <Container>
-              <SearchBar/>
-          </Container>
-      </div>
+        <div className="search-manga">
+            <components.TopBar/>
+            <Container>
+                <SearchBar/>
+            </Container>
+        </div>
     );
 };
  

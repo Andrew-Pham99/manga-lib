@@ -27,13 +27,35 @@ const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => 
     );
   };
 
+const TopBar = () => {
+    return (
+      <div>
+          <Container>
+              <Navbar bg={"light"} expand={"lg"}>
+                  <LinkContainer to={"/"}>
+                      <Navbar.Brand>
+                          <Image
+                              src={logo}
+                              width={"40"}
+                              height={"40"}
+                              style={{marginRight:10, marginLeft:10}}
+                          />
+                          Manga Lib
+                      </Navbar.Brand>
+                  </LinkContainer>
+              </Navbar>
+          </Container>
+      </div>
+    );
+};
+
 const TopNavBar = () => {
     const [history, setHistory] = React.useState(useHistory());
     const [searchQuery, setSearchQuery] = React.useState();
 
     const handleChange = (e) => {
         setSearchQuery(e.target.value);
-    }
+    };
 
     const TopNavBarButtonSearch = () => {
         console.log(searchQuery)
@@ -43,7 +65,7 @@ const TopNavBar = () => {
         else {
             history.push({pathname:`/`, state:{searchQuery:searchQuery}})
         }
-    }
+    };
 
     const TopNavBarOnEnterSearch = (e) => {
         if(e.key === 'Enter') {
@@ -60,7 +82,7 @@ const TopNavBar = () => {
     const TopNavBarRandSearch = () => {
         console.log("Random Search")
         history.push({pathname:`/`, state:{randSearch:true}})
-    }
+    };
 
     return (
         <div>
@@ -70,8 +92,8 @@ const TopNavBar = () => {
                         <Navbar.Brand>
                             <Image
                                 src={logo}
-                                width={"30"}
-                                height={"30"}
+                                width={"40"}
+                                height={"40"}
                                 style={{marginRight:10, marginLeft:10}}
                             />
                             Manga Lib
@@ -93,16 +115,16 @@ const TopNavBar = () => {
                 </Navbar>
             </Container>
         </div>
-    )
-}
+    );
+};
 
 const SampleText = () => {
     return (
         <p> lorem ipsum</p>
     )
-}
+};
 
-const components = {SearchBar, TopNavBar, SampleText}
+const components = {SearchBar, TopNavBar, TopBar, SampleText}
 export default components;
 
 //<button onClick={onClick} type="submit"><i class="fa fa-search"></i></button>
