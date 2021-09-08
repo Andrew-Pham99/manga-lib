@@ -19,6 +19,8 @@ function Info(props) {
                     <Card.Body variant="right">
                         <Card.Title style={{fontSize:32}}>{props.title}</Card.Title>
                         <Card.Text>{props.description}</Card.Text>
+                        <Card.Text>PUBLICATION: {props.status.toUpperCase()}</Card.Text>
+                        <Card.Text>DEMOGRAPHIC: {props.demographic.toUpperCase()}</Card.Text>
                     </Card.Body>
                 </Col>
             </Row>
@@ -128,7 +130,9 @@ function MangaInfo() {
             <Info
                 description={context.state.description}
                 img={context.state.img}
-                title={context.state.name}/>
+                title={context.state.name}
+                status={context.state.status} 
+                demographic={context.state.demographic}/>
                 <ChapterListNav/>
             </Container>
         </div>

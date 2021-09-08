@@ -36,6 +36,7 @@ const ch_limit = 25;
             responseType: 'json',
             params: {
                 limit: limit,
+                includes:["author", "artist", "cover_art"],
                 ...queryParams
             }
         })

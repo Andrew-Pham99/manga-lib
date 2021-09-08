@@ -325,9 +325,11 @@ function SearchBar(props){
                                 key={index}
                                 name={item.data.attributes.title.en ? item.data.attributes.title.en : item.data.attributes.title.jp}
                                 img={item.data.coverFile}
-                                description={item.data.attributes.description.en.replace(/[^.]*\[.*/g, '')}
+                                description={item.data.attributes.description.en? item.data.attributes.description.en.replace(/[^.]*\[.*/g, ''): ''}
                                 id={item.data.id}
                                 relationships={item.relationships}
+                                status={item.data.attributes.status}
+                                demographic={item.data.attributes.publicationDemographic? item.data.attributes.publicationDemographic :'N/A'}
                             />
                             ))}
                         </Grid>
