@@ -81,8 +81,7 @@ function ChapterListNav() {
                 })
                 console.log(getChapterListResponse)
                 setPageLength(Math.ceil(getChapterListResponse.data.total/api.ch_limit))
-                if(Math.ceil(getChapterListResponse.data.total/api.ch_limit) > 1)
-                {
+                if(Math.ceil(getChapterListResponse.data.total/api.ch_limit) > 1) {
                     setPageVis(true)
                 }
             })
@@ -91,7 +90,6 @@ function ChapterListNav() {
             })
     }
     React.useEffect(() => {getChapterList();}, []);
-    //React.useEffect(()=>{console.log(chapterList);}, [chapterList])
 
     const handlePageClick = (e) => {
         setBottomPageVis(false)
@@ -126,7 +124,6 @@ function ChapterListNav() {
             onPageChange={handlePageClick}
             subContainerClassName={"pages pagination"}
             activeClassName={"active"}/>      
-
 
             <Navbar  className="ChapterList">
                 <Nav className={"flex-column"}>
