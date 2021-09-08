@@ -16,10 +16,10 @@ function Info(props) {
 
     props.relationships.forEach(element => {
         if(element.type === "author"){
-            author = element.attributes? element.attributes.name: 'N/A'
+            author = element.attributes ? element.attributes.name: 'N/A'
         }
         if(element.type === "artist"){
-            artist = element.attributes? element.attributes.name: 'N/A'
+            artist = element.attributes ? element.attributes.name: 'N/A'
         }
     })
     props.tags.forEach(tag => {
@@ -34,9 +34,8 @@ function Info(props) {
         if(tag.attributes.group === "format"){
             format.push(tag.attributes.name.en)
         }
-
-
     })
+
     return(
         <Card width={300} style={{marginTop:20}}>
             <Row >
