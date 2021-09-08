@@ -19,6 +19,7 @@ const ch_limit = 25;
         return axios({
             method: 'get',
             url: base_url + '/manga/random',
+            params: {includes:["author", "artist", "cover_art", "tags"]},
             responseType: 'json'
         })
     }
@@ -36,7 +37,7 @@ const ch_limit = 25;
             responseType: 'json',
             params: {
                 limit: limit,
-                includes:["author", "artist", "cover_art"],
+                includes:["author", "artist", "cover_art", "tags"],
                 ...queryParams
             }
         })

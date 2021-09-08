@@ -322,6 +322,7 @@ function SearchBar(props){
                                 relationships={item.relationships}
                                 status={item.data.attributes.status}
                                 demographic={item.data.attributes.publicationDemographic? item.data.attributes.publicationDemographic :'N/A'}
+                                tags={item.data.attributes.tags}
                             />
                             ))}
                         </Grid>

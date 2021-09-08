@@ -9,6 +9,16 @@ import ReactPaginate from 'react-paginate';
 
 
 function Info(props) {
+    let author = 'N/A'
+    let artist = 'N/A'
+    props.relationships.forEach(element => {
+        if(element.type === "author"){
+            author = element.attributes? element.attributes.name: 'N/A'
+        }
+        if(element.type === "artist"){
+            artist = element.attributes? element.attributes.name: 'N/A'
+        }
+    })
     return(
         <Card width={300} style={{marginTop:20}}>
             <Row >
@@ -21,6 +31,10 @@ function Info(props) {
                         <Card.Text>{props.description}</Card.Text>
                         <Card.Text>PUBLICATION: {props.status.toUpperCase()}</Card.Text>
                         <Card.Text>DEMOGRAPHIC: {props.demographic.toUpperCase()}</Card.Text>
+                        <Row>
+                            <Card.Text>AUTHOR: {author}</Card.Text>
+                            <Card.Text>ARTIST: {artist}</Card.Text>
+                        </Row>
                     </Card.Body>
                 </Col>
             </Row>
@@ -129,6 +143,7 @@ function ChapterListNav() {
 
 function MangaInfo() {
     const [context, setContext] = React.useState(useLocation());
+    console.log("MANGAINFO!")
     return (
         <div className="MangaInfo">
             <components.TopNavBar/>
@@ -138,7 +153,10 @@ function MangaInfo() {
                 img={context.state.img}
                 title={context.state.name}
                 status={context.state.status} 
-                demographic={context.state.demographic}/>
+                demographic={context.state.demographic}
+                relationships={context.state.relationships}
+                tags={context.state.tags}
+                />
                 <ChapterListNav/>
             </Container>
         </div>
