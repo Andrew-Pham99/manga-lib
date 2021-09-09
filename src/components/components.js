@@ -7,23 +7,29 @@ import {useHistory} from "react-router-dom";
 import logo from "../images/logo.png";
 
 const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => {
+    const history = useHistory();
+    const gotoAdvancedSearch = () => {
+        history.push(`/AdvancedSearch`);
+    };
+
     return (
-      <div className="Search">
-        <span className="SearchSpan">
-        </span>
-        <input
-          size={75}
-          className="SearchInput"
-          type="text"
-          onChange={onChange}
-          placeholder={placeholder}
-          style={{height:37}}
-          onKeyDown={onKeyDown}
-        />
-        <br/>
-        <Button variant="primary" onClick={onClick} type="submit" style={{marginTop:20, marginBottom:20}}>Search</Button>
-        <Button variant="primary"  onClick={onClickRand} type="submit" style={{marginLeft:10, marginTop:20, marginBottom:20}}>Random</Button>
-      </div>
+        <div className="Search">
+            <span className="SearchSpan">
+            </span>
+            <input
+            size={75}
+            className="SearchInput"
+            type="text"
+            onChange={onChange}
+            placeholder={placeholder}
+            style={{height:37}}
+            onKeyDown={onKeyDown}
+            />
+            <br/>
+            <Button variant="primary" onClick={onClick} type="submit" style={{marginTop:20, marginBottom:20}}>Search</Button>
+            <Button variant="primary"  onClick={onClickRand} type="submit" style={{marginLeft:10, marginTop:20, marginBottom:20}}>Random</Button>
+            <Button variant={"secondary"} onClick={gotoAdvancedSearch} style={{marginLeft:10}}>Advanced Search</Button>
+        </div>
     );
   };
 
