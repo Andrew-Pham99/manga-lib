@@ -45,7 +45,7 @@ function Info(props) {
                 </Col>
                 <Col>
                     <Card.Body variant="right" className="card_body">
-                        <Card.Title style={{fontSize:32, marginBottom:2}}>{props.title}</Card.Title>
+                        <Card.Title style={{fontSize:32, marginBottom:10}}>{props.title}</Card.Title>
                         <Card.Subtitle>Publication Status:</Card.Subtitle>
                         <Card.Text>{props.status.charAt(0).toUpperCase() + props.status.slice(1)}</Card.Text>
                         <Card.Subtitle>Author(s):</Card.Subtitle>
