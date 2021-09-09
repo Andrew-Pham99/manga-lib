@@ -16,10 +16,10 @@ function Info(props) {
 
     props.relationships.forEach(element => {
         if(element.type === "author"){
-            author = element.attributes? element.attributes.name: 'N/A'
+            author = element.attributes ? element.attributes.name: 'N/A'
         }
         if(element.type === "artist"){
-            artist = element.attributes? element.attributes.name: 'N/A'
+            artist = element.attributes ? element.attributes.name: 'N/A'
         }
     })
     props.tags.forEach(tag => {
@@ -34,14 +34,13 @@ function Info(props) {
         if(tag.attributes.group === "format"){
             format.push(tag.attributes.name.en)
         }
-
-
     })
+
     return(
-        <Card width={300} style={{marginTop:20}}>
+        <Card style={{marginTop:20}}>
             <Row >
                 <Col xs={6} md={3}>
-                    <Card.Img  src={props.img} rounded ></Card.Img>
+                    <Card.Img class="img-fluid rounded"  src={props.img} ></Card.Img>
                 </Col>
                 <Col>
                     <Card.Body variant="right" className="card_body">
@@ -53,10 +52,11 @@ function Info(props) {
                         <Card.Subtitle>Artist(s):</Card.Subtitle>
                         <Card.Text>{artist}</Card.Text>
                         <Card.Subtitle>Description:</Card.Subtitle>
-                        <Card.Text>{props.description}</Card.Text>
-                        <Card.Text>THEMES: {themes.join(', ')}</Card.Text>
-                        <Card.Text>GENRES: {genres.join(', ')}</Card.Text>
-                        <Card.Text>FORMAT: {format.join(', ')}</Card.Text>
+                        <Card.Text>
+                        {props.description}
+                        </Card.Text>
+                        <Card.Subtitle style={{fontSize:"smaller"}}>Tags:</Card.Subtitle>
+                        <Card.Text style={{fontSize:"smaller"}}>{themes.concat(genres,format).join(', ')}</Card.Text>
 
                     </Card.Body>
                 </Col>
@@ -64,6 +64,10 @@ function Info(props) {
         </Card>
     )
 }
+/*                        <Card.Text>THEMES: {themes.join(', ')}</Card.Text>
+                        <Card.Text>GENRES: {genres.join(', ')}</Card.Text>
+                        <Card.Text>FORMAT: {format.join(', ')}</Card.Text>
+*/
 
 function ChapterListNav() {
     const [context, setContext] = React.useState(useLocation());
@@ -79,11 +83,12 @@ function ChapterListNav() {
             .then((getChapterListResponse) => {
                 getChapterListResponse.data.results.forEach((chapter, index) => {
                     setChapterList(chapterList => [...chapterList, {data:chapter.data, relationships: chapter.relationships, result:chapter.result, listId:index}])
+                    console.log("CHAPTER LISTS")
+                    console.log(chapterList)
                 })
                 console.log(getChapterListResponse)
                 setPageLength(Math.ceil(getChapterListResponse.data.total/api.ch_limit))
-                if(Math.ceil(getChapterListResponse.data.total/api.ch_limit) > 1)
-                {
+                if(Math.ceil(getChapterListResponse.data.total/api.ch_limit) > 1) {
                     setPageVis(true)
                 }
             })
@@ -92,7 +97,6 @@ function ChapterListNav() {
             })
     }
     React.useEffect(() => {getChapterList();}, []);
-    //React.useEffect(()=>{console.log(chapterList);}, [chapterList])
 
     const handlePageClick = (e) => {
         setBottomPageVis(false)
@@ -111,6 +115,9 @@ function ChapterListNav() {
         setBottomPageVis(true)
     }
 
+    
+
+
     return (
         <div className>
         <ReactPaginate 
@@ -126,9 +133,8 @@ function ChapterListNav() {
             containerClassName={(pageVis? "pagination" : "pagination hidden"  )}
             onPageChange={handlePageClick}
             subContainerClassName={"pages pagination"}
-            activeClassName={"active"}/>      
-
-
+            activeClassName={"active"}
+            disableInitialCallback={"true"}/>      
             <Navbar  className="ChapterList">
                 <Nav className={"flex-column"}>
                 {chapterList.map((chapter, index) => (
@@ -158,7 +164,8 @@ function ChapterListNav() {
                 containerClassName={(pageVis && bottomPageVis? "pagination" : "pagination hidden" )}
                 onPageChange={handlePageClick}
                 subContainerClassName={"pages pagination"}
-                activeClassName={"active"}/>  
+                activeClassName={"active"}
+                disableInitialCallback={"true"}/>  
             
         </div>
     );
