@@ -5,6 +5,8 @@ import {Nav, Navbar, Container, Image} from "react-bootstrap";
 import {LinkContainer} from "react-router-bootstrap"
 import {useHistory} from "react-router-dom";
 import logo from "../images/logo.png";
+import { slide as Menu } from "react-burger-menu";
+import './components.css'
 
 const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => {
     const history = useHistory();
@@ -129,6 +131,7 @@ const SampleText = () => {
         <p> lorem ipsum</p>
     )
 };
+
 
 const components = {SearchBar, TopNavBar, TopBar, SampleText}
 export default components;

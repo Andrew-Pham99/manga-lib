@@ -207,7 +207,7 @@ function App() {
     return (
         <div className="search-manga">
             <components.TopBar/>
-            <Container>
+            <Container style={{marginTop:50}}>
                 <SearchBar/>
             </Container>
         </div>
