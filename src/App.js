@@ -139,6 +139,7 @@ function SearchBar(props){
 
     }
 
+    // Add logic to handle search object from Advanced search
     const checkForExternalQueries = () => {
         if(context.state != null){
             if(context.state.randSearch != null){
