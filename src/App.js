@@ -33,7 +33,14 @@ function MangaCard(props){
 
 function SearchBar(props){
     const[context, setContext] = React.useState(useLocation());
-    const[searchQuery, setSearchQuery] = React.useState();
+    const[searchQuery, setSearchQuery] = React.useState("");
+    const [searchObject, setSearchObject] = React.useState({
+        title:"",
+        artist:"",
+        status:[],
+        demographics:[],
+        tags:[]
+    });
     const[responseData, setResponseData] = React.useState([]);
     const[offset, setOffset] = React.useState(30);
     const[showButton, setShowButton] = React.useState(false);
@@ -142,24 +149,16 @@ function SearchBar(props){
     // Add logic to handle search object from Advanced search
     const checkForExternalQueries = () => {
         if(context.state != null){
-            if(context.state.randSearch != null){
-                console.log("Rand search request received from another page.")
-                handleRand();
-                context.state.randSearch = null;
+            if(context.state.searchObject != null) {
+                console.log("searchObject detected, executing search");
+                if(context.state.searchObject.rand) {
+                    handleRand();
+                }
+                // feed params to api call
+                setSearchObject(context.state.searchObject);
+
+                delete context.state.searchObject;
             }
-            else if(context.state.searchQuery != null) {
-                console.log("Search request received from another page. Search query is: " + context.state.searchQuery)
-                setSearchQuery(context.state.searchQuery);
-                handleInput();
-                context.state.searchQuery = null;
-            }
-            else if(context.state.searchEmptyString != null) {
-                console.log("Empty string search request received from another page.")
-                handleInput();
-                context.state.searchEmptyString = null;
-            }
-            console.log(context.state);
-            context.state = null;
         }
     }
     React.useEffect(() => {checkForExternalQueries();}, [context])
