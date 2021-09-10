@@ -32,21 +32,21 @@ function MangaCard(props){
 }
 
 function SearchBar(props){
-    const[context, setContext] = React.useState(useLocation());
-    const[searchQuery, setSearchQuery] = React.useState("");
+    const [context, setContext] = React.useState(useLocation());
+    const [searchQuery, setSearchQuery] = React.useState("");
     const [searchObject, setSearchObject] = React.useState({
         title:"",
-        artist:"",
         status:[],
-        demographics:[],
-        tags:[]
+        publicationDemographic:[],
+        includedTags:[]
     });
-    const[responseData, setResponseData] = React.useState([]);
-    const[offset, setOffset] = React.useState(30);
-    const[showButton, setShowButton] = React.useState(false);
+    const [responseData, setResponseData] = React.useState([]);
+    const [offset, setOffset] = React.useState(30);
+    const [showButton, setShowButton] = React.useState(false);
 
     const handleChange = e => {
-        setSearchQuery(e.target.value)
+        setSearchQuery(e.target.value);
+        setSearchObject({...searchObject, title: e.target.value});
     }
 
     const handleRand = e => {
@@ -70,7 +70,7 @@ function SearchBar(props){
     const handleInput = e => {
         setOffset(30)
         setShowButton(false)
-        api.queryManga(context.state != null ? (context.state.searchQuery != null ? {title:context.state.searchQuery} : {title:searchQuery}) : {title:searchQuery})
+        api.queryManga(context.state != null ? (context.state.searchObject != null ? context.state.searchObject : searchObject) : searchObject)
         .then((response) => {
             setOffset(30)
             console.log(response.data)
@@ -91,33 +91,35 @@ function SearchBar(props){
             console.log(error)
         })
     }
+    React.useEffect(()=>{console.log(searchObject);}, [searchObject])
 
     const onEnter = e => {
         if (e.key === 'Enter') {
-            setOffset(30)
-            setShowButton(false)
-            api.queryManga(context.state != null ? (context.state.searchQuery != null ? {title:context.state.searchQuery} : {title:searchQuery}) : {title:searchQuery})
-                .then((response) => {
-                    setOffset(30)
-                    console.log(response.data)
-                    if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
-                        setShowButton(false);
-                    }
-                    else {
-                        setShowButton(true);
-                    };
-                    response.data.results.forEach(result => {
-                        result.relationships.forEach(relationship => {
-                            if (relationship.type === "cover_art") {
-                                result.data["coverFile"] = `https://uploads.mangadex.org/covers/${result.data.id}/${relationship.attributes.fileName}`;
-                            }
-                        })
-                    })
-                    setResponseData(response.data.results)
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
+            // setOffset(30)
+            // setShowButton(false)
+            // api.queryManga(context.state != null ? (context.state.searchQuery != null ? {title:context.state.searchQuery} : {title:searchQuery}) : {title:searchQuery})
+            //     .then((response) => {
+            //         setOffset(30)
+            //         console.log(response.data)
+            //         if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
+            //             setShowButton(false);
+            //         }
+            //         else {
+            //             setShowButton(true);
+            //         };
+            //         response.data.results.forEach(result => {
+            //             result.relationships.forEach(relationship => {
+            //                 if (relationship.type === "cover_art") {
+            //                     result.data["coverFile"] = `https://uploads.mangadex.org/covers/${result.data.id}/${relationship.attributes.fileName}`;
+            //                 }
+            //             })
+            //         })
+            //         setResponseData(response.data.results)
+            //     })
+            //     .catch((error) => {
+            //         console.log(error)
+            //     })
+            handleInput();
         }
     }
 
@@ -151,12 +153,12 @@ function SearchBar(props){
         if(context.state != null){
             if(context.state.searchObject != null) {
                 console.log("searchObject detected, executing search");
-                if(context.state.searchObject.rand) {
+                if(context.state.searchObject.rand != null) {
                     handleRand();
+                    delete context.state.searchObject.rand;
                 }
-                // feed params to api call
                 setSearchObject(context.state.searchObject);
-
+                handleInput();
                 delete context.state.searchObject;
             }
         }
@@ -170,8 +172,8 @@ function SearchBar(props){
             <components.SearchBar
             placeholder="Find a Manga!"
             onChange={handleChange}
-            onClick={handleInput}
             onKeyDown={onEnter}
+            onClick={handleInput}
             onClickRand={handleRand}
             />
             <ul>
