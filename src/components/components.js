@@ -1,7 +1,7 @@
 import Button from 'react-bootstrap/Button'
 import Routes from "../Routes";
 import React from "react";
-import {Nav, Navbar, Container, Image} from "react-bootstrap";
+import {Nav, Navbar, Container, Image, Form} from "react-bootstrap";
 import {LinkContainer} from "react-router-bootstrap"
 import {useHistory} from "react-router-dom";
 import logo from "../images/logo.png";
@@ -59,38 +59,29 @@ const TopBar = () => {
 
 const TopNavBar = () => {
     const [history, setHistory] = React.useState(useHistory());
-    const [searchQuery, setSearchQuery] = React.useState();
-
+    const [searchObject, setSearchObject] = React.useState({
+        title:"",
+        artist:"",
+        rand:false,
+        status:[],
+        demographics:[],
+        tags:[],
+    });
     const handleChange = (e) => {
-        setSearchQuery(e.target.value);
+        setSearchObject({...searchObject, [e.target.name]: e.target.value});
+    };
+    const gotoAdvancedSearch = () => {
+        history.push(`/AdvancedSearch`);
     };
 
-    const TopNavBarButtonSearch = () => {
-        console.log(searchQuery)
-        if(searchQuery == null){
-            history.push({pathname:`/`, state:{searchEmptyString:true}})
-        }
-        else {
-            history.push({pathname:`/`, state:{searchQuery:searchQuery}})
-        }
+    // Need to  make these two calls send data properly
+    const TopNavBarSearch = () => {
+        history.push({pathname:`/`, state:searchObject})
     };
-
-    const TopNavBarOnEnterSearch = (e) => {
-        if(e.key === 'Enter') {
-            console.log(searchQuery);
-            if(searchQuery == null){
-                history.push({pathname:`/`, state:{searchEmptyString:true}})
-            }
-            else {
-                history.push({pathname:`/`, state:{searchQuery:searchQuery}})
-            }
-        }
-    }
-
     const TopNavBarRandSearch = () => {
-        console.log("Random Search")
-        history.push({pathname:`/`, state:{randSearch:true}})
+        setSearchObject({...searchObject, rand: true});
     };
+    React.useEffect(()=>{console.log(searchObject);},[searchObject])
 
     return (
         <div>
@@ -109,17 +100,14 @@ const TopNavBar = () => {
                     </LinkContainer>
                     <span className="SearchSpan">
                     </span>
-                    <input
-                        size={75}
-                        className="SearchInput"
-                        type="text"
-                        onChange={handleChange}
-                        placeholder={"Find a Manga!"}
-                        style={{height:37}}
-                        onKeyDown={TopNavBarOnEnterSearch}
-                    />
-                    <Button variant="primary" onClick={TopNavBarButtonSearch} type="submit" style={{marginLeft:10, marginTop:20, marginBottom:20}}>Search</Button>
-                    <Button variant="primary"  onClick={TopNavBarRandSearch} type="submit" style={{marginLeft:10, marginTop:20, marginBottom:20}}>Random</Button>
+                    <Form onSubmit={TopNavBarSearch}>
+                        <Form.Group controlId={"title"}>
+                            <Form.Control type={"text"} name={"title"} placeholder={"Find a Manga!"} onChange={handleChange}/>
+                        </Form.Group>
+                        <Button variant="primary" type="submit" >Search</Button>
+                        <Button variant="primary" onClick={TopNavBarRandSearch}>Random</Button>
+                        <Button variant={"secondary"} onClick={gotoAdvancedSearch}>Advanced Search</Button>
+                    </Form>
                 </Navbar>
             </Container>
         </div>
