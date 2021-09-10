@@ -11,6 +11,13 @@ function AdvancedSearchFields() {
     const [themeTags, setThemeTags] = React.useState([]);
     const [formatTags, setFormatTags] = React.useState([]);
     const [contentTags, setContentTags] = React.useState([]);
+    const [formData, setFormData] = React.useState({
+        title:"",
+        artist:"",
+        status:[],
+        demographics:[],
+        tags:[]
+    });
     const [showTags, setShowTags] = React.useState(false);
     const getAllTags = () => {
         setGenreTags([]);
@@ -64,59 +71,65 @@ function AdvancedSearchFields() {
             handleSubmit(event);
         }
     };
-    const handleSubmit = (event) => {
-        console.log(event);
-        // Assemble search object from event data
-        let searchObject = {
-            title:event.target.title.value,
-            artist:event.target.artist.value,
-            status:[
-
-            ],
-            demographics:[
-
-            ],
-            tags:[
-
-            ]
-        };
-        console.log(searchObject);
-        // history.push({pathname:`/`, state:{searchObject:{title:}}})
+    const handleTextChange = (event) => {
+        setFormData({...formData, [event.target.name]: event.target.value});
+    };
+    const handleStatusChange = (event) => {
+        // still need to remove dups
+        setFormData({...formData, status: [...formData.status, event.target.name ]});
+    };
+    const handleDemoChange = (event) => {
+        // Still need to remove dups
+        setFormData({...formData, demographics: [...formData.demographics, event.target.name ]});
+    };
+    const handleTagChange = (event) => {
+        // Remove duplicates Need conditional
+        // setFormData({...formData, tags: formData.tags.filter((item) => item.name != event.target.name)});
+        setFormData({...formData, tags: [...formData.tags, {
+            name: event.target.name,
+            id: event.target.tagid,
+            type: event.target.tagtype,
+            group: event.target.taggroup
+        }]});
+    };
+    React.useEffect(()=>{console.log(formData)}, [formData]);
+    const handleSubmit = () => {
+        history.push({pathname:`/`, state:{searchObject: {title: formData.title, artist: formData.artist, status: formData.status, demographics: formData.demographics, tags: formData.tags}}});
     };
 
     return (
         <div>
-            <Form onSubmit={handleSubmit} onKeyDown={handleEnter}>
+            <Form onSubmit={handleSubmit}>
                 <Form.Group  controlId={"title"}>
                     <Form.Label>Title</Form.Label>
-                    <Form.Control type={"text"} placeholder={"Title"}/>
+                    <Form.Control type={"text"} name={"title"} placeholder={"Title"} onChange={handleTextChange}/>
                 </Form.Group>
                 <Form.Group controlId={"artist"}>
                     <Form.Label>Artist</Form.Label>
-                    <Form.Control type={"text"} placeholder={"Artist"}/>
+                    <Form.Control type={"text"} name={"artist"} placeholder={"Artist"} onChange={handleTextChange}/>
                 </Form.Group>
                 <Row>
                     <Form.Group controlId={"status"} as={Col}>
                         <Form.Label>Status</Form.Label>
                         <Form.Group>
-                            <Form.Check type={"checkbox"} label={"Ongoing"} name={"ongoing"} id={"ongoing"}/>
+                            <Form.Check type={"checkbox"} label={"Ongoing"} name={"ongoing"} id={"ongoing"} onChange={handleStatusChange}/>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Check type={"checkbox"} label={"Hiatus"} name={"hiatus"} id={"hiatus"}/>
+                            <Form.Check type={"checkbox"} label={"Hiatus"} name={"hiatus"} id={"hiatus"} onChange={handleStatusChange}/>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Check type={"checkbox"} label={"Completed"} name={"completed"} id={"completed"}/>
+                            <Form.Check type={"checkbox"} label={"Completed"} name={"completed"} id={"completed"} onChange={handleStatusChange}/>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Check type={"checkbox"} label={"Canceled"} name={"canceled"} id={"canceled"}/>
+                            <Form.Check type={"checkbox"} label={"Canceled"} name={"canceled"} id={"canceled"} onChange={handleStatusChange}/>
                         </Form.Group>
                     </Form.Group>
                     <Form.Group controlId={"demo"} as={Col}>
                         <Form.Label>Demographics</Form.Label>
-                        <Form.Check type={"checkbox"} label={"Shounen"} name={"shounen"} id={"shounen"}/>
-                        <Form.Check type={"checkbox"} label={"Shoujo"} name={"shoujo"} id={"shoujo"}/>
-                        <Form.Check type={"checkbox"} label={"Seinen"} name={"seinen"} id={"seinen"}/>
-                        <Form.Check type={"checkbox"} label={"Josei"} name={"josei"} id={"josei"}/>
+                        <Form.Check type={"checkbox"} label={"Shounen"} name={"shounen"} id={"shounen"} onChange={handleDemoChange}/>
+                        <Form.Check type={"checkbox"} label={"Shoujo"} name={"shoujo"} id={"shoujo"} onChange={handleDemoChange}/>
+                        <Form.Check type={"checkbox"} label={"Seinen"} name={"seinen"} id={"seinen"} onChange={handleDemoChange}/>
+                        <Form.Check type={"checkbox"} label={"Josei"} name={"josei"} id={"josei"} onChange={handleDemoChange}/>
                     </Form.Group>
                 </Row>
                 <Form.Group controlId={"tag"}>
@@ -126,7 +139,7 @@ function AdvancedSearchFields() {
                             <Form.Label>Genres</Form.Label><br/>
                             {genreTags.map((tag, index) => {
                                 return (
-                                    <Form.Check inline key={index} type={"checkbox"} label={tag.name} name={tag.name} id={tag.name} hash={tag.id}/>
+                                    <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id} taggroup={tag.group} tagtype={tag.type}/>
                                 );
                             })}
                         </Form.Group>
@@ -134,7 +147,7 @@ function AdvancedSearchFields() {
                             <Form.Label>Themes</Form.Label><br/>
                             {themeTags.map((tag, index) => {
                                 return (
-                                    <Form.Check inline key={index} type={"checkbox"} label={tag.name} name={tag.name} id={tag.name} hash={tag.id}/>
+                                    <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id} taggroup={tag.group} tagtype={tag.type}/>
                                 );
                             })}
                         </Form.Group>
@@ -142,7 +155,7 @@ function AdvancedSearchFields() {
                             <Form.Label>Formats</Form.Label><br/>
                             {formatTags.map((tag, index) => {
                                 return (
-                                    <Form.Check inline key={index} type={"checkbox"} label={tag.name} name={tag.name} id={tag.name} hash={tag.id}/>
+                                    <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id} taggroup={tag.group} tagtype={tag.type}/>
                                 );
                             })}
                         </Form.Group>
@@ -150,13 +163,13 @@ function AdvancedSearchFields() {
                             <Form.Label>Content</Form.Label><br/>
                             {contentTags.map((tag, index) => {
                                 return (
-                                    <Form.Check inline key={index} type={"checkbox"} label={tag.name} name={tag.name} id={tag.name} hash={tag.id}/>
+                                    <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name.trim()} id={tag.name} tagid={tag.id} taggroup={tag.group} tagtype={tag.type}/>
                                 );
                             })}
                         </Form.Group>
                     </Form.Group>
                 </Form.Group>
-                <Button variant={"primary"} type={"submit"} onClick={handleSubmit}>Search</Button>
+                <Button variant={"primary"} type={"submit"} >Search</Button>
             </Form>
         </div>
     );
