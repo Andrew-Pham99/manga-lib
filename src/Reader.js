@@ -29,7 +29,7 @@ function ChapterImages() {
         <div>
             <Container>
                 {chapterImgUrlList.map((chapterImg, index) => (
-                    <Image src={chapterImg} key={index} alt={"Not Found"}></Image>
+                    <Image src={chapterImg} key={index} alt={"Not Found"} className={"chapter_images"} class></Image>
                 ))}
             </Container>
         </div>
