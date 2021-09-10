@@ -67,19 +67,17 @@ const TopNavBar = () => {
         demographics:[],
         tags:[],
     });
-    const handleChange = (e) => {
-        setSearchObject({...searchObject, [e.target.name]: e.target.value});
-    };
     const gotoAdvancedSearch = () => {
         history.push(`/AdvancedSearch`);
     };
-
-    // Need to  make these two calls send data properly
+    const handleChange = (e) => {
+        setSearchObject({...searchObject, [e.target.name]: e.target.value});
+    };
     const TopNavBarSearch = () => {
         history.push({pathname:`/`, state:searchObject})
     };
     const TopNavBarRandSearch = () => {
-        setSearchObject({...searchObject, rand: true});
+        history.push({pathname:`/`, state:{searchObject:{...searchObject, rand: true}}})
     };
     React.useEffect(()=>{console.log(searchObject);},[searchObject])
 
