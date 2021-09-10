@@ -67,11 +67,6 @@ function AdvancedSearchFields() {
             })
     };
     React.useEffect(() => {getAllTags();}, []);
-    const handleEnter = (event) => {
-        if(event.key == "Enter"){
-            handleSubmit(event);
-        }
-    };
     const handleTextChange = (event) => {
         setFormData({...formData, [event.target.name]: event.target.value});
     };
@@ -105,7 +100,6 @@ function AdvancedSearchFields() {
             setFormData({...formData, tags: formData.tags.filter((item) => item.name != event.target.name)});
         }
     };
-    React.useEffect(()=>{console.log(formData)}, [formData]);
     const handleSubmit = () => {
         history.push({pathname:`/`, state:{searchObject: {title: formData.title, artist: formData.artist, status: formData.status, demographics: formData.demographics, tags: formData.tags}}});
     };
