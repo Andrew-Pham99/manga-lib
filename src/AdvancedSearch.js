@@ -14,6 +14,7 @@ function AdvancedSearchFields() {
     const [formData, setFormData] = React.useState({
         title:"",
         artist:"",
+        rand:false,
         status:[],
         demographics:[],
         tags:[]
