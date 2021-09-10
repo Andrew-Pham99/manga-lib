@@ -75,22 +75,34 @@ function AdvancedSearchFields() {
         setFormData({...formData, [event.target.name]: event.target.value});
     };
     const handleStatusChange = (event) => {
-        // still need to remove dups
-        setFormData({...formData, status: [...formData.status, event.target.name ]});
+        if(event.target.checked) {
+            setFormData({...formData, status: [...formData.status, event.target.name ]});
+        }
+        else {
+            setFormData({...formData, status: formData.status.filter((item) => item != event.target.name)});
+        }
+
     };
     const handleDemoChange = (event) => {
-        // Still need to remove dups
-        setFormData({...formData, demographics: [...formData.demographics, event.target.name ]});
+        if(event.target.checked) {
+            setFormData({...formData, demographics: [...formData.demographics, event.target.name ]});
+        }
+        else {
+            setFormData({...formData, demographics: formData.demographics.filter((item) => item != event.target.name)});
+        }
     };
     const handleTagChange = (event) => {
-        // Remove duplicates Need conditional
-        // setFormData({...formData, tags: formData.tags.filter((item) => item.name != event.target.name)});
-        setFormData({...formData, tags: [...formData.tags, {
-            name: event.target.name,
-            id: event.target.tagid,
-            type: event.target.tagtype,
-            group: event.target.taggroup
-        }]});
+        if(event.target.checked) {
+            setFormData({...formData, tags: [...formData.tags, {
+                    name: event.target.name,
+                    id: event.target.getAttribute("tagid"),
+                    type: event.target.getAttribute("tagtype"),
+                    group: event.target.getAttribute("taggroup")
+                }]});
+        }
+        else {
+            setFormData({...formData, tags: formData.tags.filter((item) => item.name != event.target.name)});
+        }
     };
     React.useEffect(()=>{console.log(formData)}, [formData]);
     const handleSubmit = () => {
