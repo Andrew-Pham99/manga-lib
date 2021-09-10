@@ -1,9 +1,6 @@
 .Reader {
     align-content: center;
     text-align: center;
-<<<<<<< Updated upstream
-}
-=======
 }
 /*image styling*/
 .chapter_images {
@@ -57,4 +54,3 @@
   .bm-overlay {
     background: rgba(255, 255, 255, 0) !important; /* Will give you a white overlay */
   }
->>>>>>> Stashed changes
