@@ -1,4 +1,60 @@
 .Reader {
     align-content: center;
     text-align: center;
+<<<<<<< Updated upstream
 }
+=======
+}
+/*image styling*/
+.chapter_images {
+  width: 51%;
+}
+
+/*burger menu styling*/
+
+.bm-burger-button {
+    position: fixed;
+    width: 36px;
+    height: 30px;
+    right: 36px;
+    top: 36px;
+  }
+  
+  /* Color/shape of burger icon bars */
+  .bm-burger-bars {
+    background: #000000;
+  }
+  
+  /*#0275d8*/
+  /* Position and sizing of clickable cross button */
+  .bm-cross-button {
+    height: 24px;
+    width: 24px;
+  }
+  
+  /* Color/shape of close button cross */
+  .bm-cross {
+    background: #373a47;
+  }
+  
+  /* General sidebar styles */
+  .bm-menu {
+    background: #F8F9FA;
+    padding: 2.5em 1.5em 0;
+    font-size: 1.15em;
+  }
+  
+  /* Morph shape necessary with bubble or elastic */
+  .bm-morph-shape {
+    fill: #F8F9FA;
+  }
+  
+  /* Wrapper for item list */
+  .bm-item-list {
+    color: #b8b7ad;
+  }
+
+  .bm-overlay {
+    background: rgba(255, 255, 255, 0) !important; /* Will give you a white overlay */
+  }
+>>>>>>> Stashed changes
