@@ -8,7 +8,7 @@ import logo from "../images/logo.png";
 import { slide as Menu } from "react-burger-menu";
 import './components.css'
 
-const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => {
+const SearchBar = ({onChange, placeholder, onSubmit, onClickRand}) => {
     const history = useHistory();
     const gotoAdvancedSearch = () => {
         history.push(`/AdvancedSearch`);
@@ -18,19 +18,14 @@ const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => 
         <div className="Search">
             <span className="SearchSpan">
             </span>
-            <input
-            size={75}
-            className="SearchInput"
-            type="text"
-            onChange={onChange}
-            placeholder={placeholder}
-            style={{height:37}}
-            onKeyDown={onKeyDown}
-            />
-            <br/>
-            <Button variant="primary" onClick={onClick} type="submit" style={{marginTop:20, marginBottom:20}}>Search</Button>
-            <Button variant="primary"  onClick={onClickRand} type="submit" style={{marginLeft:10, marginTop:20, marginBottom:20}}>Random</Button>
-            <Button variant={"secondary"} onClick={gotoAdvancedSearch} style={{marginLeft:10}}>Advanced Search</Button>
+            <Form onSubmit={onSubmit}>
+                <Form.Group controlId={"title"}>
+                    <Form.Control type={"text"} name={"title"} placeholder={placeholder} onChange={onChange}/>
+                </Form.Group>
+                <Button variant="primary" type="submit" style={{marginTop:20, marginBottom:20}}>Search</Button>
+                <Button variant="primary"  onClick={onClickRand} type="submit" style={{marginLeft:10, marginTop:20, marginBottom:20}}>Random</Button>
+                <Button variant={"secondary"} onClick={gotoAdvancedSearch} style={{marginLeft:10}}>Advanced Search</Button>
+            </Form>
         </div>
     );
   };
