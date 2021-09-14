@@ -72,7 +72,7 @@ const TopNavBar = () => {
         setSearchObject({...searchObject, [e.target.name]: e.target.value});
     };
     const TopNavBarSearch = () => {
-        history.push({pathname:`/`, state:searchObject})
+        history.push({pathname:`/`, state:{searchObject:searchObject}});
     };
     const TopNavBarRandSearch = () => {
         history.push({pathname:`/`, state:{searchObject:{...searchObject, rand: true}}})
