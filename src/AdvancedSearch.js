@@ -26,35 +26,36 @@ function AdvancedSearchFields() {
         setContentTags([]);
         api.getTags()
             .then((response) => {
-                response.data.forEach((tag) => {
-                    switch (tag.data.attributes.group) {
+                console.log(response);
+                response.data.data.forEach((tag) => {
+                    switch (tag.attributes.group) {
                         case "genre":
                             setGenreTags(genreTags => [...genreTags, {
-                                group:tag.data.attributes.group,
-                                name:tag.data.attributes.name.en,
-                                id:tag.data.id,
-                                type:tag.data.type}]);
+                                group:tag.attributes.group,
+                                name:tag.attributes.name.en,
+                                id:tag.id,
+                                type:tag.type}]);
                             break;
                         case "theme":
                             setThemeTags(themeTags => [...themeTags, {
-                                group:tag.data.attributes.group,
-                                name:tag.data.attributes.name.en,
-                                id:tag.data.id,
-                                type:tag.data.type}]);
+                                group:tag.attributes.group,
+                                name:tag.attributes.name.en,
+                                id:tag.id,
+                                type:tag.type}]);
                             break;
                         case "format":
                             setFormatTags(formatTags => [...formatTags, {
-                                group:tag.data.attributes.group,
-                                name:tag.data.attributes.name.en,
-                                id:tag.data.id,
-                                type:tag.data.type}]);
+                                group:tag.attributes.group,
+                                name:tag.attributes.name.en,
+                                id:tag.id,
+                                type:tag.type}]);
                             break;
                         case "content":
                             setContentTags(contentTags => [...contentTags, {
-                                group:tag.data.attributes.group,
-                                name:tag.data.attributes.name.en,
-                                id:tag.data.id,
-                                type:tag.data.type}]);
+                                group:tag.attributes.group,
+                                name:tag.attributes.name.en,
+                                id:tag.id,
+                                type:tag.type}]);
                             break;
                         default:
                             break;

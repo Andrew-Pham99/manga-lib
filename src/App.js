@@ -49,43 +49,44 @@ function SearchBar(props){
         setSearchObject({...searchObject, title: e.target.value});
     }
 
-    const handleRand = e => {
+    const handleRand = () => {
         setShowButton(false);
 
         api.getRandomManga()
         .then((response) => {
             console.log(response)
-            response.data.relationships.forEach(relationship => {
+            response.data.data.relationships.forEach(relationship => {
                 if (relationship.type === "cover_art") {
                     response.data.data["coverFile"] = `https://uploads.mangadex.org/covers/${response.data.data.id}/${relationship.attributes.fileName}`;
-                    setResponseData([response.data]);
+
                 }
             });
+            setResponseData([response.data.data]);
         })
         .catch((error) => {
             console.log(error)
         });
     }
 
-    const handleInput = e => {
+    const handleInput = () => {
         setOffset(30)
         setShowButton(false)
         api.queryManga(context.state != null ? (context.state.searchObject != null ? context.state.searchObject : searchObject) : searchObject)
         .then((response) => {
             setOffset(30)
-            console.log(response.data)
-            if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
+            console.log(response)
+            if(response.data.length < api.limit || response.data.offset + api.limit === response.data.total) {
                 setShowButton(false);
             }
             else {setShowButton(true)};
-            response.data.results.forEach(result => {
+            response.data.data.forEach(result => {
                 result.relationships.forEach(relationship => {
                     if (relationship.type === "cover_art") {
-                        result.data["coverFile"] = `https://uploads.mangadex.org/covers/${result.data.id}/${relationship.attributes.fileName}`;
+                        result["coverFile"] = `https://uploads.mangadex.org/covers/${result.id}/${relationship.attributes.fileName}`;
                     }
-                })
-            })
-            setResponseData(response.data.results)
+                });
+            });
+            setResponseData(response.data.data);
         })
         .catch((error) => {
             console.log(error)
@@ -95,35 +96,11 @@ function SearchBar(props){
 
     const onEnter = e => {
         if (e.key === 'Enter') {
-            // setOffset(30)
-            // setShowButton(false)
-            // api.queryManga(context.state != null ? (context.state.searchQuery != null ? {title:context.state.searchQuery} : {title:searchQuery}) : {title:searchQuery})
-            //     .then((response) => {
-            //         setOffset(30)
-            //         console.log(response.data)
-            //         if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
-            //             setShowButton(false);
-            //         }
-            //         else {
-            //             setShowButton(true);
-            //         };
-            //         response.data.results.forEach(result => {
-            //             result.relationships.forEach(relationship => {
-            //                 if (relationship.type === "cover_art") {
-            //                     result.data["coverFile"] = `https://uploads.mangadex.org/covers/${result.data.id}/${relationship.attributes.fileName}`;
-            //                 }
-            //             })
-            //         })
-            //         setResponseData(response.data.results)
-            //     })
-            //     .catch((error) => {
-            //         console.log(error)
-            //     })
             handleInput();
         }
     }
 
-    const loadMore = e => {
+    const loadMore = () => {
         setOffset(offset+30)
         setShowButton(true)
         console.log('loading more...')
@@ -148,20 +125,32 @@ function SearchBar(props){
 
     }
 
-    // Add logic to handle search object from Advanced search
     const checkForExternalQueries = () => {
-        if(context.state != null){
+        if(context.state != null) {
             if(context.state.searchObject != null) {
-                console.log("searchObject detected, executing search");
-                if(context.state.searchObject.rand != null) {
-                    handleRand();
-                    delete context.state.searchObject.rand;
-                }
-                setSearchObject(context.state.searchObject);
+                setSearchObject(searchObject => context.state.searchObject);
                 handleInput();
                 delete context.state.searchObject;
+                setSearchObject({
+                    title:"",
+                    status:[],
+                    publicationDemographic: [],
+                    includedTags: []
+                });
             }
         }
+        // if(context.state != null){
+        //     if(context.state.searchObject != null) {
+        //         console.log("searchObject detected, executing search");
+        //         if(context.state.searchObject.rand != null) {
+        //             handleRand();
+        //             delete context.state.searchObject.rand;
+        //         }
+        //         setSearchObject(context.state.searchObject);
+        //         handleInput();
+        //         delete context.state.searchObject;
+        //     }
+        // }
     }
     React.useEffect(() => {checkForExternalQueries();}, [context])
 
@@ -183,14 +172,14 @@ function SearchBar(props){
                             {responseData.map((item,index) =>(
                             <MangaCard
                                 key={index}
-                                name={item.data.attributes.title.en ? item.data.attributes.title.en : item.data.attributes.title.jp}
-                                img={item.data.coverFile}
-                                description={item.data.attributes.description.en? item.data.attributes.description.en.replace(/[^.]*\[.*/g, ''): ''}
-                                id={item.data.id}
+                                name={item.attributes.title.en ? item.attributes.title.en : item.attributes.title.jp}
+                                img={item.coverFile}
+                                description={item.attributes.description.en? item.attributes.description.en.replace(/[^.]*\[.*/g, ''): ''}
+                                id={item.id}
                                 relationships={item.relationships}
-                                status={item.data.attributes.status}
-                                demographic={item.data.attributes.publicationDemographic? item.data.attributes.publicationDemographic :'N/A'}
-                                tags={item.data.attributes.tags}
+                                status={item.attributes.status}
+                                demographic={item.attributes.publicationDemographic? item.attributes.publicationDemographic :'N/A'}
+                                tags={item.attributes.tags}
                             />
                             ))}
                         </Grid>

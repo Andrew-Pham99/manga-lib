@@ -61,7 +61,6 @@ const TopNavBar = () => {
     const [history, setHistory] = React.useState(useHistory());
     const [searchObject, setSearchObject] = React.useState({
         title:"",
-        rand: false,
         status:[],
         publicationDemographic:[],
         includedTags:[],

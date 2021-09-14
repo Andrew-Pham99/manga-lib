@@ -81,8 +81,9 @@ function ChapterListNav() {
         setChapterList([])
         api.getChapterList({manga: context.state.id})
             .then((getChapterListResponse) => {
-                getChapterListResponse.data.results.forEach((chapter, index) => {
-                    setChapterList(chapterList => [...chapterList, {data:chapter.data, relationships: chapter.relationships, result:chapter.result, listId:index}])
+                console.log(getChapterListResponse);
+                getChapterListResponse.data.data.forEach((chapter, index) => {
+                    setChapterList(chapterList => [...chapterList, {data:chapter, relationships: chapter.relationships, result:chapter.result, listId:index}])
                     console.log("CHAPTER LISTS")
                     console.log(chapterList)
                 })
@@ -105,8 +106,8 @@ function ChapterListNav() {
         setCurrentPage(selectedPage)
         api.getChapterList({manga: context.state.id, offset:selectedPage*api.ch_limit})
             .then((getChapterListResponse) => {
-                getChapterListResponse.data.results.forEach((chapter, index) => {
-                    setChapterList(chapterList => [...chapterList, {data:chapter.data, relationships: chapter.relationships, result:chapter.result, listId:index}])
+                getChapterListResponse.data.data.forEach((chapter, index) => {
+                    setChapterList(chapterList => [...chapterList, {data:chapter, relationships: chapter.relationships, result:chapter.result, listId:index}])
                 })
             })
             .catch((error) => {
