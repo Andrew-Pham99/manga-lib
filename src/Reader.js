@@ -3,6 +3,8 @@ import api from "./api"
 import {Link, useLocation, useHistory} from "react-router-dom";
 import {Container, Image, Navbar, Nav, Button} from "react-bootstrap";
 import components from "./components/components";
+import { slide as Menu } from "react-burger-menu";
+import './Reader.css'
 
 function ChapterImages() {
     const context = useLocation();
@@ -86,7 +88,9 @@ function ChapterListHamburgerMenu() { // Make the chapter list hamburger menu in
     }
     // Finish the styling for this element
     return (
+
         <div>
+            <Menu right  pageWrapId={"page-wrap"} outerContainerId={"App"}>
             <Navbar  className="ChapterList">
                 <Nav className={"flex-column"}>
                     {context.state.chapterList.map((chapter, index) => (
@@ -99,6 +103,7 @@ function ChapterListHamburgerMenu() { // Make the chapter list hamburger menu in
                     ))}
                 </Nav>
             </Navbar>
+            </Menu>
         </div>
     )
 }
@@ -107,14 +112,16 @@ function Reader() {
     const context = useLocation();
     React.useEffect(()=> console.log(context),[context])
     return (
-        <div className={"Reader"}>
-            <components.TopNavBar/>
-            <Container>
-                <h1>You are reading {context.state.manga.name} Chapter {context.state.curChapter.data.attributes.chapter}</h1>
-                <NextChapterButtons/>
-                <ChapterListHamburgerMenu/>
-                <ChapterImages/>
-            </Container>
+        <div className={"Reader"} id="App">
+            <ChapterListHamburgerMenu/>
+            <div id="page-wrap">
+                <components.TopNavBar/>
+                <Container>
+                    <h1>You are reading {context.state.manga.name} Chapter {context.state.curChapter.data.attributes.chapter}</h1>
+                    <NextChapterButtons/>
+                    <ChapterImages/>
+                </Container>
+            </div>
         </div>
     );
 }

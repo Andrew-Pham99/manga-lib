@@ -37,14 +37,14 @@ function Info(props) {
     })
 
     return(
-        <Card width={300} style={{marginTop:20}}>
+        <Card style={{marginTop:20}}>
             <Row >
                 <Col xs={6} md={3}>
-                    <Card.Img  src={props.img} rounded ></Card.Img>
+                    <Card.Img class="img-fluid rounded"  src={props.img} ></Card.Img>
                 </Col>
                 <Col>
                     <Card.Body variant="right" className="card_body">
-                        <Card.Title style={{fontSize:32, marginBottom:2}}>{props.title}</Card.Title>
+                        <Card.Title style={{fontSize:32, marginBottom:10}}>{props.title}</Card.Title>
                         <Card.Subtitle>Publication Status:</Card.Subtitle>
                         <Card.Text>{props.status.charAt(0).toUpperCase() + props.status.slice(1)}</Card.Text>
                         <Card.Subtitle>Author(s):</Card.Subtitle>
@@ -52,10 +52,11 @@ function Info(props) {
                         <Card.Subtitle>Artist(s):</Card.Subtitle>
                         <Card.Text>{artist}</Card.Text>
                         <Card.Subtitle>Description:</Card.Subtitle>
-                        <Card.Text>{props.description}</Card.Text>
-                        <Card.Text>THEMES: {themes.join(', ')}</Card.Text>
-                        <Card.Text>GENRES: {genres.join(', ')}</Card.Text>
-                        <Card.Text>FORMAT: {format.join(', ')}</Card.Text>
+                        <Card.Text>
+                        {props.description}
+                        </Card.Text>
+                        <Card.Subtitle style={{fontSize:"smaller"}}>Tags:</Card.Subtitle>
+                        <Card.Text style={{fontSize:"smaller"}}>{themes.concat(genres,format).join(', ')}</Card.Text>
 
                     </Card.Body>
                 </Col>
@@ -63,6 +64,10 @@ function Info(props) {
         </Card>
     )
 }
+/*                        <Card.Text>THEMES: {themes.join(', ')}</Card.Text>
+                        <Card.Text>GENRES: {genres.join(', ')}</Card.Text>
+                        <Card.Text>FORMAT: {format.join(', ')}</Card.Text>
+*/
 
 function ChapterListNav() {
     const [context, setContext] = React.useState(useLocation());
@@ -76,8 +81,11 @@ function ChapterListNav() {
         setChapterList([])
         api.getChapterList({manga: context.state.id})
             .then((getChapterListResponse) => {
-                getChapterListResponse.data.results.forEach((chapter, index) => {
-                    setChapterList(chapterList => [...chapterList, {data:chapter.data, relationships: chapter.relationships, result:chapter.result, listId:index}])
+                console.log(getChapterListResponse);
+                getChapterListResponse.data.data.forEach((chapter, index) => {
+                    setChapterList(chapterList => [...chapterList, {data:chapter, relationships: chapter.relationships, result:chapter.result, listId:index}])
+                    console.log("CHAPTER LISTS")
+                    console.log(chapterList)
                 })
                 console.log(getChapterListResponse)
                 setPageLength(Math.ceil(getChapterListResponse.data.total/api.ch_limit))
@@ -98,8 +106,8 @@ function ChapterListNav() {
         setCurrentPage(selectedPage)
         api.getChapterList({manga: context.state.id, offset:selectedPage*api.ch_limit})
             .then((getChapterListResponse) => {
-                getChapterListResponse.data.results.forEach((chapter, index) => {
-                    setChapterList(chapterList => [...chapterList, {data:chapter.data, relationships: chapter.relationships, result:chapter.result, listId:index}])
+                getChapterListResponse.data.data.forEach((chapter, index) => {
+                    setChapterList(chapterList => [...chapterList, {data:chapter, relationships: chapter.relationships, result:chapter.result, listId:index}])
                 })
             })
             .catch((error) => {
@@ -107,6 +115,9 @@ function ChapterListNav() {
             })
         setBottomPageVis(true)
     }
+
+    
+
 
     return (
         <div className>
@@ -123,8 +134,8 @@ function ChapterListNav() {
             containerClassName={(pageVis? "pagination" : "pagination hidden"  )}
             onPageChange={handlePageClick}
             subContainerClassName={"pages pagination"}
-            activeClassName={"active"}/>      
-
+            activeClassName={"active"}
+            disableInitialCallback={"true"}/>      
             <Navbar  className="ChapterList">
                 <Nav className={"flex-column"}>
                 {chapterList.map((chapter, index) => (
@@ -154,7 +165,8 @@ function ChapterListNav() {
                 containerClassName={(pageVis && bottomPageVis? "pagination" : "pagination hidden" )}
                 onPageChange={handlePageClick}
                 subContainerClassName={"pages pagination"}
-                activeClassName={"active"}/>  
+                activeClassName={"active"}
+                disableInitialCallback={"true"}/>  
             
         </div>
     );

@@ -151,6 +151,14 @@ const ch_limit = 25;
         })
     }
 
+    const getTags = () => {
+        return axios({
+            method: 'get',
+            url: base_url + `/manga/tag`,
+            responseType: 'json'
+        })
+    };
+
 
     /**
      * qualityMode = {'data', 'dataSaver'}
@@ -171,6 +179,7 @@ const ch_limit = 25;
         getCoverArt,
         getBaseUrl,
         getChapterImgUrl,
+        getTags,
         limit,
         ch_limit
     };

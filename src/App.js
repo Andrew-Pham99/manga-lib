@@ -8,8 +8,6 @@ import {Container} from "react-bootstrap";
 import Grid from '@material-ui/core/Grid';
 import {Link, useLocation} from 'react-router-dom';
 
-
-
 function MangaCard(props){
     return(
         <Card style={{width: '25rem', marginLeft:10, marginBottom:10}} key={props.key} id={props.id}>
@@ -34,89 +32,75 @@ function MangaCard(props){
 }
 
 function SearchBar(props){
-    const[context, setContext] = React.useState(useLocation());
-    const[searchQuery, setSearchQuery] = React.useState();
-    const[responseData, setResponseData] = React.useState([]);
-    const[offset, setOffset] = React.useState(30);
-    const[showButton, setShowButton] = React.useState(false);
+    const [context, setContext] = React.useState(useLocation());
+    const [searchQuery, setSearchQuery] = React.useState("");
+    const [searchObject, setSearchObject] = React.useState({
+        title:"",
+        status:[],
+        publicationDemographic:[],
+        includedTags:[]
+    });
+    const [responseData, setResponseData] = React.useState([]);
+    const [offset, setOffset] = React.useState(30);
+    const [showButton, setShowButton] = React.useState(false);
 
     const handleChange = e => {
-        setSearchQuery(e.target.value)
+        setSearchQuery(e.target.value);
+        setSearchObject({...searchObject, title: e.target.value});
     }
 
-    const handleRand = e => {
+    const handleRand = () => {
         setShowButton(false);
 
         api.getRandomManga()
         .then((response) => {
             console.log(response)
-            response.data.relationships.forEach(relationship => {
+            response.data.data.relationships.forEach(relationship => {
                 if (relationship.type === "cover_art") {
                     response.data.data["coverFile"] = `https://uploads.mangadex.org/covers/${response.data.data.id}/${relationship.attributes.fileName}`;
-                    setResponseData([response.data]);
+
                 }
             });
+            setResponseData([response.data.data]);
         })
         .catch((error) => {
             console.log(error)
         });
     }
 
-    const handleInput = e => {
+    const handleInput = () => {
         setOffset(30)
         setShowButton(false)
-        api.queryManga(context.state != null ? (context.state.searchQuery != null ? {title:context.state.searchQuery} : {title:searchQuery}) : {title:searchQuery})
+        api.queryManga(context.state != null ? (context.state.searchObject != null ? context.state.searchObject : searchObject) : searchObject)
         .then((response) => {
             setOffset(30)
-            console.log(response.data)
-            if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
+            console.log(response)
+            if(response.data.length < api.limit || response.data.offset + api.limit === response.data.total) {
                 setShowButton(false);
             }
             else {setShowButton(true)};
-            response.data.results.forEach(result => {
+            response.data.data.forEach(result => {
                 result.relationships.forEach(relationship => {
                     if (relationship.type === "cover_art") {
-                        result.data["coverFile"] = `https://uploads.mangadex.org/covers/${result.data.id}/${relationship.attributes.fileName}`;
+                        result["coverFile"] = `https://uploads.mangadex.org/covers/${result.id}/${relationship.attributes.fileName}`;
                     }
-                })
-            })
-            setResponseData(response.data.results)
+                });
+            });
+            setResponseData(response.data.data);
         })
         .catch((error) => {
             console.log(error)
         })
     }
+    React.useEffect(()=>{console.log(searchObject);}, [searchObject])
 
     const onEnter = e => {
         if (e.key === 'Enter') {
-            setOffset(30)
-            setShowButton(false)
-            api.queryManga(context.state != null ? (context.state.searchQuery != null ? {title:context.state.searchQuery} : {title:searchQuery}) : {title:searchQuery})
-                .then((response) => {
-                    setOffset(30)
-                    console.log(response.data)
-                    if(response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
-                        setShowButton(false);
-                    }
-                    else {
-                        setShowButton(true);
-                    };
-                    response.data.results.forEach(result => {
-                        result.relationships.forEach(relationship => {
-                            if (relationship.type === "cover_art") {
-                                result.data["coverFile"] = `https://uploads.mangadex.org/covers/${result.data.id}/${relationship.attributes.fileName}`;
-                            }
-                        })
-                    })
-                    setResponseData(response.data.results)
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
+            handleInput();
         }
     }
 
-    const loadMore = e => {
+    const loadMore = () => {
         setOffset(offset+30)
         setShowButton(true)
         console.log('loading more...')
@@ -142,26 +126,31 @@ function SearchBar(props){
     }
 
     const checkForExternalQueries = () => {
-        if(context.state != null){
-            if(context.state.randSearch != null){
-                console.log("Rand search request received from another page.")
-                handleRand();
-                context.state.randSearch = null;
-            }
-            else if(context.state.searchQuery != null) {
-                console.log("Search request received from another page. Search query is: " + context.state.searchQuery)
-                setSearchQuery(context.state.searchQuery);
+        if(context.state != null) {
+            if(context.state.searchObject != null) {
+                setSearchObject(searchObject => context.state.searchObject);
                 handleInput();
-                context.state.searchQuery = null;
+                delete context.state.searchObject;
+                setSearchObject({
+                    title:"",
+                    status:[],
+                    publicationDemographic: [],
+                    includedTags: []
+                });
             }
-            else if(context.state.searchEmptyString != null) {
-                console.log("Empty string search request received from another page.")
-                handleInput();
-                context.state.searchEmptyString = null;
-            }
-            console.log(context.state);
-            context.state = null;
         }
+        // if(context.state != null){
+        //     if(context.state.searchObject != null) {
+        //         console.log("searchObject detected, executing search");
+        //         if(context.state.searchObject.rand != null) {
+        //             handleRand();
+        //             delete context.state.searchObject.rand;
+        //         }
+        //         setSearchObject(context.state.searchObject);
+        //         handleInput();
+        //         delete context.state.searchObject;
+        //     }
+        // }
     }
     React.useEffect(() => {checkForExternalQueries();}, [context])
 
@@ -172,8 +161,8 @@ function SearchBar(props){
             <components.SearchBar
             placeholder="Find a Manga!"
             onChange={handleChange}
-            onClick={handleInput}
             onKeyDown={onEnter}
+            onClick={handleInput}
             onClickRand={handleRand}
             />
             <ul>
@@ -183,14 +172,14 @@ function SearchBar(props){
                             {responseData.map((item,index) =>(
                             <MangaCard
                                 key={index}
-                                name={item.data.attributes.title.en ? item.data.attributes.title.en : item.data.attributes.title.jp}
-                                img={item.data.coverFile}
-                                description={item.data.attributes.description.en? item.data.attributes.description.en.replace(/[^.]*\[.*/g, ''): ''}
-                                id={item.data.id}
+                                name={item.attributes.title.en ? item.attributes.title.en : item.attributes.title.jp}
+                                img={item.coverFile}
+                                description={item.attributes.description.en? item.attributes.description.en.replace(/[^.]*\[.*/g, ''): ''}
+                                id={item.id}
                                 relationships={item.relationships}
-                                status={item.data.attributes.status}
-                                demographic={item.data.attributes.publicationDemographic? item.data.attributes.publicationDemographic :'N/A'}
-                                tags={item.data.attributes.tags}
+                                status={item.attributes.status}
+                                demographic={item.attributes.publicationDemographic? item.attributes.publicationDemographic :'N/A'}
+                                tags={item.attributes.tags}
                             />
                             ))}
                         </Grid>
@@ -206,12 +195,12 @@ function SearchBar(props){
 
 function App() {
     return (
-      <div className="search-manga">
-          <h1>Manga Lib</h1>
-          <Container>
-              <SearchBar/>
-          </Container>
-      </div>
+        <div className="search-manga">
+            <components.TopBar/>
+            <Container style={{marginTop:50}}>
+                <SearchBar/>
+            </Container>
+        </div>
     );
 };
  
