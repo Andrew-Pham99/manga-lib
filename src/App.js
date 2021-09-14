@@ -106,18 +106,18 @@ function SearchBar(props){
         console.log('loading more...')
         api.queryManga({title:searchQuery, offset:offset})
         .then((response) => {
-            if (response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
+            if (response.data.data.length < api.limit || response.data.offset + api.limit === response.data.total) {
                 setShowButton(false)
             }
-            response.data.results.forEach(result => { // Preprocess cover art ids for api query
+            response.data.data.forEach(result => { // Preprocess cover art ids for api query
                 result.relationships.forEach(relationship => {
                     if (relationship.type === "cover_art") {
-                        result.data["coverFile"] = `https://uploads.mangadex.org/covers/${result.data.id}/${relationship.attributes.fileName}`;
+                        result["coverFile"] = `https://uploads.mangadex.org/covers/${result.id}/${relationship.attributes.fileName}`;
                     }
                 })
             })
             // Set the response data to the updated values after we append coverFile to the json objects
-            setResponseData(responseData.concat(response.data.results));
+            setResponseData(responseData.concat(response.data.data));
         })
         .catch((error) => {
             console.log(error)
