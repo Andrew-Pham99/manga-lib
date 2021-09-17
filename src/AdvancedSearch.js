@@ -3,7 +3,7 @@ import api from "./api";
 import components from "./components/components";
 import {useLocation, useHistory, Link} from "react-router-dom";
 import "./AdvancedSearch.css"
-import {Container, Button, Form, Row, Col} from "react-bootstrap";
+import {Container, Button, Form, Row, Col, Spinner} from "react-bootstrap";
 
 function AdvancedSearchFields() {
     const [history, setHistory] = React.useState(useHistory());
@@ -11,6 +11,7 @@ function AdvancedSearchFields() {
     const [themeTags, setThemeTags] = React.useState([]);
     const [formatTags, setFormatTags] = React.useState([]);
     const [contentTags, setContentTags] = React.useState([]);
+    const [tagsFetched, setTagsFetched] = React.useState(false);
     const [formData, setFormData] = React.useState({
         title:"",
         rand:false,
@@ -18,7 +19,7 @@ function AdvancedSearchFields() {
         publicationDemographic:[],
         includedTags:[]
     });
-    const [showTags, setShowTags] = React.useState(false);
+
     const getAllTags = () => {
         setGenreTags([]);
         setThemeTags([]);
@@ -60,13 +61,14 @@ function AdvancedSearchFields() {
                         default:
                             break;
                     }
+                    setTagsFetched(true);
                 })
             })
             .catch((error) => {
                 console.log(error);
             })
     };
-    React.useEffect(() => {getAllTags();}, []);
+    React.useLayoutEffect(() => {getAllTags();}, []);
     const handleTextChange = (event) => {
         setFormData({...formData, [event.target.name]: event.target.value});
     };
@@ -106,10 +108,6 @@ function AdvancedSearchFields() {
                     <Form.Label>Title</Form.Label>
                     <Form.Control type={"text"} name={"title"} placeholder={"Title"} onChange={handleTextChange}/>
                 </Form.Group>
-                {/*<Form.Group controlId={"artist"}>*/}
-                {/*    <Form.Label>Artist</Form.Label>*/}
-                {/*    <Form.Control type={"text"} name={"artist"} placeholder={"Artist"} onChange={handleTextChange}/>*/}
-                {/*</Form.Group>*/}
                 <Row>
                     <Form.Group controlId={"status"} as={Col}>
                         <Form.Label>Status</Form.Label>
@@ -135,44 +133,59 @@ function AdvancedSearchFields() {
                         <Form.Check type={"checkbox"} label={"None"} name={"none"} id={"none"} onChange={handleDemoChange}/>
                     </Form.Group>
                 </Row>
-                <Form.Group controlId={"tag"}>
-                    <Button variant={"primary"} onClick={() => {setShowTags(!showTags);}}>Show Tags</Button>
-                    <Form.Group controlId={"groupedTags"} style={{visibility: showTags ? 'visible' : 'hidden'}}>
-                        <Form.Group controlId={"genreTags"}>
-                            <Form.Label>Genres</Form.Label><br/>
-                            {genreTags.map((tag, index) => {
-                                return (
-                                    <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id}/>
-                                );
-                            })}
-                        </Form.Group>
-                        <Form.Group controlId={"themeTags"}>
-                            <Form.Label>Themes</Form.Label><br/>
-                            {themeTags.map((tag, index) => {
-                                return (
-                                    <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id}/>
-                                );
-                            })}
-                        </Form.Group>
-                        <Form.Group controlId={"formatTags"}>
-                            <Form.Label>Formats</Form.Label><br/>
-                            {formatTags.map((tag, index) => {
-                                return (
-                                    <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id}/>
-                                );
-                            })}
-                        </Form.Group>
-                        <Form.Group controlId={"contentTags"}>
-                            <Form.Label>Content</Form.Label><br/>
-                            {contentTags.map((tag, index) => {
-                                return (
-                                    <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id}/>
-                                );
-                            })}
+                <br/>
+                {tagsFetched ?
+                    <Form.Group controlId={"tag"}>
+                        <Form.Group controlId={"groupedTags"}>
+                            <Form.Group controlId={"genreTags"}>
+                                <Form.Label>Genres</Form.Label><br/>
+                                    {genreTags.map((tag, index) => {
+                                        return (
+                                            <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id}/>
+                                        );
+                                    })}
+                            </Form.Group>
+                            <Form.Group controlId={"themeTags"}>
+                                <Form.Label>Themes</Form.Label><br/>
+                                    {themeTags.map((tag, index) => {
+                                        return (
+                                            <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id}/>
+                                        );
+                                    })}
+                            </Form.Group>
+                            <Form.Group controlId={"formatTags"}>
+                                <Form.Label>Formats</Form.Label><br/>
+                                {formatTags.map((tag, index) => {
+                                    return (
+                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id}/>
+                                    );
+                                })}
+                            </Form.Group>
+                            <Form.Group controlId={"contentTags"}>
+                                <Form.Label>Content</Form.Label><br/>
+                                    {contentTags.map((tag, index) => {
+                                        return (
+                                            <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id}/>
+                                        );
+                                    })}
+                            </Form.Group>
                         </Form.Group>
                     </Form.Group>
-                </Form.Group>
-                <Button variant={"primary"} type={"submit"} >Search</Button>
+                    /* TODO : The MangaDex api has functionality for not including tags
+                              Add a section to not include certain tags in the search here,
+                              then adjust the search functions in the App.js to allow for this
+                    */
+                    :
+                    <Container align={"center"}>
+                        <Spinner animation={"border"} role={"status"} variant={"primary"}>
+                            <span className={"visually-hidden"}>Loading...</span>
+                        </Spinner>
+                    </Container>
+                }
+                <br/>
+                <div className={"d-grid"}>
+                    <Button variant={"primary"} type={"submit"} size={"lg"}>Search</Button>
+                </div>
             </Form>
         </div>
     );
