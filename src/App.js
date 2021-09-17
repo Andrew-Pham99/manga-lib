@@ -31,40 +31,34 @@ function MangaCard(props){
     );
 }
 
-function SearchBar(props){
+function SearchBar(){
+    const initialSearchState = {
+        title:"",
+        status:[],
+        publicationDemographic:[],
+        includedTags:[],
+        excludedTags:[],
+        contentRating:[]
+    };
     const [context, setContext] = React.useState(useLocation());
-    const [searchQuery, setSearchQuery] = React.useState("");
-    const [searchObject, setSearchObject] = React.useState({
-        title:"",
-        status:[],
-        publicationDemographic:[],
-        includedTags:[]
-    });
-    const [loadObject, setLoadObject] = React.useState({
-        title:"",
-        status:[],
-        publicationDemographic:[],
-        includedTags:[]
-    })
+    const [searchObject, setSearchObject] = React.useState(initialSearchState);
+    const [loadObject, setLoadObject] = React.useState(initialSearchState)
     const [responseData, setResponseData] = React.useState([]);
     const [offset, setOffset] = React.useState(api.limit);
     const [showButton, setShowButton] = React.useState(false);
 
     const handleChange = e => {
-        setSearchQuery(e.target.value);
         setSearchObject({...searchObject, title: e.target.value});
     }
 
     const handleRand = () => {
         setShowButton(false);
-
         api.getRandomManga()
         .then((response) => {
             console.log(response)
             response.data.data.relationships.forEach(relationship => {
                 if (relationship.type === "cover_art") {
                     response.data.data["coverFile"] = `https://uploads.mangadex.org/covers/${response.data.data.id}/${relationship.attributes.fileName}`;
-
                 }
             });
             setResponseData([response.data.data]);
@@ -140,20 +134,13 @@ function SearchBar(props){
                         setSearchObject(searchObject => context.state.searchObject);
                         handleInput();
                         delete context.state.searchObject;
-                        setSearchObject({
-                            title:"",
-                            status:[],
-                            publicationDemographic:[],
-                            includedTags:[]
-                        })
+                        setSearchObject(initialSearchState)
                     }
                 window.history.replaceState({}, document.title)
             }
         }
     }
     React.useEffect(() => {checkForExternalQueries();}, [context])
-
-    //added a regex.
 
     return(
         <div>

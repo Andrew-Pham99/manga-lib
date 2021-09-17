@@ -58,13 +58,16 @@ const TopBar = () => {
 };
 
 const TopNavBar = () => {
-    const [history, setHistory] = React.useState(useHistory());
-    const [searchObject, setSearchObject] = React.useState({
+    const initialSearchState = {
         title:"",
         status:[],
         publicationDemographic:[],
         includedTags:[],
-    });
+        excludedTags:[],
+        contentRating:[]
+    };
+    const [history, setHistory] = React.useState(useHistory());
+    const [searchObject, setSearchObject] = React.useState(initialSearchState);
     const gotoAdvancedSearch = () => {
         history.push(`/AdvancedSearch`);
     };
