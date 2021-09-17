@@ -47,7 +47,7 @@ function SearchBar(props){
         includedTags:[]
     })
     const [responseData, setResponseData] = React.useState([]);
-    const [offset, setOffset] = React.useState(30);
+    const [offset, setOffset] = React.useState(api.limit);
     const [showButton, setShowButton] = React.useState(false);
 
     const handleChange = e => {
@@ -75,12 +75,12 @@ function SearchBar(props){
     }
 
     const handleInput = () => {
-        setOffset(30)
+        setOffset(api.limit)
         setShowButton(false)
         setLoadObject(context.state != null ? (context.state.searchObject != null ? context.state.searchObject : searchObject) : searchObject)
         api.queryManga(context.state != null ? (context.state.searchObject != null ? context.state.searchObject : searchObject) : searchObject)
         .then((response) => {
-            setOffset(30)
+            setOffset(api.limit)
             console.log(response)
             if(response.data.length < api.limit || response.data.offset + api.limit === response.data.total) {
                 setShowButton(false);
@@ -108,7 +108,7 @@ function SearchBar(props){
     }
 
     const loadMore = () => {
-        setOffset(offset+30)
+        setOffset(offset+api.limit)
         setShowButton(true)
         console.log('loading more...')
         api.queryManga({...loadObject, offset:offset})
@@ -150,18 +150,6 @@ function SearchBar(props){
                 window.history.replaceState({}, document.title)
             }
         }
-        // if(context.state != null){
-        //     if(context.state.searchObject != null) {
-        //         console.log("searchObject detected, executing search");
-        //         if(context.state.searchObject.rand != null) {
-        //             handleRand();
-        //             delete context.state.searchObject.rand;
-        //         }
-        //         setSearchObject(context.state.searchObject);
-        //         handleInput();
-        //         delete context.state.searchObject;
-        //     }
-        // }
     }
     React.useEffect(() => {checkForExternalQueries();}, [context])
 

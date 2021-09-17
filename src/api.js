@@ -31,6 +31,10 @@ const ch_limit = 25;
      */
     const queryManga = (queryParams) => {
         console.log("executing GET request for queried manga...")
+        let order = {relevance: "desc"}
+        if(!queryParams || queryParams.title === ""){
+            order = {followedCount: "desc"}
+        }
         return axios({
             method: 'get',
             url: base_url + '/manga',
@@ -38,8 +42,12 @@ const ch_limit = 25;
             params: {
                 limit: limit,
                 includes:["author", "artist", "cover_art", "tags"],
+                order: order,
                 ...queryParams
-            }
+            },
+            paramsSerializer: params => {
+                return qs.stringify(params)
+              }
         })
     }
 
