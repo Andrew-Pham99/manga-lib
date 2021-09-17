@@ -6,19 +6,22 @@ import "./AdvancedSearch.css"
 import {Container, Button, Form, Row, Col, Spinner} from "react-bootstrap";
 
 function AdvancedSearchFields() {
+    const initialSearchState = {
+        title:"",
+        status:[],
+        publicationDemographic:[],
+        includedTags:[],
+        excludedTags:[],
+        contentRating:[]
+    };
     const [history, setHistory] = React.useState(useHistory());
     const [genreTags, setGenreTags] = React.useState([]);
     const [themeTags, setThemeTags] = React.useState([]);
     const [formatTags, setFormatTags] = React.useState([]);
     const [contentTags, setContentTags] = React.useState([]);
     const [tagsFetched, setTagsFetched] = React.useState(false);
-    const [formData, setFormData] = React.useState({
-        title:"",
-        rand:false,
-        status:[],
-        publicationDemographic:[],
-        includedTags:[]
-    });
+    const [searchObject, setSearchObject] = React.useState(initialSearchState);
+    React.useEffect(()=>{console.log(searchObject)},[searchObject]);
 
     const getAllTags = () => {
         setGenreTags([]);
@@ -70,35 +73,51 @@ function AdvancedSearchFields() {
     };
     React.useLayoutEffect(() => {getAllTags();}, []);
     const handleTextChange = (event) => {
-        setFormData({...formData, [event.target.name]: event.target.value});
+        setSearchObject({...searchObject, [event.target.name]: event.target.value});
     };
     const handleStatusChange = (event) => {
         if(event.target.checked) {
-            setFormData({...formData, status: [...formData.status, event.target.name ]});
+            setSearchObject({...searchObject, status: [...searchObject.status, event.target.name ]});
         }
         else {
-            setFormData({...formData, status: formData.status.filter((item) => item != event.target.name)});
+            setSearchObject({...searchObject, status: searchObject.status.filter((item) => item != event.target.name)});
         }
 
     };
     const handleDemoChange = (event) => {
         if(event.target.checked) {
-            setFormData({...formData, publicationDemographic: [...formData.publicationDemographic, event.target.name ]});
+            setSearchObject({...searchObject, publicationDemographic: [...searchObject.publicationDemographic, event.target.name ]});
         }
         else {
-            setFormData({...formData, publicationDemographic: formData.publicationDemographic.filter((item) => item != event.target.name)});
+            setSearchObject({...searchObject, publicationDemographic: searchObject.publicationDemographic.filter((item) => item != event.target.name)});
         }
     };
-    const handleTagChange = (event) => {
+    const handleContentChange = (event) => {
         if(event.target.checked) {
-            setFormData({...formData, includedTags: [...formData.includedTags, event.target.getAttribute("tagid")]})
+            setSearchObject({...searchObject, contentRating: [...searchObject.contentRating, event.target.name ]});
         }
         else {
-            setFormData({...formData, includedTags: formData.includedTags.filter((item) => item != event.target.getAttribute("tagid"))});
+            setSearchObject({...searchObject, contentRating: searchObject.contentRating.filter((item) => item != event.target.name)});
+        }
+    };
+    const handleIncludedTagChange = (event) => {
+        if(event.target.checked) {
+            setSearchObject({...searchObject, includedTags: [...searchObject.includedTags, event.target.getAttribute("tagid")]})
+        }
+        else {
+            setSearchObject({...searchObject, includedTags: searchObject.includedTags.filter((item) => item != event.target.getAttribute("tagid"))});
+        }
+    };
+    const handleExcludedTagChange = (event) => {
+        if(event.target.checked) {
+            setSearchObject({...searchObject, excludedTags: [...searchObject.excludedTags, event.target.getAttribute("tagid")]})
+        }
+        else {
+            setSearchObject({...searchObject, excludedTags: searchObject.excludedTags.filter((item) => item != event.target.getAttribute("tagid"))});
         }
     };
     const handleSubmit = () => {
-        history.push({pathname:`/`, state:{searchObject: {title: formData.title, status: formData.status, publicationDemographic: formData.publicationDemographic, includedTags: formData.includedTags}}});
+        history.push({pathname:`/`, state:{searchObject: {...searchObject}}});
     };
 
     return (
@@ -111,18 +130,10 @@ function AdvancedSearchFields() {
                 <Row>
                     <Form.Group controlId={"status"} as={Col}>
                         <Form.Label>Status</Form.Label>
-                        <Form.Group>
-                            <Form.Check type={"checkbox"} label={"Ongoing"} name={"ongoing"} id={"ongoing"} onChange={handleStatusChange}/>
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Check type={"checkbox"} label={"Hiatus"} name={"hiatus"} id={"hiatus"} onChange={handleStatusChange}/>
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Check type={"checkbox"} label={"Completed"} name={"completed"} id={"completed"} onChange={handleStatusChange}/>
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Check type={"checkbox"} label={"Cancelled"} name={"cancelled"} id={"cancelled"} onChange={handleStatusChange}/>
-                        </Form.Group>
+                        <Form.Check type={"checkbox"} label={"Ongoing"} name={"ongoing"} id={"ongoing"} onChange={handleStatusChange}/>
+                        <Form.Check type={"checkbox"} label={"Hiatus"} name={"hiatus"} id={"hiatus"} onChange={handleStatusChange}/>
+                        <Form.Check type={"checkbox"} label={"Completed"} name={"completed"} id={"completed"} onChange={handleStatusChange}/>
+                        <Form.Check type={"checkbox"} label={"Cancelled"} name={"cancelled"} id={"cancelled"} onChange={handleStatusChange}/>
                     </Form.Group>
                     <Form.Group controlId={"demo"} as={Col}>
                         <Form.Label>Demographics</Form.Label>
@@ -130,51 +141,90 @@ function AdvancedSearchFields() {
                         <Form.Check type={"checkbox"} label={"Shoujo"} name={"shoujo"} id={"shoujo"} onChange={handleDemoChange}/>
                         <Form.Check type={"checkbox"} label={"Seinen"} name={"seinen"} id={"seinen"} onChange={handleDemoChange}/>
                         <Form.Check type={"checkbox"} label={"Josei"} name={"josei"} id={"josei"} onChange={handleDemoChange}/>
-                        <Form.Check type={"checkbox"} label={"None"} name={"none"} id={"none"} onChange={handleDemoChange}/>
+                    </Form.Group>
+                    <Form.Group controlId={"content"} as={Col}>
+                        <Form.Label>Content</Form.Label>
+                        <Form.Check type={"checkbox"} label={"Safe"} name={"safe"} id={"safe"} onChange={handleContentChange}/>
+                        <Form.Check type={"checkbox"} label={"Suggestive"} name={"suggestive"} id={"suggestive"} onChange={handleContentChange}/>
+                        <Form.Check type={"checkbox"} label={"Erotica"} name={"erotica"} id={"erotica"} onChange={handleContentChange}/>
+                        <Form.Check type={"checkbox"} label={"Pornographic"} name={"pornographic"} id={"pornographic"} onChange={handleContentChange}/>
                     </Form.Group>
                 </Row>
                 <br/>
                 {tagsFetched ?
-                    <Form.Group controlId={"tag"}>
-                        <Form.Group controlId={"groupedTags"}>
-                            <Form.Group controlId={"genreTags"}>
+                    <Form.Group controlId={"tags"}>
+                        <Form.Group controlId={"includedTags"}>
+                            <p>Include these tags:</p>
+                            <Form.Group controlId={"includedGenreTags"}>
                                 <Form.Label>Genres</Form.Label><br/>
-                                    {genreTags.map((tag, index) => {
-                                        return (
-                                            <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id}/>
-                                        );
-                                    })}
-                            </Form.Group>
-                            <Form.Group controlId={"themeTags"}>
-                                <Form.Label>Themes</Form.Label><br/>
-                                    {themeTags.map((tag, index) => {
-                                        return (
-                                            <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id}/>
-                                        );
-                                    })}
-                            </Form.Group>
-                            <Form.Group controlId={"formatTags"}>
-                                <Form.Label>Formats</Form.Label><br/>
-                                {formatTags.map((tag, index) => {
+                                {genreTags.map((tag, index) => {
                                     return (
-                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id}/>
+                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
                                     );
                                 })}
                             </Form.Group>
-                            <Form.Group controlId={"contentTags"}>
+                            <Form.Group controlId={"includedThemeTags"}>
+                                <Form.Label>Themes</Form.Label><br/>
+                                {themeTags.map((tag, index) => {
+                                    return (
+                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
+                                    );
+                                })}
+                            </Form.Group>
+                            <Form.Group controlId={"includedFormatTags"}>
+                                <Form.Label>Formats</Form.Label><br/>
+                                {formatTags.map((tag, index) => {
+                                    return (
+                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
+                                    );
+                                })}
+                            </Form.Group>
+                            <Form.Group controlId={"includedContentTags"}>
                                 <Form.Label>Content</Form.Label><br/>
-                                    {contentTags.map((tag, index) => {
-                                        return (
-                                            <Form.Check inline key={index} type={"checkbox"} onChange={handleTagChange} label={tag.name} name={tag.name} id={tag.name} tagid={tag.id}/>
-                                        );
-                                    })}
+                                {contentTags.map((tag, index) => {
+                                    return (
+                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
+                                    );
+                                })}
+                            </Form.Group>
+                        </Form.Group>
+                        <br/>
+                        <Form.Group controlId={"excludedTags"}>
+                            <p>Exclude these tags:</p>
+                            <Form.Group controlId={"excludedGenreTags"}>
+                                <Form.Label>Genres</Form.Label><br/>
+                                {genreTags.map((tag, index) => {
+                                    return (
+                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
+                                    );
+                                })}
+                            </Form.Group>
+                            <Form.Group controlId={"excludedThemeTags"}>
+                                <Form.Label>Themes</Form.Label><br/>
+                                {themeTags.map((tag, index) => {
+                                    return (
+                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
+                                    );
+                                })}
+                            </Form.Group>
+                            <Form.Group controlId={"excludedFormatTags"}>
+                                <Form.Label>Formats</Form.Label><br/>
+                                {formatTags.map((tag, index) => {
+                                    return (
+                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
+                                    );
+                                })}
+                            </Form.Group>
+                            <Form.Group controlId={"excludedContentTags"}>
+                                <Form.Label>Content</Form.Label><br/>
+                                {contentTags.map((tag, index) => {
+                                    return (
+                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
+                                    );
+                                })}
                             </Form.Group>
                         </Form.Group>
                     </Form.Group>
-                    /* TODO : The MangaDex api has functionality for not including tags
-                              Add a section to not include certain tags in the search here,
-                              then adjust the search functions in the App.js to allow for this
-                    */
                     :
                     <Container align={"center"}>
                         <Spinner animation={"border"} role={"status"} variant={"primary"}>
