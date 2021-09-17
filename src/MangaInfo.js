@@ -178,14 +178,14 @@ function MangaInfo() {
         <div className="MangaInfo">
             <components.TopNavBar/>
             <Container>
-            <Info
-                description={context.state.description}
-                img={context.state.img}
-                title={context.state.name}
-                status={context.state.status} 
-                demographic={context.state.demographic}
-                relationships={context.state.relationships}
-                tags={context.state.tags}
+                <Info
+                    description={context.state.description}
+                    img={context.state.img}
+                    title={context.state.name}
+                    status={context.state.status}
+                    demographic={context.state.demographic}
+                    relationships={context.state.relationships}
+                    tags={context.state.tags}
                 />
                 <ChapterListNav/>
             </Container>
