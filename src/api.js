@@ -132,6 +132,7 @@ const ch_limit = 25;
                 order: {
                     chapter: 'asc'
                    },
+                contentRating:["safe", "suggestive", "erotica" , "pornographic"],
                 ...queryParams
             },
             paramsSerializer: params => {
