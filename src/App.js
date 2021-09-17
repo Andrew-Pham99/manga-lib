@@ -40,6 +40,12 @@ function SearchBar(props){
         publicationDemographic:[],
         includedTags:[]
     });
+    const [loadObject, setLoadObject] = React.useState({
+        title:"",
+        status:[],
+        publicationDemographic:[],
+        includedTags:[]
+    })
     const [responseData, setResponseData] = React.useState([]);
     const [offset, setOffset] = React.useState(30);
     const [showButton, setShowButton] = React.useState(false);
@@ -71,6 +77,7 @@ function SearchBar(props){
     const handleInput = () => {
         setOffset(30)
         setShowButton(false)
+        setLoadObject(context.state != null ? (context.state.searchObject != null ? context.state.searchObject : searchObject) : searchObject)
         api.queryManga(context.state != null ? (context.state.searchObject != null ? context.state.searchObject : searchObject) : searchObject)
         .then((response) => {
             setOffset(30)
@@ -104,39 +111,43 @@ function SearchBar(props){
         setOffset(offset+30)
         setShowButton(true)
         console.log('loading more...')
-        api.queryManga({title:searchQuery, offset:offset})
+        api.queryManga({...loadObject, offset:offset})
         .then((response) => {
-            if (response.data.results.length < api.limit || response.data.offset + api.limit === response.data.total) {
+            if (response.data.data.length < api.limit || response.data.offset + api.limit === response.data.total) {
                 setShowButton(false)
             }
-            response.data.results.forEach(result => { // Preprocess cover art ids for api query
+            response.data.data.forEach(result => { // Preprocess cover art ids for api query
                 result.relationships.forEach(relationship => {
                     if (relationship.type === "cover_art") {
-                        result.data["coverFile"] = `https://uploads.mangadex.org/covers/${result.data.id}/${relationship.attributes.fileName}`;
+                        result["coverFile"] = `https://uploads.mangadex.org/covers/${result.id}/${relationship.attributes.fileName}`;
                     }
                 })
             })
-            // Set the response data to the updated values after we append coverFile to the json objects
-            setResponseData(responseData.concat(response.data.results));
+            setResponseData(responseData.concat(response.data.data));
         })
         .catch((error) => {
             console.log(error)
         })
-
     }
 
     const checkForExternalQueries = () => {
         if(context.state != null) {
             if(context.state.searchObject != null) {
-                setSearchObject(searchObject => context.state.searchObject);
-                handleInput();
-                delete context.state.searchObject;
-                setSearchObject({
-                    title:"",
-                    status:[],
-                    publicationDemographic: [],
-                    includedTags: []
-                });
+                    if(context.state.searchObject.rand != null) {
+                        handleRand();
+                        delete context.state.searchObject.rand;
+                    }else{
+                        setSearchObject(searchObject => context.state.searchObject);
+                        handleInput();
+                        delete context.state.searchObject;
+                        setSearchObject({
+                            title:"",
+                            status:[],
+                            publicationDemographic:[],
+                            includedTags:[]
+                        })
+                    }
+                window.history.replaceState({}, document.title)
             }
         }
         // if(context.state != null){
