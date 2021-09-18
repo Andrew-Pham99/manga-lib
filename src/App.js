@@ -4,14 +4,19 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import api from './api';
 import components from './components/components';
-import {Container} from "react-bootstrap";
+import {Container, Spinner} from "react-bootstrap";
 import Grid from '@material-ui/core/Grid';
 import {Link, useLocation} from 'react-router-dom';
 
 function MangaCard(props){
+    const [vis, setVis] = React.useState(false)
+
+    const onLoad = () => {
+        setVis(true)
+    }
     return(
-        <Card style={{width: '25rem', marginLeft:10, marginBottom:10}} key={props.key} id={props.id}>
-            <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail"} width={100} height={550}/>
+        <Card style={vis?{width: '25rem', marginLeft:10, marginBottom:10}:{width: '25rem', marginLeft:10, marginBottom:10, visibility:'visible'}} key={props.key} id={props.id}>
+            <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail"} width={100} height={550} onLoad={onLoad}/>
             <Card.Body>
                 <Card.Title>
                     {props.name}
@@ -28,6 +33,7 @@ function MangaCard(props){
                 </Link>
             </Card.Body>
         </Card>
+ 
     );
 }
 
@@ -37,7 +43,7 @@ function SearchBar(){
         status:[],
         publicationDemographic:[],
         includedTags:[],
-        excludedTags:[],
+        excludedTags:["b13b2a48-c720-44a9-9c77-39c9979373fb"],
         contentRating:[]
     };
     const [context, setContext] = React.useState(useLocation());
@@ -47,11 +53,15 @@ function SearchBar(){
     const [offset, setOffset] = React.useState(api.limit);
     const [showButton, setShowButton] = React.useState(false);
 
+
+    const [spinner, setSpinner] = React.useState(false); 
+
     const handleChange = e => {
         setSearchObject({...searchObject, title: e.target.value});
     }
 
     const handleRand = () => {
+        setSpinner(true)
         setShowButton(false);
         api.getRandomManga()
         .then((response) => {
@@ -62,6 +72,7 @@ function SearchBar(){
                 }
             });
             setResponseData([response.data.data]);
+            setSpinner(false)
         })
         .catch((error) => {
             console.log(error)
@@ -69,6 +80,7 @@ function SearchBar(){
     }
 
     const handleInput = () => {
+        setSpinner(true)
         setOffset(api.limit)
         setShowButton(false)
         setLoadObject(context.state != null ? (context.state.searchObject != null ? context.state.searchObject : searchObject) : searchObject)
@@ -76,7 +88,9 @@ function SearchBar(){
         .then((response) => {
             setOffset(api.limit)
             console.log(response)
-            if(response.data.length < api.limit || response.data.offset + api.limit === response.data.total) {
+
+            if(response.data.data.length < api.limit || response.data.offset + api.limit === response.data.total) {
+                console.log("shortened")
                 setShowButton(false);
             }
             else {setShowButton(true)};
@@ -88,6 +102,7 @@ function SearchBar(){
                 });
             });
             setResponseData(response.data.data);
+            setSpinner(false)
         })
         .catch((error) => {
             console.log(error)
@@ -151,6 +166,12 @@ function SearchBar(){
             onClick={handleInput}
             onClickRand={handleRand}
             />
+            {spinner?
+                    <Container align={"center"}>
+                        <Spinner animation={"border"} role={"status"} variant={"primary"}>
+                            <span className={"visually-hidden"}>Loading...</span>
+                        </Spinner>
+                    </Container> : 
             <ul>
                 <Grid container spacing={3}>
                     <Grid item md={12}>
@@ -172,6 +193,7 @@ function SearchBar(){
                     </Grid>
                 </Grid>
             </ul>
+            }
             <Button variant="primary" onClick={loadMore} style={{visibility: showButton ? 'visible' : 'hidden' }}>
                 Load More
             </Button>
