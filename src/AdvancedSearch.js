@@ -157,35 +157,51 @@ function AdvancedSearchFields() {
                             <p>Include these tags:</p>
                             <Form.Group controlId={"includedGenreTags"}>
                                 <Form.Label>Genres</Form.Label><br/>
-                                {genreTags.map((tag, index) => {
-                                    return (
-                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
-                                    );
-                                })}
-                            </Form.Group>
+                                <Row lg={"10"}>
+                                    {genreTags.map((tag, index) => {
+                                        return (
+                                            <Col lg={"2"}>
+                                                <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
+                                            </Col>
+                                        );
+                                    })}
+                                </Row>
+                            </Form.Group><br/>
                             <Form.Group controlId={"includedThemeTags"}>
                                 <Form.Label>Themes</Form.Label><br/>
-                                {themeTags.map((tag, index) => {
-                                    return (
-                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
-                                    );
-                                })}
-                            </Form.Group>
+                                <Row lg={"10"}>
+                                    {themeTags.map((tag, index) => {
+                                        return (
+                                            <Col lg={"2"}>
+                                                <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
+                                            </Col>
+                                        );
+                                    })}
+                                </Row>
+                            </Form.Group><br/>
                             <Form.Group controlId={"includedFormatTags"}>
                                 <Form.Label>Formats</Form.Label><br/>
-                                {formatTags.map((tag, index) => {
-                                    return (
-                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
-                                    );
-                                })}
-                            </Form.Group>
+                                <Row lg={"10"}>
+                                    {formatTags.map((tag, index) => {
+                                        return (
+                                            <Col lg={"2"}>
+                                                <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
+                                            </Col>
+                                        );
+                                    })}
+                                </Row>
+                            </Form.Group><br/>
                             <Form.Group controlId={"includedContentTags"}>
                                 <Form.Label>Content</Form.Label><br/>
-                                {contentTags.map((tag, index) => {
-                                    return (
-                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
-                                    );
-                                })}
+                                <Row lg={"10"}>
+                                    {contentTags.map((tag, index) => {
+                                        return (
+                                            <Col lg={"2"}>
+                                                <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
+                                            </Col>
+                                        );
+                                    })}
+                                </Row>
                             </Form.Group>
                         </Form.Group>
                         <br/>
@@ -193,35 +209,51 @@ function AdvancedSearchFields() {
                             <p>Exclude these tags:</p>
                             <Form.Group controlId={"excludedGenreTags"}>
                                 <Form.Label>Genres</Form.Label><br/>
-                                {genreTags.map((tag, index) => {
-                                    return (
-                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
-                                    );
-                                })}
-                            </Form.Group>
+                                    <Row lg={"10"}>
+                                        {genreTags.map((tag, index) => {
+                                            return (
+                                                <Col lg={"2"}>
+                                                    <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
+                                                </Col>
+                                            );
+                                        })}
+                                    </Row>
+                            </Form.Group><br/>
                             <Form.Group controlId={"excludedThemeTags"}>
                                 <Form.Label>Themes</Form.Label><br/>
-                                {themeTags.map((tag, index) => {
-                                    return (
-                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
-                                    );
-                                })}
-                            </Form.Group>
+                                <Row lg={"10"}>
+                                    {themeTags.map((tag, index) => {
+                                        return (
+                                            <Col lg={"2"}>
+                                                <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
+                                            </Col>
+                                        );
+                                    })}
+                                </Row>
+                            </Form.Group><br/>
                             <Form.Group controlId={"excludedFormatTags"}>
                                 <Form.Label>Formats</Form.Label><br/>
-                                {formatTags.map((tag, index) => {
-                                    return (
-                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
-                                    );
-                                })}
-                            </Form.Group>
+                                <Row lg={"10"}>
+                                    {formatTags.map((tag, index) => {
+                                        return (
+                                            <Col lg={"2"}>
+                                                <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
+                                            </Col>
+                                        );
+                                    })}
+                                </Row>
+                            </Form.Group><br/>
                             <Form.Group controlId={"excludedContentTags"}>
                                 <Form.Label>Content</Form.Label><br/>
-                                {contentTags.map((tag, index) => {
-                                    return (
-                                        <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
-                                    );
-                                })}
+                                <Row lg={"10"}>
+                                    {contentTags.map((tag, index) => {
+                                        return (
+                                            <Col lg={"2"}>
+                                                <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
+                                            </Col>
+                                        );
+                                    })}
+                                </Row>
                             </Form.Group>
                         </Form.Group>
                     </Form.Group>
