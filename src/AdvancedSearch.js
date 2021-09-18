@@ -268,6 +268,8 @@ function AdvancedSearchFields() {
                 <div className={"d-grid"}>
                     <Button variant={"primary"} type={"submit"} size={"lg"}>Search</Button>
                 </div>
+                <br/>
+                <br/>
             </Form>
         </div>
     );
