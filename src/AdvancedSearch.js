@@ -1,7 +1,7 @@
 import React from "react";
 import api from "./api";
 import components from "./components/components";
-import {useLocation, useHistory, Link} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import "./AdvancedSearch.css"
 import {Container, Button, Form, Row, Col, Spinner} from "react-bootstrap";
 
@@ -14,7 +14,7 @@ function AdvancedSearchFields() {
         excludedTags:[],
         contentRating:[]
     };
-    const [history, setHistory] = React.useState(useHistory());
+    const history = React.useState(useHistory());
     const [genreTags, setGenreTags] = React.useState([]);
     const [themeTags, setThemeTags] = React.useState([]);
     const [formatTags, setFormatTags] = React.useState([]);
@@ -80,7 +80,7 @@ function AdvancedSearchFields() {
             setSearchObject({...searchObject, status: [...searchObject.status, event.target.name ]});
         }
         else {
-            setSearchObject({...searchObject, status: searchObject.status.filter((item) => item != event.target.name)});
+            setSearchObject({...searchObject, status: searchObject.status.filter((item) => item !== event.target.name)});
         }
 
     };
@@ -89,7 +89,7 @@ function AdvancedSearchFields() {
             setSearchObject({...searchObject, publicationDemographic: [...searchObject.publicationDemographic, event.target.name ]});
         }
         else {
-            setSearchObject({...searchObject, publicationDemographic: searchObject.publicationDemographic.filter((item) => item != event.target.name)});
+            setSearchObject({...searchObject, publicationDemographic: searchObject.publicationDemographic.filter((item) => item !== event.target.name)});
         }
     };
     const handleContentChange = (event) => {
@@ -97,7 +97,7 @@ function AdvancedSearchFields() {
             setSearchObject({...searchObject, contentRating: [...searchObject.contentRating, event.target.name ]});
         }
         else {
-            setSearchObject({...searchObject, contentRating: searchObject.contentRating.filter((item) => item != event.target.name)});
+            setSearchObject({...searchObject, contentRating: searchObject.contentRating.filter((item) => item !== event.target.name)});
         }
     };
     const handleIncludedTagChange = (event) => {
@@ -105,7 +105,7 @@ function AdvancedSearchFields() {
             setSearchObject({...searchObject, includedTags: [...searchObject.includedTags, event.target.getAttribute("tagid")]})
         }
         else {
-            setSearchObject({...searchObject, includedTags: searchObject.includedTags.filter((item) => item != event.target.getAttribute("tagid"))});
+            setSearchObject({...searchObject, includedTags: searchObject.includedTags.filter((item) => item !== event.target.getAttribute("tagid"))});
         }
     };
     const handleExcludedTagChange = (event) => {
@@ -113,7 +113,7 @@ function AdvancedSearchFields() {
             setSearchObject({...searchObject, excludedTags: [...searchObject.excludedTags, event.target.getAttribute("tagid")]})
         }
         else {
-            setSearchObject({...searchObject, excludedTags: searchObject.excludedTags.filter((item) => item != event.target.getAttribute("tagid"))});
+            setSearchObject({...searchObject, excludedTags: searchObject.excludedTags.filter((item) => item !== event.target.getAttribute("tagid"))});
         }
     };
     const handleSubmit = () => {
