@@ -14,7 +14,7 @@ function AdvancedSearchFields() {
         excludedTags:[],
         contentRating:[]
     };
-    const history = React.useState(useHistory());
+    const [history, setHistory] = React.useState(useHistory());
     const [genreTags, setGenreTags] = React.useState([]);
     const [themeTags, setThemeTags] = React.useState([]);
     const [formatTags, setFormatTags] = React.useState([]);
@@ -117,6 +117,7 @@ function AdvancedSearchFields() {
         }
     };
     const handleSubmit = () => {
+        console.log("Sending to search results page");
         history.push({pathname:`/`, state:{searchObject: {...searchObject}}});
     };
 
