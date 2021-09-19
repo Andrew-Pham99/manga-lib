@@ -160,7 +160,7 @@ function AdvancedSearchFields() {
                                 <Row lg={"10"}>
                                     {genreTags.map((tag, index) => {
                                         return (
-                                            <Col lg={"2"}>
+                                            <Col lg={"2"} key={index}>
                                                 <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
                                             </Col>
                                         );
@@ -172,7 +172,7 @@ function AdvancedSearchFields() {
                                 <Row lg={"10"}>
                                     {themeTags.map((tag, index) => {
                                         return (
-                                            <Col lg={"2"}>
+                                            <Col lg={"2"} key={index}>
                                                 <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
                                             </Col>
                                         );
@@ -184,7 +184,7 @@ function AdvancedSearchFields() {
                                 <Row lg={"10"}>
                                     {formatTags.map((tag, index) => {
                                         return (
-                                            <Col lg={"2"}>
+                                            <Col lg={"2"} key={index}>
                                                 <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
                                             </Col>
                                         );
@@ -196,7 +196,7 @@ function AdvancedSearchFields() {
                                 <Row lg={"10"}>
                                     {contentTags.map((tag, index) => {
                                         return (
-                                            <Col lg={"2"}>
+                                            <Col lg={"2"} key={index}>
                                                 <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
                                             </Col>
                                         );
@@ -204,7 +204,7 @@ function AdvancedSearchFields() {
                                 </Row>
                             </Form.Group>
                         </Form.Group>
-                        <br/>
+                        <br/><br/>
                         <Form.Group controlId={"excludedTags"}>
                             <p>Exclude these tags:</p>
                             <Form.Group controlId={"excludedGenreTags"}>
@@ -212,7 +212,7 @@ function AdvancedSearchFields() {
                                     <Row lg={"10"}>
                                         {genreTags.map((tag, index) => {
                                             return (
-                                                <Col lg={"2"}>
+                                                <Col lg={"2"} key={index}>
                                                     <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
                                                 </Col>
                                             );
@@ -224,7 +224,7 @@ function AdvancedSearchFields() {
                                 <Row lg={"10"}>
                                     {themeTags.map((tag, index) => {
                                         return (
-                                            <Col lg={"2"}>
+                                            <Col lg={"2"} key={index}>
                                                 <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
                                             </Col>
                                         );
@@ -236,7 +236,7 @@ function AdvancedSearchFields() {
                                 <Row lg={"10"}>
                                     {formatTags.map((tag, index) => {
                                         return (
-                                            <Col lg={"2"}>
+                                            <Col lg={"2"} key={index}>
                                                 <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
                                             </Col>
                                         );
@@ -248,7 +248,7 @@ function AdvancedSearchFields() {
                                 <Row lg={"10"}>
                                     {contentTags.map((tag, index) => {
                                         return (
-                                            <Col lg={"2"}>
+                                            <Col lg={"2"} key={index}>
                                                 <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
                                             </Col>
                                         );
