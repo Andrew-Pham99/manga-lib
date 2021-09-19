@@ -14,7 +14,7 @@ function AdvancedSearchFields() {
         excludedTags:[],
         contentRating:[]
     };
-    const [history, setHistory] = React.useState(useHistory());
+    const [history, setHistory] = React.useState(useHistory()); // Do not remove setHistory hook even if it is flagged as unused. Doing so will break the functions that call history.push()
     const [genreTags, setGenreTags] = React.useState([]);
     const [themeTags, setThemeTags] = React.useState([]);
     const [formatTags, setFormatTags] = React.useState([]);
@@ -24,6 +24,7 @@ function AdvancedSearchFields() {
     React.useEffect(()=>{console.log(searchObject)},[searchObject]);
 
     const getAllTags = () => {
+        // This function grabs all the tags from the api then sorts each tag into its own hook depending on the type
         setGenreTags([]);
         setThemeTags([]);
         setFormatTags([]);
@@ -72,10 +73,12 @@ function AdvancedSearchFields() {
             })
     };
     React.useLayoutEffect(() => {getAllTags();}, []);
-    const handleTextChange = (event) => {
+    const handleTitleChange = (event) => {
+        // Sets the title field of the searchObject
         setSearchObject({...searchObject, [event.target.name]: event.target.value});
     };
     const handleStatusChange = (event) => {
+        // Functions with this signature append and remove checkbox ticks from their respective searchObject arrays
         if(event.target.checked) {
             setSearchObject({...searchObject, status: [...searchObject.status, event.target.name ]});
         }
@@ -117,7 +120,7 @@ function AdvancedSearchFields() {
         }
     };
     const handleSubmit = () => {
-        console.log("Sending to search results page");
+        // This function sends us to the search results page with the newly assembled searchObject
         history.push({pathname:`/`, state:{searchObject: {...searchObject}}});
     };
 
@@ -126,7 +129,7 @@ function AdvancedSearchFields() {
             <Form onSubmit={handleSubmit}>
                 <Form.Group  controlId={"title"}>
                     <Form.Label>Title</Form.Label>
-                    <Form.Control type={"text"} name={"title"} placeholder={"Title"} onChange={handleTextChange}/>
+                    <Form.Control type={"text"} name={"title"} placeholder={"Title"} onChange={handleTitleChange}/>
                 </Form.Group>
                 <Row>
                     <Form.Group controlId={"status"} as={Col}>
@@ -152,6 +155,7 @@ function AdvancedSearchFields() {
                     </Form.Group>
                 </Row>
                 <br/>
+                {/*This block is used to conditionally render a spinner before all of the tag data is loaded from the api*/}
                 {tagsFetched ?
                     <Form.Group controlId={"tags"}>
                         <Form.Group controlId={"includedTags"}>
