@@ -1,22 +1,24 @@
 import React from "react"
 import api from "./api"
 import {Link, useLocation, useHistory} from "react-router-dom";
-import {Container, Image, Navbar, Nav, Button} from "react-bootstrap";
+import {Container, Image, Navbar, Nav, Button, Card} from "react-bootstrap";
 import components from "./components/components";
 import { slide as Menu } from "react-burger-menu";
 import './Reader.css'
+
 
 function ChapterImages() {
     const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
     const [chapterImgUrlList, setChapterImgUrlList] = React.useState([]);
+    const [isScroll, setIsScroll] = React.useState(true);
     const getChapterImages = (chapterId) => {
         setChapterImgUrlList([])
         api.getBaseUrl(chapterId)
             .then((getBaseUrlResponse) => {
                 console.log(getBaseUrlResponse)
                 context.state.curChapter.data.attributes.data.forEach((chapterImg, index) => {
-                    setChapterImgUrlList(chapterImgUrlList => [...chapterImgUrlList, api.getChapterImgUrl(getBaseUrlResponse.data.baseUrl, 'data', context.state.curChapter.data.attributes.hash, chapterImg)])
+                    setChapterImgUrlList(chapterImgUrlList => [...chapterImgUrlList, {url:api.getChapterImgUrl(getBaseUrlResponse.data.baseUrl, 'data', context.state.curChapter.data.attributes.hash, chapterImg), index:index}])
                 })
             })
             .catch((error) => {
@@ -24,16 +26,59 @@ function ChapterImages() {
             })
     }
     React.useEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context])
+    const toggleScroll = () => {
+        setIsScroll(!isScroll);
+    };
+    function ChapterScroll() {
+        // This function will handle the rendering of the scroll version of the chapter
+        return (
+            <div>
+                {chapterImgUrlList.map((chapterImg, index) => (
+                    <Image src={chapterImg.url} key={index} alt={"Not Found"} className={"chapter_images"} class></Image>
+                ))}
+            </div>
+        );
+    };
+    function ChapterClick() {
+        // This function will handle the rendering of the click version of the chapter
+        // TODO : Make it so that clicking on the right of the image will go to the next image, and the left goes to the previous
+        const [chapterImg, setChapterImg] = React.useState(chapterImgUrlList[0]);
+        const nextImage = () => {
+            if(chapterImg.index < chapterImgUrlList.length - 1){
+                setChapterImg(chapterImgUrlList[chapterImg.index++]);
+            }
+        };
+        const prevImage = () => {
+            if(chapterImg.index > 0){
+                setChapterImg(chapterImgUrlList[chapterImg.index--]);
+            }
+        };
+        const handleKeyDown = (event) => {
+            console.log(event);
+            // TODO : Make left and right arrow keys change the current chapter image
+
+        };
+        return (
+            <div>
+                <Container>
+                        <Image src={chapterImg.url} alt={"Not Found"} className={"chapter_images"} class></Image>
+                </Container>
+            </div>
+        );
+    };
 
     return (
         <div>
             <Container>
-                {chapterImgUrlList.map((chapterImg, index) => (
-                    <Image src={chapterImg} key={index} alt={"Not Found"} className={"chapter_images"} class></Image>
-                ))}
+                <Button variant={"primary"} onClick={() => toggleScroll()}>Switch Reader</Button>
+                {isScroll ?
+                    <ChapterScroll/>
+                    :
+                    <ChapterClick/>
+                }
             </Container>
         </div>
-    )
+    );
 }
 
 function NextChapterButtons() {
@@ -49,7 +94,7 @@ function NextChapterButtons() {
                 return context.state.chapterList[idx];
             }
         }
-    }
+    };
 
     function FindPrevChapter(){
         if(context.state.curChapter.listId - 1 < 0){
@@ -60,13 +105,13 @@ function NextChapterButtons() {
                 return context.state.chapterList[idx];
             }
         }
-    }
+    };
 
     const HandleChapterChange = (newChapter) => {
         history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
-    }
+    };
     console.log(context);
-    // Finish styling for this element
+    // TODO : Style this element and figure out where to put it on the reader that makes sense
     return (
         <div>
             <Button onClick={() => HandleChapterChange(FindPrevChapter())}>
@@ -79,7 +124,7 @@ function NextChapterButtons() {
     )
 }
 
-function ChapterListHamburgerMenu() { // Make the chapter list hamburger menu in here
+function ChapterListHamburgerMenu() {
     const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
 
@@ -88,7 +133,6 @@ function ChapterListHamburgerMenu() { // Make the chapter list hamburger menu in
     }
     // Finish the styling for this element
     return (
-
         <div>
             <Menu right  pageWrapId={"page-wrap"} outerContainerId={"App"}>
             <Navbar  className="ChapterList">
@@ -112,6 +156,7 @@ function Reader() {
     const context = useLocation();
     React.useEffect(()=> console.log(context),[context])
     return (
+        // TODO : Style this whole page
         <div className={"Reader"} id="App">
             <ChapterListHamburgerMenu/>
             <div id="page-wrap">
