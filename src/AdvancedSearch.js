@@ -263,7 +263,7 @@ function AdvancedSearchFields() {
                         </Form.Group>
                     </Form.Group>
                     :
-                    <Container align={"center"}>
+                    <Container align={'center'}>
                         <Spinner animation={"border"} role={"status"} variant={"primary"}>
                             <span className={"visually-hidden"}>Loading...</span>
                         </Spinner>
