@@ -1,19 +1,21 @@
 import React from "react"
 import api from "./api"
 import {Link, useLocation, useHistory} from "react-router-dom";
-import {Container, Image, Navbar, Nav, Button, Card} from "react-bootstrap";
+import {Container, Image, Navbar, Nav, Button, Spinner} from "react-bootstrap";
 import components from "./components/components";
 import { slide as Menu } from "react-burger-menu";
 import './Reader.css'
 
-
+// TODO : Add a zoom slider to the bottom of the page
 function ChapterImages() {
     const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
     const [chapterImgUrlList, setChapterImgUrlList] = React.useState([]);
     const [isScroll, setIsScroll] = React.useState(true);
+    const [isLoaded, setIsLoaded] = React.useState(false);
     const getChapterImages = (chapterId) => {
-        setChapterImgUrlList([])
+        setChapterImgUrlList([]);
+        setIsLoaded(false);
         api.getBaseUrl(chapterId)
             .then((getBaseUrlResponse) => {
                 console.log(getBaseUrlResponse)
@@ -24,6 +26,7 @@ function ChapterImages() {
             .catch((error) => {
                 console.log(error)
             })
+        setIsLoaded(true);
     }
     React.useEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context])
     //React.useEffect(() => {console.log(chapterImgUrlList)}, [chapterImgUrlList])
@@ -49,12 +52,18 @@ function ChapterImages() {
                 console.log("Going to page: " + (pageImg.index + 1));
                 setPageImg(chapterImgUrlList[pageImg.index + 1]);
             }
+            else {
+                // Go to next chapter
+            };
         };
         const prevImage = () => {
             if(pageImg.index > 0){
                 console.log("Going to page: " + (pageImg.index - 1));
                 setPageImg(chapterImgUrlList[pageImg.index - 1]);
             }
+            else {
+                // Go to previous chapter
+            };
         };
         const handleKeyDown = (event) => {
             console.log(event);
@@ -76,10 +85,17 @@ function ChapterImages() {
         <div>
             <Container>
                 <Button variant={"primary"} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
-                {isScroll ?
-                    <ChapterScroll/>
+                {isLoaded ?
+                    (isScroll ?
+                        <ChapterScroll/>
+                        :
+                        <ChapterClick/>)
                     :
-                    <ChapterClick/>
+                    <Container style={{align:'center'}}>
+                        <Spinner animation={"border"} role={"status"} variant={"primary"}>
+                            <span className={"visually-hidden"}>Loading...</span>
+                        </Spinner>
+                    </Container>
                 }
             </Container>
         </div>
@@ -90,7 +106,7 @@ function NextChapterButtons() {
     const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
 
-    const FindNextChapter = () => {
+    function FindNextChapter(){
         if(context.state.curChapter.listId + 1 >= context.state.chapterList.length){
             return context.state.curChapter;
         }
@@ -120,10 +136,10 @@ function NextChapterButtons() {
     return (
         <div>
             <Button onClick={() => HandleChapterChange(FindPrevChapter())}>
-                Prev
+                Prev Chapter
             </Button>
             <Button onClick={() => HandleChapterChange(FindNextChapter())}>
-                Next
+                Next Chapter
             </Button>
         </div>
     )
