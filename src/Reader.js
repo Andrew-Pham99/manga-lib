@@ -26,6 +26,7 @@ function ChapterImages() {
             })
     }
     React.useEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context])
+    //React.useEffect(() => {console.log(chapterImgUrlList)}, [chapterImgUrlList])
     const toggleScroll = () => {
         setIsScroll(!isScroll);
     };
@@ -34,7 +35,7 @@ function ChapterImages() {
         return (
             <div>
                 {chapterImgUrlList.map((chapterImg, index) => (
-                    <Image src={chapterImg.url} key={index} alt={"Not Found"} className={"chapter_images"} class></Image>
+                    <Image src={chapterImg.url} key={index} alt={"Not Found"} className={"chapter_images"}></Image>
                 ))}
             </div>
         );
@@ -42,15 +43,17 @@ function ChapterImages() {
     function ChapterClick() {
         // This function will handle the rendering of the click version of the chapter
         // TODO : Make it so that clicking on the right of the image will go to the next image, and the left goes to the previous
-        const [chapterImg, setChapterImg] = React.useState(chapterImgUrlList[0]);
+        const [pageImg, setPageImg] = React.useState(chapterImgUrlList[0]);
         const nextImage = () => {
-            if(chapterImg.index < chapterImgUrlList.length - 1){
-                setChapterImg(chapterImgUrlList[chapterImg.index++]);
+            if(pageImg.index < chapterImgUrlList.length - 1){
+                console.log("Going to page: " + (pageImg.index + 1));
+                setPageImg(chapterImgUrlList[pageImg.index + 1]);
             }
         };
         const prevImage = () => {
-            if(chapterImg.index > 0){
-                setChapterImg(chapterImgUrlList[chapterImg.index--]);
+            if(pageImg.index > 0){
+                console.log("Going to page: " + (pageImg.index - 1));
+                setPageImg(chapterImgUrlList[pageImg.index - 1]);
             }
         };
         const handleKeyDown = (event) => {
@@ -61,7 +64,9 @@ function ChapterImages() {
         return (
             <div>
                 <Container>
-                        <Image src={chapterImg.url} alt={"Not Found"} className={"chapter_images"} class></Image>
+                    <Button variant={"primary"} onClick={prevImage}>Prev Page</Button>
+                    <Image src={pageImg.url} alt={"Not Found"} className={"chapter_images"}></Image>
+                    <Button variant={"primary"} onClick={nextImage}>Next Page</Button>
                 </Container>
             </div>
         );
@@ -70,7 +75,7 @@ function ChapterImages() {
     return (
         <div>
             <Container>
-                <Button variant={"primary"} onClick={() => toggleScroll()}>Switch Reader</Button>
+                <Button variant={"primary"} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
                 {isScroll ?
                     <ChapterScroll/>
                     :
