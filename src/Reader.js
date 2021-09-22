@@ -1,7 +1,7 @@
 import React from "react"
 import api from "./api"
 import {Link, useLocation, useHistory} from "react-router-dom";
-import {Container, Image, Navbar, Nav, Button, Spinner} from "react-bootstrap";
+import {Container, Image, Navbar, Nav, Button, Spinner, Form} from "react-bootstrap";
 import components from "./components/components";
 import { slide as Menu } from "react-burger-menu";
 import './Reader.css'
@@ -17,6 +17,8 @@ function ChapterImages() {
     const [curPage, setCurPage] = React.useState(0);
     const [pageImg, setPageImg] = React.useState(chapterImgUrlList[curPage]);
     const [isLoaded, setIsLoaded] = React.useState(false);
+    const [scrollZoom, setScrollZoom] = React.useState(1);
+    const [pageZoom, setPageZoom] = React.useState(1);
 
     const getChapterImages = (chapterId) => {
         setChapterImgUrlList([]);
@@ -42,19 +44,33 @@ function ChapterImages() {
     };
     function ChapterScroll() {
         // This function will handle the rendering of the scroll version of the chapter
+        function ScrollZoom(){
+            // This is only semi functional, not sure what is wrong with it
+            const handleChange = (event) => {
+                setScrollZoom(parseInt(event.target.value));
+            };
+            React.useEffect(() => {console.log("Scroll Zoom factor is: " + (scrollZoom))}, [scrollZoom])
+            return (
+                <div>
+                    <Navbar fixed={"bottom"}>
+                        <input type={"range"} min={"1"} max={"5"} defaultValue={"1"} step={"any"} onChange={handleChange} id={"scrollZoom"} name={"scrollZoom"}></input>
+                        <label for={"scrollZoom"}>Zoom</label>
+                    </Navbar>
+                </div>
+            );
+        }
         return (
             <div>
                 {chapterImgUrlList.map((chapterImg, index) => (
-                    <Image src={chapterImg.url} key={index} alt={"Not Found"} className={"chapter_images"}></Image>
+                    <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{width:`${scrollZoom * 51}%`}}></Image>
                 ))}
+                <ScrollZoom/>
             </div>
         );
     };
     function ChapterClick() {
         // This function will handle the rendering of the click version of the chapter
         // TODO : Make it so that clicking on the right of the image will go to the next image, and the left goes to the previous
-        //React.useLayoutEffect(()=>{setPageImg(chapterImgUrlList[curPage]);},[isLoaded]);
-        setPageImg(chapterImgUrlList[curPage]);
         function FindNextChapter(){
             if(context.state.curChapter.listId + 1 >= context.state.chapterList.length){
                 return context.state.curChapter;
@@ -78,6 +94,24 @@ function ChapterImages() {
         const HandleChapterChange = (newChapter) => {
             history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
         };
+        function PageZoom(){
+            // This is only semi functional, not sure what is wrong with it
+            const handleChange = (event) => {
+                setPageZoom(parseInt(event.target.value));
+            };
+            React.useEffect(() => {console.log("Page Zoom Factor is: " + (pageZoom))}, [pageZoom])
+            return (
+                <div>
+                    <Navbar fixed={"bottom"}>
+                        <input type={"range"} min={"1"} max={"5"} defaultValue={"1"} step={"any"} onChange={handleChange} id={"pageZoom"} name={"pageZoom"}></input>
+                        <label for={"pageZoom"}>Zoom</label>
+                    </Navbar>
+                </div>
+            );
+        }
+
+        setPageImg(chapterImgUrlList[curPage]);
+
         const nextImage = () => {
             if(pageImg.index < chapterImgUrlList.length - 1){
                 console.log("Going to page: " + (pageImg.index + 1));
@@ -112,8 +146,9 @@ function ChapterImages() {
                     {pageImg != undefined ?
                         <div>
                             <Button variant={"primary"} onClick={prevImage}>{pageImg.index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
-                            <Image src={pageImg.url} alt={"Not Found"} className={"chapter_images"}></Image>
+                            <Image src={pageImg.url} alt={"Not Found"} style={{width: `${pageZoom * 51}%`}}></Image>
                             <Button variant={"primary"} onClick={nextImage}>{pageImg.index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
+                            <PageZoom/>
                         </div>
                         :
                         <Container style={{align:'center'}}>
@@ -133,9 +168,13 @@ function ChapterImages() {
             <Container>
                 <Button variant={"primary"} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
                     {isScroll ?
-                        <ChapterScroll/>
+                        <div>
+                            <ChapterScroll/>
+                        </div>
                         :
-                        <ChapterClick/>
+                        <div>
+                            <ChapterClick/>
+                        </div>
                     }
             </Container>
         </div>
@@ -172,7 +211,7 @@ function NextChapterButtons() {
     const HandleChapterChange = (newChapter) => {
         history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
     };
-    console.log(context);
+
     // TODO : Style this element and figure out where to put it on the reader that makes sense
     return (
         <div>
