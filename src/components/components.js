@@ -1,7 +1,7 @@
 import Button from 'react-bootstrap/Button'
 import Routes from "../Routes";
 import React from "react";
-import {Nav, Navbar, Container, Image, Form} from "react-bootstrap";
+import {Nav, Navbar, Container, Image, Form, Row, Col} from "react-bootstrap";
 import {LinkContainer} from "react-router-bootstrap"
 import {useHistory} from "react-router-dom";
 import logo from "../images/logo.png";
@@ -19,13 +19,13 @@ const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => 
             <span className="SearchSpan">
             </span>
             <input
-            size={75}
-            className="SearchInput"
-            type="text"
-            onChange={onChange}
-            placeholder={placeholder}
-            style={{height:37}}
-            onKeyDown={onKeyDown}
+                size={75}
+                className="SearchInput"
+                type="text"
+                onChange={onChange}
+                placeholder={placeholder}
+                style={{height:37}}
+                onKeyDown={onKeyDown}
             />
             <br/>
             <Button variant="primary" onClick={onClick} type="submit" style={{marginTop:20, marginBottom:20}}>Search</Button>
@@ -97,16 +97,26 @@ const TopNavBar = () => {
                             Manga Lib
                         </Navbar.Brand>
                     </LinkContainer>
-                    <span className="SearchSpan">
-                    </span>
-                    <Form onSubmit={TopNavBarSearch}>
-                        <Form.Group controlId={"title"}>
-                            <Form.Control type={"text"} name={"title"} placeholder={"Find a Manga!"} onChange={handleChange}/>
-                        </Form.Group>
-                        <Button variant="primary" type="submit" >Search</Button>
-                        <Button variant="primary" onClick={TopNavBarRandSearch}>Random</Button>
-                        <Button variant={"secondary"} onClick={gotoAdvancedSearch}>Advanced Search</Button>
-                    </Form>
+                    <Container fluid>
+                        <Form onSubmit={TopNavBarSearch}>
+                            <Row className={"justify-content-md-start"} fluid>
+                                <Col lg={"auto"}>
+                                    <Form.Group controlId={"title"}>
+                                        <Form.Control type={"text"} name={"title"} placeholder={"Find a Manga!"} onChange={handleChange}/>
+                                    </Form.Group>
+                                </Col>
+                                <Col md={"auto"}>
+                                    <Button variant="primary" type="submit">Search</Button>
+                                </Col>
+                                <Col md={"auto"}>
+                                    <Button variant="primary" onClick={TopNavBarRandSearch}>Random</Button>
+                                </Col>
+                                <Col md={"auto"}>
+                                    <Button variant={"secondary"} onClick={gotoAdvancedSearch}>Advanced Search</Button>
+                                </Col>
+                            </Row>
+                        </Form>
+                    </Container>
                 </Navbar>
             </Container>
         </div>
