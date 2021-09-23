@@ -19,6 +19,7 @@ function ChapterImages() {
     const [isLoaded, setIsLoaded] = React.useState(false);
     const [scrollZoom, setScrollZoom] = React.useState(10.0);
     const [pageZoom, setPageZoom] = React.useState(10.0);
+    let pageZoomVal = pageZoom, scrollZoomVal = scrollZoom;
 
     const getChapterImages = (chapterId) => {
         setChapterImgUrlList([]);
@@ -51,6 +52,7 @@ function ChapterImages() {
             const handleChange = (event) => {
                 console.log(event)
                 setScrollZoom(parseInt(event.target.value));
+                scrollZoomVal = parseInt(event.target.value);
             };
             React.useEffect(() => {console.log("Scroll Zoom factor is: " + (scrollZoom))}, [scrollZoom])
             return (
@@ -58,7 +60,7 @@ function ChapterImages() {
                     <Navbar fixed={"bottom"}>
                         <Form>
                             <Form.Label>Zoom</Form.Label>
-                            <Form.Range min={"10"} max={"20"} defaultValue={scrollZoom} step={"0.1"} onChange={handleChange} id={"scrollZoom"} name={"scrollZoom"}/>
+                            <Form.Range min={"10"} max={"20"} defaultValue={scrollZoomVal} step={"1"} onChange={handleChange} id={"scrollZoom"} name={"scrollZoom"}/>
                         </Form>
                     </Navbar>
                 </div>
@@ -105,6 +107,7 @@ function ChapterImages() {
             const handleChange = (event) => {
                 console.log(event)
                 setPageZoom(parseInt(event.target.value));
+                pageZoomVal = parseInt(event.target.value);
             };
             React.useEffect(() => {console.log("Page Zoom Factor is: " + (pageZoom))}, [pageZoom])
             return (
@@ -112,7 +115,7 @@ function ChapterImages() {
                     <Navbar fixed={"bottom"}>
                         <Form>
                             <Form.Label>Zoom</Form.Label>
-                            <Form.Range min={"10"} max={"20"} defaultValue={pageZoom} step={"0.1"} onChange={handleChange} id={"pageZoom"} name={"pageZoom"}/>
+                            <Form.Range min={"10"} max={"20"} defaultValue={pageZoomVal} step={"1"} onChange={handleChange} id={"pageZoom"} name={"pageZoom"}/>
                         </Form>
                     </Navbar>
                 </div>
