@@ -15,7 +15,6 @@ function ChapterImages() {
     const [isScroll, setIsScroll] = React.useState(persistIsScroll);
     React.useEffect(() => {localStorage.setItem("IS_SCROLL", isScroll)}, [isScroll]);
     const [curPage, setCurPage] = React.useState(0);
-    const [pageImg, setPageImg] = React.useState({});
     const [isLoaded, setIsLoaded] = React.useState(false);
     const [scrollZoom, setScrollZoom] = React.useState(10.0);
     const [pageZoom, setPageZoom] = React.useState(10.0);
@@ -23,7 +22,6 @@ function ChapterImages() {
 
     const getChapterImages = (chapterId) => {
         setChapterImgUrlList([]);
-        setPageImg({});
         setCurPage(0);
         setIsLoaded(false);
         api.getBaseUrl(chapterId)
@@ -36,7 +34,6 @@ function ChapterImages() {
             .catch((error) => {
                 console.log(error)
             })
-        setPageImg(chapterImgUrlList[0]);
         setIsLoaded(true);
     }
     React.useLayoutEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context])
@@ -53,7 +50,7 @@ function ChapterImages() {
             else{
                 setPageZoom(parseInt(event.target.value));
                 pageZoomVal = parseInt(event.target.value);
-            };
+            }
         };
         return (
             // This navbar should appear in the middle of the screen
@@ -66,7 +63,7 @@ function ChapterImages() {
                 </Navbar>
             </div>
         );
-    };
+    }
     function ChapterScroll() {
         // This function will handle the rendering of the scroll version of the chapter
         return (
@@ -108,29 +105,24 @@ function ChapterImages() {
             history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
         };
 
-        setPageImg(chapterImgUrlList[curPage]);
-
         const nextImage = () => {
-            if(pageImg.index < chapterImgUrlList.length - 1){
-                console.log("Going to page: " + (pageImg.index + 1));
-                setPageImg(chapterImgUrlList[pageImg.index + 1]);
+            if(chapterImgUrlList[curPage].index < chapterImgUrlList.length - 1){
+                console.log("Going to page: " + (chapterImgUrlList[curPage].index + 1));
                 setCurPage(curPage + 1);
             }
             else {
-                // Go to next chapter since we are at the end of the current
                 HandleChapterChange(FindNextChapter());
-            };
+            }
         };
         const prevImage = () => {
-            if(pageImg.index > 0){
-                console.log("Going to page: " + (pageImg.index - 1));
-                setPageImg(chapterImgUrlList[pageImg.index - 1]);
+            if(chapterImgUrlList[curPage].index > 0){
+                console.log("Going to page: " + (chapterImgUrlList[curPage].index - 1));
                 setCurPage(curPage - 1);
             }
             else {
                 // Go to previous chapter since we are at the beginning of the current
                 HandleChapterChange(FindPrevChapter());
-            };
+            }
         };
         const handleKeyDown = (event) => {
             console.log(event);
@@ -140,12 +132,11 @@ function ChapterImages() {
         return (
             <div>
                 <Container>
-                    {/*Need to make this wait for pageImg to be loaded else an error is thrown because the api call hasn't been completed*/}
-                    {pageImg != undefined ?
+                    {chapterImgUrlList[curPage] != undefined ?
                         <div>
-                            <Button variant={"primary"} onClick={prevImage}>{pageImg.index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
-                            <Image src={pageImg.url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 51}%`}}></Image>
-                            <Button variant={"primary"} onClick={nextImage}>{pageImg.index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
+                            <Button variant={"primary"} onClick={prevImage}>{chapterImgUrlList[curPage].index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
+                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 51}%`}}></Image>
+                            <Button variant={"primary"} onClick={nextImage}>{chapterImgUrlList[curPage].index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
                         </div>
                         :
                         <Container style={{align:'center'}}>
@@ -157,7 +148,7 @@ function ChapterImages() {
                 </Container>
             </div>
         );
-    };
+    }
 
     return (
         <div>
@@ -192,7 +183,7 @@ function NextChapterButtons() {
                 return context.state.chapterList[idx];
             }
         }
-    };
+    }
 
     function FindPrevChapter(){
         if(context.state.curChapter.listId - 1 < 0){
@@ -203,7 +194,7 @@ function NextChapterButtons() {
                 return context.state.chapterList[idx];
             }
         }
-    };
+    }
 
     const HandleChapterChange = (newChapter) => {
         history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
@@ -220,7 +211,7 @@ function NextChapterButtons() {
             </Button>
         </div>
     )
-};
+}
 
 function ChapterListHamburgerMenu() {
     const context = useLocation();
