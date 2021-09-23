@@ -1,10 +1,10 @@
-import React from "react"
-import api from "./api"
-import {Link, useLocation, useHistory} from "react-router-dom";
+import React from "react";
+import api from "./api";
+import {useLocation, useHistory} from "react-router-dom";
 import {Container, Image, Navbar, Nav, Button, Spinner, Form, Row, Col} from "react-bootstrap";
 import components from "./components/components";
 import { slide as Menu } from "react-burger-menu";
-import './Reader.css'
+import './Reader.css';
 
 // TODO : Add a zoom slider to the bottom of the page
 function ChapterImages() {
@@ -69,7 +69,7 @@ function ChapterImages() {
                 <Row xs={1} md={1} lg={1}>
                     {chapterImgUrlList.map((chapterImg, index) => (
                         <Col key={index}>
-                            <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{width:`${(scrollZoom / 10) * 51}%`}}></Image>
+                            <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{width:`${(scrollZoom / 10) * 51}%`}}/>
                         </Col>
                     ))}
                 </Row>
@@ -133,7 +133,7 @@ function ChapterImages() {
                     {chapterImgUrlList[curPage] != undefined ?
                         <div>
                             <Button variant={"primary"} onClick={prevImage}>{chapterImgUrlList[curPage].index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
-                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 51}%`}}></Image>
+                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 51}%`}}/>
                             <Button variant={"primary"} onClick={nextImage}>{chapterImgUrlList[curPage].index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
                         </div>
                         :
