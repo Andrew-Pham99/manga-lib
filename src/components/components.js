@@ -97,9 +97,9 @@ const TopNavBar = () => {
                             Manga Lib
                         </Navbar.Brand>
                     </LinkContainer>
-                    <Container fluid>
+                    <Container>
                         <Form onSubmit={TopNavBarSearch}>
-                            <Row className={"justify-content-md-start"} fluid>
+                            <Row className={"justify-content-md-start"}>
                                 <Col lg={"auto"}>
                                     <Form.Group controlId={"title"}>
                                         <Form.Control type={"text"} name={"title"} placeholder={"Find a Manga!"} onChange={handleChange}/>

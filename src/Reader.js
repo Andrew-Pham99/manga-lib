@@ -11,9 +11,8 @@ function ChapterImages() {
     const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
     const [chapterImgUrlList, setChapterImgUrlList] = React.useState([]);
-    const persistIsScroll = localStorage.getItem("IS_SCROLL");
-    const [isScroll, setIsScroll] = React.useState(persistIsScroll);
-    React.useEffect(() => {localStorage.setItem("IS_SCROLL", isScroll)}, [isScroll]);
+    const [isScroll, setIsScroll] = React.useState(localStorage.getItem("IS_SCROLL") == "true" ? true : false);
+    React.useEffect(() => {localStorage.setItem("IS_SCROLL", isScroll ? "true" : "false");}, [isScroll]);
     const [curPage, setCurPage] = React.useState(0);
     const [isLoaded, setIsLoaded] = React.useState(false);
     const [scrollZoom, setScrollZoom] = React.useState(10.0);
@@ -36,8 +35,7 @@ function ChapterImages() {
             })
         setIsLoaded(true);
     }
-    React.useLayoutEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context])
-    //React.useEffect(() => {console.log(chapterImgUrlList)}, [chapterImgUrlList])
+    React.useLayoutEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context]);
     const toggleScroll = () => {
         setIsScroll(!isScroll);
     };
@@ -70,14 +68,14 @@ function ChapterImages() {
             <div>
                 <Row xs={1} md={1} lg={1}>
                     {chapterImgUrlList.map((chapterImg, index) => (
-                        <Col>
+                        <Col key={index}>
                             <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{width:`${(scrollZoom / 10) * 51}%`}}></Image>
                         </Col>
                     ))}
                 </Row>
             </div>
         );
-    };
+    }
     function ChapterClick() {
         // This function will handle the rendering of the click version of the chapter
         // TODO : Make it so that clicking on the right of the image will go to the next image, and the left goes to the previous
@@ -90,7 +88,7 @@ function ChapterImages() {
                     return context.state.chapterList[idx];
                 }
             }
-        };
+        }
         function FindPrevChapter(){
             if(context.state.curChapter.listId - 1 < 0){
                 return context.state.curChapter;
@@ -100,7 +98,7 @@ function ChapterImages() {
                     return context.state.chapterList[idx];
                 }
             }
-        };
+        }
         const HandleChapterChange = (newChapter) => {
             history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
         };
