@@ -1,7 +1,7 @@
 import React from "react"
 import api from "./api"
 import {Link, useLocation, useHistory} from "react-router-dom";
-import {Container, Image, Navbar, Nav, Button, Spinner, Form} from "react-bootstrap";
+import {Container, Image, Navbar, Nav, Button, Spinner, Form, Row, Col} from "react-bootstrap";
 import components from "./components/components";
 import { slide as Menu } from "react-burger-menu";
 import './Reader.css'
@@ -15,7 +15,7 @@ function ChapterImages() {
     const [isScroll, setIsScroll] = React.useState(persistIsScroll);
     React.useEffect(() => {localStorage.setItem("IS_SCROLL", isScroll)}, [isScroll]);
     const [curPage, setCurPage] = React.useState(0);
-    const [pageImg, setPageImg] = React.useState(chapterImgUrlList[curPage]);
+    const [pageImg, setPageImg] = React.useState({});
     const [isLoaded, setIsLoaded] = React.useState(false);
     const [scrollZoom, setScrollZoom] = React.useState(10.0);
     const [pageZoom, setPageZoom] = React.useState(10.0);
@@ -23,19 +23,20 @@ function ChapterImages() {
 
     const getChapterImages = (chapterId) => {
         setChapterImgUrlList([]);
+        setPageImg({});
+        setCurPage(0);
         setIsLoaded(false);
         api.getBaseUrl(chapterId)
             .then((getBaseUrlResponse) => {
                 console.log(getBaseUrlResponse)
                 context.state.curChapter.data.attributes.data.forEach((chapterImg, index) => {
-                    setChapterImgUrlList(chapterImgUrlList => [...chapterImgUrlList, {url:api.getChapterImgUrl(getBaseUrlResponse.data.baseUrl, 'data', context.state.curChapter.data.attributes.hash, chapterImg), index:index}])
+                    setChapterImgUrlList(chapterImgUrlList => [...chapterImgUrlList, {url:api.getChapterImgUrl(getBaseUrlResponse.data.baseUrl, 'data', context.state.curChapter.data.attributes.hash, chapterImg), index:index}]);
                 })
             })
             .catch((error) => {
                 console.log(error)
             })
         setPageImg(chapterImgUrlList[0]);
-        setCurPage(0);
         setIsLoaded(true);
     }
     React.useLayoutEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context])
@@ -43,35 +44,40 @@ function ChapterImages() {
     const toggleScroll = () => {
         setIsScroll(!isScroll);
     };
-    function ChapterScroll() {
-        // This function will handle the rendering of the scroll version of the chapter
-        function ScrollZoom(){
-            // This is only semi functional, not sure what is wrong with it
-            // The graphics dont update to what the value is set to
-            // Maybe want to use a bootstrap element instead of the <input> element
-            const handleChange = (event) => {
-                console.log(event)
+    function ZoomBar(){
+        const handleChange = (event) => {
+            if(isScroll){
                 setScrollZoom(parseInt(event.target.value));
                 scrollZoomVal = parseInt(event.target.value);
+            }
+            else{
+                setPageZoom(parseInt(event.target.value));
+                pageZoomVal = parseInt(event.target.value);
             };
-            React.useEffect(() => {console.log("Scroll Zoom factor is: " + (scrollZoom))}, [scrollZoom])
-            return (
-                <div>
-                    <Navbar fixed={"bottom"}>
-                        <Form>
-                            <Form.Label>Zoom</Form.Label>
-                            <Form.Range min={"10"} max={"20"} defaultValue={scrollZoomVal} step={"1"} onChange={handleChange} id={"scrollZoom"} name={"scrollZoom"}/>
-                        </Form>
-                    </Navbar>
-                </div>
-            );
-        }
+        };
+        return (
+            // This navbar should appear in the middle of the screen
+            <div>
+                <Navbar fixed={"bottom"}>
+                    <Form>
+                        <Form.Label>Zoom</Form.Label>
+                        <Form.Range min={"1"} max={"21"} defaultValue={isScroll ? scrollZoomVal : pageZoomVal} step={"1"} onChange={handleChange} id={"zoom"} name={"zoom"}/>
+                    </Form>
+                </Navbar>
+            </div>
+        );
+    };
+    function ChapterScroll() {
+        // This function will handle the rendering of the scroll version of the chapter
         return (
             <div>
-                {chapterImgUrlList.map((chapterImg, index) => (
-                    <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{width:`${(scrollZoom / 10) * 51}%`}}></Image>
-                ))}
-                <ScrollZoom/>
+                <Row xs={1} md={1} lg={1}>
+                    {chapterImgUrlList.map((chapterImg, index) => (
+                        <Col>
+                            <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{width:`${(scrollZoom / 10) * 51}%`}}></Image>
+                        </Col>
+                    ))}
+                </Row>
             </div>
         );
     };
@@ -101,26 +107,6 @@ function ChapterImages() {
         const HandleChapterChange = (newChapter) => {
             history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
         };
-        function PageZoom(){
-            // This is only semi functional, not sure what is wrong with it
-            // The graphics do not update with what the bar is set to
-            const handleChange = (event) => {
-                console.log(event)
-                setPageZoom(parseInt(event.target.value));
-                pageZoomVal = parseInt(event.target.value);
-            };
-            React.useEffect(() => {console.log("Page Zoom Factor is: " + (pageZoom))}, [pageZoom])
-            return (
-                <div>
-                    <Navbar fixed={"bottom"}>
-                        <Form>
-                            <Form.Label>Zoom</Form.Label>
-                            <Form.Range min={"10"} max={"20"} defaultValue={pageZoomVal} step={"1"} onChange={handleChange} id={"pageZoom"} name={"pageZoom"}/>
-                        </Form>
-                    </Navbar>
-                </div>
-            );
-        }
 
         setPageImg(chapterImgUrlList[curPage]);
 
@@ -160,7 +146,6 @@ function ChapterImages() {
                             <Button variant={"primary"} onClick={prevImage}>{pageImg.index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
                             <Image src={pageImg.url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 51}%`}}></Image>
                             <Button variant={"primary"} onClick={nextImage}>{pageImg.index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
-                            <PageZoom/>
                         </div>
                         :
                         <Container style={{align:'center'}}>
@@ -169,7 +154,6 @@ function ChapterImages() {
                             </Spinner>
                         </Container>
                     }
-                    {/*{<Image src={pageImg.url} alt={"Not Found"} className={"chapter_images"}></Image>}*/}
                 </Container>
             </div>
         );
@@ -188,6 +172,7 @@ function ChapterImages() {
                             <ChapterClick/>
                         </div>
                     }
+                    <ZoomBar/>
             </Container>
         </div>
     );
