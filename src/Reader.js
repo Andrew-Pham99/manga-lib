@@ -17,8 +17,8 @@ function ChapterImages() {
     const [curPage, setCurPage] = React.useState(0);
     const [pageImg, setPageImg] = React.useState(chapterImgUrlList[curPage]);
     const [isLoaded, setIsLoaded] = React.useState(false);
-    const [scrollZoom, setScrollZoom] = React.useState(1.0);
-    const [pageZoom, setPageZoom] = React.useState(1.0);
+    const [scrollZoom, setScrollZoom] = React.useState(10.0);
+    const [pageZoom, setPageZoom] = React.useState(10.0);
 
     const getChapterImages = (chapterId) => {
         setChapterImgUrlList([]);
@@ -49,14 +49,17 @@ function ChapterImages() {
             // The graphics dont update to what the value is set to
             // Maybe want to use a bootstrap element instead of the <input> element
             const handleChange = (event) => {
+                console.log(event)
                 setScrollZoom(parseInt(event.target.value));
             };
             React.useEffect(() => {console.log("Scroll Zoom factor is: " + (scrollZoom))}, [scrollZoom])
             return (
                 <div>
                     <Navbar fixed={"bottom"}>
-                        <input type={"range"} min={"1"} max={"5"} defaultValue={"1"} step={"0.1"} onChange={handleChange} id={"scrollZoom"} name={"scrollZoom"}></input>
-                        <label for={"scrollZoom"}>Zoom</label>
+                        <Form>
+                            <Form.Label>Zoom</Form.Label>
+                            <Form.Range min={"10"} max={"20"} defaultValue={scrollZoom} step={"0.1"} onChange={handleChange} id={"scrollZoom"} name={"scrollZoom"}/>
+                        </Form>
                     </Navbar>
                 </div>
             );
@@ -64,7 +67,7 @@ function ChapterImages() {
         return (
             <div>
                 {chapterImgUrlList.map((chapterImg, index) => (
-                    <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{width:`${scrollZoom * 51}%`}}></Image>
+                    <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{width:`${(scrollZoom / 10) * 51}%`}}></Image>
                 ))}
                 <ScrollZoom/>
             </div>
@@ -100,14 +103,17 @@ function ChapterImages() {
             // This is only semi functional, not sure what is wrong with it
             // The graphics do not update with what the bar is set to
             const handleChange = (event) => {
+                console.log(event)
                 setPageZoom(parseInt(event.target.value));
             };
             React.useEffect(() => {console.log("Page Zoom Factor is: " + (pageZoom))}, [pageZoom])
             return (
                 <div>
                     <Navbar fixed={"bottom"}>
-                        <input type={"range"} min={"1"} max={"5"} defaultValue={"1"} step={"0.1"} onChange={handleChange} id={"pageZoom"} name={"pageZoom"}></input>
-                        <label for={"pageZoom"}>Zoom</label>
+                        <Form>
+                            <Form.Label>Zoom</Form.Label>
+                            <Form.Range min={"10"} max={"20"} defaultValue={pageZoom} step={"0.1"} onChange={handleChange} id={"pageZoom"} name={"pageZoom"}/>
+                        </Form>
                     </Navbar>
                 </div>
             );
@@ -149,7 +155,7 @@ function ChapterImages() {
                     {pageImg != undefined ?
                         <div>
                             <Button variant={"primary"} onClick={prevImage}>{pageImg.index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
-                            <Image src={pageImg.url} alt={"Not Found"} style={{width: `${pageZoom * 51}%`}}></Image>
+                            <Image src={pageImg.url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 51}%`}}></Image>
                             <Button variant={"primary"} onClick={nextImage}>{pageImg.index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
                             <PageZoom/>
                         </div>
