@@ -17,8 +17,8 @@ function ChapterImages() {
     const [curPage, setCurPage] = React.useState(0);
     const [pageImg, setPageImg] = React.useState(chapterImgUrlList[curPage]);
     const [isLoaded, setIsLoaded] = React.useState(false);
-    const [scrollZoom, setScrollZoom] = React.useState(1);
-    const [pageZoom, setPageZoom] = React.useState(1);
+    const [scrollZoom, setScrollZoom] = React.useState(1.0);
+    const [pageZoom, setPageZoom] = React.useState(1.0);
 
     const getChapterImages = (chapterId) => {
         setChapterImgUrlList([]);
@@ -46,6 +46,8 @@ function ChapterImages() {
         // This function will handle the rendering of the scroll version of the chapter
         function ScrollZoom(){
             // This is only semi functional, not sure what is wrong with it
+            // The graphics dont update to what the value is set to
+            // Maybe want to use a bootstrap element instead of the <input> element
             const handleChange = (event) => {
                 setScrollZoom(parseInt(event.target.value));
             };
@@ -53,7 +55,7 @@ function ChapterImages() {
             return (
                 <div>
                     <Navbar fixed={"bottom"}>
-                        <input type={"range"} min={"1"} max={"5"} defaultValue={"1"} step={"any"} onChange={handleChange} id={"scrollZoom"} name={"scrollZoom"}></input>
+                        <input type={"range"} min={"1"} max={"5"} defaultValue={"1"} step={"0.1"} onChange={handleChange} id={"scrollZoom"} name={"scrollZoom"}></input>
                         <label for={"scrollZoom"}>Zoom</label>
                     </Navbar>
                 </div>
@@ -96,6 +98,7 @@ function ChapterImages() {
         };
         function PageZoom(){
             // This is only semi functional, not sure what is wrong with it
+            // The graphics do not update with what the bar is set to
             const handleChange = (event) => {
                 setPageZoom(parseInt(event.target.value));
             };
@@ -103,7 +106,7 @@ function ChapterImages() {
             return (
                 <div>
                     <Navbar fixed={"bottom"}>
-                        <input type={"range"} min={"1"} max={"5"} defaultValue={"1"} step={"any"} onChange={handleChange} id={"pageZoom"} name={"pageZoom"}></input>
+                        <input type={"range"} min={"1"} max={"5"} defaultValue={"1"} step={"0.1"} onChange={handleChange} id={"pageZoom"} name={"pageZoom"}></input>
                         <label for={"pageZoom"}>Zoom</label>
                     </Navbar>
                 </div>
