@@ -1,7 +1,6 @@
 import Button from 'react-bootstrap/Button'
-import Routes from "../Routes";
 import React from "react";
-import {Nav, Navbar, Container, Image, Form, Row, Col, Stack} from "react-bootstrap";
+import {Navbar, Container, Image, Form, Row, Col} from "react-bootstrap";
 import {LinkContainer} from "react-router-bootstrap"
 import {useHistory} from "react-router-dom";
 import logo from "../images/logo.png";
