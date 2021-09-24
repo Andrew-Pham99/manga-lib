@@ -1,7 +1,7 @@
 import Button from 'react-bootstrap/Button'
 import Routes from "../Routes";
 import React from "react";
-import {Nav, Navbar, Container, Image, Form, Row, Col} from "react-bootstrap";
+import {Nav, Navbar, Container, Image, Form, Row, Col, Stack} from "react-bootstrap";
 import {LinkContainer} from "react-router-bootstrap"
 import {useHistory} from "react-router-dom";
 import logo from "../images/logo.png";
@@ -84,8 +84,8 @@ const TopNavBar = () => {
 
     return (
         <div>
-            <Container>
-                <Navbar bg={"light"} expand={"lg"}>
+            <Container className={"row nowrap d-inline-block"}>
+                <Navbar bg={"light"} >
                     <LinkContainer to={"/"}>
                         <Navbar.Brand>
                             <Image
@@ -97,26 +97,24 @@ const TopNavBar = () => {
                             Manga Lib
                         </Navbar.Brand>
                     </LinkContainer>
-                    <Container>
-                        <Form onSubmit={TopNavBarSearch}>
-                            <Row className={"justify-content-md-start"}>
-                                <Col lg={"auto"}>
-                                    <Form.Group controlId={"title"}>
-                                        <Form.Control type={"text"} name={"title"} placeholder={"Find a Manga!"} onChange={handleChange}/>
-                                    </Form.Group>
-                                </Col>
-                                <Col md={"auto"}>
-                                    <Button variant="primary" type="submit">Search</Button>
-                                </Col>
-                                <Col md={"auto"}>
-                                    <Button variant="primary" onClick={TopNavBarRandSearch}>Random</Button>
-                                </Col>
-                                <Col md={"auto"}>
-                                    <Button variant={"secondary"} onClick={gotoAdvancedSearch}>Advanced Search</Button>
-                                </Col>
-                            </Row>
-                        </Form>
-                    </Container>
+                    <Form onSubmit={TopNavBarSearch} className={"flex-fill"}>
+                        <Row>
+                            <Col className={"flex-grow-1"}>
+                                <Form.Group controlId={"title"} className={"flex-fill"}>
+                                    <Form.Control type={"text"} name={"title"} placeholder={"Find a Manga!"} onChange={handleChange}/>
+                                </Form.Group>
+                            </Col>
+                            <Col lg={"auto"}>
+                                <Button variant="primary" type="submit">Search</Button>
+                            </Col>
+                            <Col lg={"auto"}>
+                                <Button variant="primary" onClick={TopNavBarRandSearch}>Random</Button>
+                            </Col>
+                            <Col lg={"auto"}>
+                                <Button variant={"secondary"} onClick={gotoAdvancedSearch}>Advanced Search</Button>
+                            </Col>
+                        </Row>
+                    </Form>
                 </Navbar>
             </Container>
         </div>
