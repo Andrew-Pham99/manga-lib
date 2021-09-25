@@ -6,7 +6,7 @@ import components from "./components/components";
 import { slide as Menu } from "react-burger-menu";
 import './Reader.css';
 
-// TODO : Add a zoom slider to the bottom of the page
+// TODO : Fetch the next part of the chapter list when at the end of the current part
 function ChapterImages() {
     const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
@@ -40,6 +40,7 @@ function ChapterImages() {
         setIsScroll(!isScroll);
     };
     function ZoomBar(){
+        // TODO : Add tooltip to display value of zoom
         const handleChange = (event) => {
             if(isScroll){
                 setScrollZoom(parseInt(event.target.value));
@@ -52,12 +53,16 @@ function ChapterImages() {
         };
         return (
             // This navbar should appear in the middle of the screen
-            <div>
+            <div className={"position-relative bottom-0"}>
                 <Navbar fixed={"bottom"}>
-                    <Form>
-                        <Form.Label>Zoom</Form.Label>
-                        <Form.Range min={"1"} max={"21"} defaultValue={isScroll ? scrollZoomVal : pageZoomVal} step={"1"} onChange={handleChange} id={"zoom"} name={"zoom"}/>
-                    </Form>
+                    <Container>
+                        <Navbar bg={"light"} className={"flex-fill"}>
+                            <Form className={"flex-fill"} style={{marginLeft:10, marginRight:10}}>
+                                <Form.Label>Zoom</Form.Label>
+                                <Form.Range min={"1"} max={"21"} defaultValue={isScroll ? scrollZoomVal : pageZoomVal} step={"1"} onChange={handleChange} id={"zoom"} name={"zoom"}/>
+                            </Form>
+                        </Navbar>
+                    </Container>
                 </Navbar>
             </div>
         );
@@ -128,13 +133,13 @@ function ChapterImages() {
 
         };
         return (
-            <div>
-                <Container>
+            <div style={{marginBottom:100}}>
+                <Container className={"border border-dark position-relative "}>
                     {chapterImgUrlList[curPage] != undefined ?
-                        <div>
-                            <Button variant={"primary"} onClick={prevImage}>{chapterImgUrlList[curPage].index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
-                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 51}%`}}/>
-                            <Button variant={"primary"} onClick={nextImage}>{chapterImgUrlList[curPage].index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
+                        <div className={"align-items-stretch"}>
+                            <Button variant={"outline-primary"} className={"position-absolute top-0 start-0 flex-shrink-1 h-100"} onClick={prevImage}>{chapterImgUrlList[curPage].index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
+                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 51}%`}} className={"border border-dark flex-grow-1 mw-100"}/>
+                            <Button variant={"outline-primary"} className={"position-absolute top-0 end-0 flex-shrink-1 h-100"} onClick={nextImage}>{chapterImgUrlList[curPage].index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
                         </div>
                         :
                         <Container style={{align:'center'}}>
@@ -150,19 +155,17 @@ function ChapterImages() {
 
     return (
         <div>
-            <Container>
-                <Button variant={"primary"} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
-                    {isScroll ?
-                        <div>
-                            <ChapterScroll/>
-                        </div>
-                        :
-                        <div>
-                            <ChapterClick/>
-                        </div>
-                    }
-                    <ZoomBar/>
-            </Container>
+            <Button variant={"primary"} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
+                {isScroll ?
+                    <div>
+                        <ChapterScroll/>
+                    </div>
+                    :
+                    <div>
+                        <ChapterClick/>
+                    </div>
+                }
+                <ZoomBar/>
         </div>
     );
 }
@@ -241,14 +244,14 @@ function ChapterListHamburgerMenu() {
 
 function Reader() {
     const context = useLocation();
-    React.useEffect(()=> console.log(context),[context])
+    React.useEffect(()=> console.log(context),[context]);
     return (
         // TODO : Style this whole page
         <div className={"Reader"} id="App">
             <ChapterListHamburgerMenu/>
             <div id="page-wrap">
                 <components.TopNavBar/>
-                <Container>
+                <Container fluid>
                     <h1>You are reading {context.state.manga.name} Chapter {context.state.curChapter.data.attributes.chapter}</h1>
                     <NextChapterButtons/>
                     <ChapterImages/>
