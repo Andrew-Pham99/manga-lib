@@ -9,6 +9,31 @@ import './Reader.css';
 //        Left and Right arrows to change page
 //        CRTL + Left and Right arrows to chapter
 // TODO : Fetch the next part of the chapter list when at the end of the current part
+
+function FindNextChapter(context){
+    if(context.state.curChapter.listId + 1 >= context.state.chapterList.length){
+        return context.state.curChapter;
+    }
+    for(let idx = context.state.curChapter.listId + 1; idx < context.state.chapterList.length; idx++){
+        if(parseFloat(context.state.chapterList[idx].data.attributes.chapter) > parseFloat(context.state.curChapter.data.attributes.chapter)){
+            return context.state.chapterList[idx];
+        }
+    }
+}
+function FindPrevChapter(context){
+    if(context.state.curChapter.listId - 1 < 0){
+        return context.state.curChapter;
+    }
+    for(let idx = context.state.curChapter.listId - 1; idx >= 0; --idx){
+        if(parseFloat(context.state.chapterList[idx].data.attributes.chapter) < parseFloat(context.state.curChapter.data.attributes.chapter)){
+            return context.state.chapterList[idx];
+        }
+    }
+}
+function HandleChapterChange(newChapter, context, history){
+    history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
+};
+
 function ChapterImages() {
     const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
@@ -87,29 +112,6 @@ function ChapterImages() {
     function ChapterClick() {
         // This function will handle the rendering of the click version of the chapter
         // TODO : Make it so that clicking on the right of the image will go to the next image, and the left goes to the previous
-        function FindNextChapter(){
-            if(context.state.curChapter.listId + 1 >= context.state.chapterList.length){
-                return context.state.curChapter;
-            }
-            for(let idx = context.state.curChapter.listId + 1; idx < context.state.chapterList.length; idx++){
-                if(parseFloat(context.state.chapterList[idx].data.attributes.chapter) > parseFloat(context.state.curChapter.data.attributes.chapter)){
-                    return context.state.chapterList[idx];
-                }
-            }
-        }
-        function FindPrevChapter(){
-            if(context.state.curChapter.listId - 1 < 0){
-                return context.state.curChapter;
-            }
-            for(let idx = context.state.curChapter.listId - 1; idx >= 0; --idx){
-                if(parseFloat(context.state.chapterList[idx].data.attributes.chapter) < parseFloat(context.state.curChapter.data.attributes.chapter)){
-                    return context.state.chapterList[idx];
-                }
-            }
-        }
-        const HandleChapterChange = (newChapter) => {
-            history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
-        };
 
         const nextImage = () => {
             if(chapterImgUrlList[curPage].index < chapterImgUrlList.length - 1){
@@ -117,7 +119,7 @@ function ChapterImages() {
                 setCurPage(curPage + 1);
             }
             else {
-                HandleChapterChange(FindNextChapter());
+                HandleChapterChange(FindNextChapter(context), history);
             }
         };
         const prevImage = () => {
@@ -127,7 +129,7 @@ function ChapterImages() {
             }
             else {
                 // Go to previous chapter since we are at the beginning of the current
-                HandleChapterChange(FindPrevChapter());
+                HandleChapterChange(FindPrevChapter(context),context, history);
             }
         };
         const handleKeyDown = (event) => {
@@ -177,41 +179,14 @@ function ChapterImages() {
 function NextChapterButtons() {
     const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
-    // Can we export these to be used in ChapterClick() without having to duplicate the code
-    // Probably need some kind of export
-    function FindNextChapter(){
-        if(context.state.curChapter.listId + 1 >= context.state.chapterList.length){
-            return context.state.curChapter;
-        }
-        for(let idx = context.state.curChapter.listId + 1; idx < context.state.chapterList.length; idx++){
-            if(parseFloat(context.state.chapterList[idx].data.attributes.chapter) > parseFloat(context.state.curChapter.data.attributes.chapter)){
-                return context.state.chapterList[idx];
-            }
-        }
-    }
-
-    function FindPrevChapter(){
-        if(context.state.curChapter.listId - 1 < 0){
-            return context.state.curChapter;
-        }
-        for(let idx = context.state.curChapter.listId - 1; idx >= 0; --idx){
-            if(parseFloat(context.state.chapterList[idx].data.attributes.chapter) < parseFloat(context.state.curChapter.data.attributes.chapter)){
-                return context.state.chapterList[idx];
-            }
-        }
-    }
-
-    const HandleChapterChange = (newChapter) => {
-        history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
-    };
 
     // TODO : Style this element and figure out where to put it on the reader that makes sense
     return (
         <div>
-            <Button onClick={() => HandleChapterChange(FindPrevChapter())}>
+            <Button onClick={() => HandleChapterChange(FindPrevChapter(context), context, history)}>
                 Prev Chapter
             </Button>
-            <Button onClick={() => HandleChapterChange(FindNextChapter())}>
+            <Button onClick={() => HandleChapterChange(FindNextChapter(context), context, history)}>
                 Next Chapter
             </Button>
         </div>
@@ -222,25 +197,21 @@ function ChapterListHamburgerMenu() {
     const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
 
-    const HandleChapterChange = newChapter => {
-        history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
-    }
-    // Finish the styling for this element
     return (
         <div>
             <Menu right  pageWrapId={"page-wrap"} outerContainerId={"App"}>
-            <Navbar  className="ChapterList">
-                <Nav className={"flex-column"}>
-                    {context.state.chapterList.map((chapter, index) => (
-                        <Nav.Item key={index} onClick={()=>HandleChapterChange(chapter)}>
-                            <Nav.Link>
-                                    {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
-                                        `Chapter ${chapter.data.attributes.chapter}`}
-                            </Nav.Link>
-                        </Nav.Item>
-                    ))}
-                </Nav>
-            </Navbar>
+                <Navbar  className="ChapterList">
+                    <Nav className={"flex-column"}>
+                        {context.state.chapterList.map((chapter, index) => (
+                            <Nav.Item key={index} onClick={() => HandleChapterChange(chapter, context, history)}>
+                                <Nav.Link>
+                                        {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
+                                            `Chapter ${chapter.data.attributes.chapter}`}
+                                </Nav.Link>
+                            </Nav.Item>
+                        ))}
+                    </Nav>
+                </Navbar>
             </Menu>
         </div>
     )
