@@ -5,7 +5,9 @@ import {Container, Image, Navbar, Nav, Button, Spinner, Form, Row, Col} from "re
 import components from "./components/components";
 import { slide as Menu } from "react-burger-menu";
 import './Reader.css';
-
+// TODO : Add a button to return to the manga info page
+//        Left and Right arrows to change page
+//        CRTL + Left and Right arrows to chapter
 // TODO : Fetch the next part of the chapter list when at the end of the current part
 function ChapterImages() {
     const context = useLocation();
@@ -41,25 +43,26 @@ function ChapterImages() {
     };
     function ZoomBar(){
         // TODO : Add tooltip to display value of zoom
+        // TODO : Make the zoom bar toggle-able so that it may be hidden
         const handleChange = (event) => {
+            console.log(event.target.value);
             if(isScroll){
-                setScrollZoom(parseInt(event.target.value));
-                scrollZoomVal = parseInt(event.target.value);
+                setScrollZoom(parseFloat(event.target.value));
+                scrollZoomVal = parseFloat(event.target.value);
             }
             else{
-                setPageZoom(parseInt(event.target.value));
-                pageZoomVal = parseInt(event.target.value);
+                setPageZoom(parseFloat(event.target.value));
+                pageZoomVal = parseFloat(event.target.value);
             }
         };
         return (
-            // This navbar should appear in the middle of the screen
             <div className={"position-relative bottom-0"}>
                 <Navbar fixed={"bottom"}>
                     <Container>
                         <Navbar bg={"light"} className={"flex-fill"}>
                             <Form className={"flex-fill"} style={{marginLeft:10, marginRight:10}}>
                                 <Form.Label>Zoom</Form.Label>
-                                <Form.Range min={"1"} max={"21"} defaultValue={isScroll ? scrollZoomVal : pageZoomVal} step={"1"} onChange={handleChange} id={"zoom"} name={"zoom"}/>
+                                <Form.Range min={"1"} max={"19"} defaultValue={isScroll ? scrollZoomVal : pageZoomVal} step={".5"} onChange={handleChange} id={"zoom"} name={"zoom"}/>
                             </Form>
                         </Navbar>
                     </Container>
@@ -74,7 +77,7 @@ function ChapterImages() {
                 <Row xs={1} md={1} lg={1}>
                     {chapterImgUrlList.map((chapterImg, index) => (
                         <Col key={index}>
-                            <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{width:`${(scrollZoom / 10) * 51}%`}}/>
+                            <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{width:`${(scrollZoom / 10) * 50}%`}}/>
                         </Col>
                     ))}
                 </Row>
@@ -89,7 +92,7 @@ function ChapterImages() {
                 return context.state.curChapter;
             }
             for(let idx = context.state.curChapter.listId + 1; idx < context.state.chapterList.length; idx++){
-                if(parseInt(context.state.chapterList[idx].data.attributes.chapter, 10) > parseInt(context.state.curChapter.data.attributes.chapter, 10)){
+                if(parseFloat(context.state.chapterList[idx].data.attributes.chapter) > parseFloat(context.state.curChapter.data.attributes.chapter)){
                     return context.state.chapterList[idx];
                 }
             }
@@ -99,7 +102,7 @@ function ChapterImages() {
                 return context.state.curChapter;
             }
             for(let idx = context.state.curChapter.listId - 1; idx >= 0; --idx){
-                if(parseInt(context.state.chapterList[idx].data.attributes.chapter, 10) < parseInt(context.state.curChapter.data.attributes.chapter, 10)){
+                if(parseFloat(context.state.chapterList[idx].data.attributes.chapter) < parseFloat(context.state.curChapter.data.attributes.chapter)){
                     return context.state.chapterList[idx];
                 }
             }
@@ -130,15 +133,16 @@ function ChapterImages() {
         const handleKeyDown = (event) => {
             console.log(event);
             // TODO : Make left and right arrow keys change the current chapter image
+            // Need to handle key presses on the document so that the the onClick event can be triggered
 
         };
         return (
             <div style={{marginBottom:100}}>
                 <Container className={"border border-dark position-relative "}>
                     {chapterImgUrlList[curPage] != undefined ?
-                        <div className={"align-items-stretch"}>
+                        <div>
                             <Button variant={"outline-primary"} className={"position-absolute top-0 start-0 flex-shrink-1 h-100"} onClick={prevImage}>{chapterImgUrlList[curPage].index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
-                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 51}%`}} className={"border border-dark flex-grow-1 mw-100"}/>
+                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 50}%`}} className={"border border-dark flex-grow-1 mw-100"}/>
                             <Button variant={"outline-primary"} className={"position-absolute top-0 end-0 flex-shrink-1 h-100"} onClick={nextImage}>{chapterImgUrlList[curPage].index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
                         </div>
                         :
@@ -155,7 +159,7 @@ function ChapterImages() {
 
     return (
         <div>
-            <Button variant={"primary"} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
+            <Button variant={isScroll ? "primary" : "success"} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
                 {isScroll ?
                     <div>
                         <ChapterScroll/>
@@ -180,7 +184,7 @@ function NextChapterButtons() {
             return context.state.curChapter;
         }
         for(let idx = context.state.curChapter.listId + 1; idx < context.state.chapterList.length; idx++){
-            if(parseInt(context.state.chapterList[idx].data.attributes.chapter, 10) > parseInt(context.state.curChapter.data.attributes.chapter, 10)){
+            if(parseFloat(context.state.chapterList[idx].data.attributes.chapter) > parseFloat(context.state.curChapter.data.attributes.chapter)){
                 return context.state.chapterList[idx];
             }
         }
@@ -191,7 +195,7 @@ function NextChapterButtons() {
             return context.state.curChapter;
         }
         for(let idx = context.state.curChapter.listId - 1; idx >= 0; --idx){
-            if(parseInt(context.state.chapterList[idx].data.attributes.chapter, 10) < parseInt(context.state.curChapter.data.attributes.chapter, 10)){
+            if(parseFloat(context.state.chapterList[idx].data.attributes.chapter) < parseFloat(context.state.curChapter.data.attributes.chapter)){
                 return context.state.chapterList[idx];
             }
         }
