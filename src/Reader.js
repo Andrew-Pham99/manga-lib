@@ -76,6 +76,9 @@ function ChapterImages() {
     const toggleScroll = () => {
         setIsScroll(!isScroll);
     };
+    const goToMangaInfo = () => {
+        history.push({pathname:`/Info/manga=${context.state.manga.id}`, state:context.state.manga});
+    };
     function ZoomBar(){
         // TODO : Add tooltip to display value of zoom
         // TODO : Make the zoom bar toggle-able so that it may be hidden
@@ -134,6 +137,7 @@ function ChapterImages() {
                 setCurPage(curPage + 1);
             }
             else {
+                // Go to next chapter because we are at the end of the current
                 HandleChapterChange(FindNextChapter(context), history);
             }
         };
@@ -177,6 +181,7 @@ function ChapterImages() {
     return (
         <div>
             <Button variant={isScroll ? "primary" : "success"} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
+            <Button variant={"primary"} onClick={() => goToMangaInfo()}>Back to MangaInfo</Button>
                 {isScroll ?
                     <div>
                         <ChapterScroll/>
