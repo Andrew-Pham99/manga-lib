@@ -11,28 +11,37 @@ import './Reader.css';
 // TODO : Fetch the next part of the chapter list when at the end of the current part
 
 function FindNextChapter(context){
+    // context is the object returned by a call to useLocation()
     if(context.state.curChapter.listId + 1 >= context.state.chapterList.length){
+        // If at the end of the current list, return current chapter
         return context.state.curChapter;
     }
     for(let idx = context.state.curChapter.listId + 1; idx < context.state.chapterList.length; idx++){
+        // Finds next chapter where chapter number > current chapter number
         if(parseFloat(context.state.chapterList[idx].data.attributes.chapter) > parseFloat(context.state.curChapter.data.attributes.chapter)){
             return context.state.chapterList[idx];
         }
     }
 }
 function FindPrevChapter(context){
+    // context is the object returned by a call to useLocation()
     if(context.state.curChapter.listId - 1 < 0){
+        // If at the beginning of the current list, return current chapter
         return context.state.curChapter;
     }
     for(let idx = context.state.curChapter.listId - 1; idx >= 0; --idx){
+        // Finds next chapter where chapter number < current chapter number
         if(parseFloat(context.state.chapterList[idx].data.attributes.chapter) < parseFloat(context.state.curChapter.data.attributes.chapter)){
             return context.state.chapterList[idx];
         }
     }
 }
 function HandleChapterChange(newChapter, context, history){
+    // newChapter is the chapter object which you want to transition to
+    // context is the context object which should have the form {manga:{}, curChapter:{}, chapterList:{}}
+    // history is the object returned by a call to useHistory()
     history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
-};
+}
 
 function ChapterImages() {
     const context = useLocation();
@@ -42,8 +51,9 @@ function ChapterImages() {
     React.useEffect(() => {localStorage.setItem("IS_SCROLL", isScroll ? "true" : "false");}, [isScroll]);
     const [curPage, setCurPage] = React.useState(0);
     const [isLoaded, setIsLoaded] = React.useState(false);
-    const [scrollZoom, setScrollZoom] = React.useState(10.0);
-    const [pageZoom, setPageZoom] = React.useState(10.0);
+    const defaultZoom = 10.0;
+    const [scrollZoom, setScrollZoom] = React.useState(defaultZoom);
+    const [pageZoom, setPageZoom] = React.useState(defaultZoom);
     let pageZoomVal = pageZoom, scrollZoomVal = scrollZoom;
 
     const getChapterImages = (chapterId) => {
@@ -69,6 +79,7 @@ function ChapterImages() {
     function ZoomBar(){
         // TODO : Add tooltip to display value of zoom
         // TODO : Make the zoom bar toggle-able so that it may be hidden
+        // TODO : Add a reset button to reset the zoom value
         const handleChange = (event) => {
             console.log(event.target.value);
             if(isScroll){
@@ -80,6 +91,9 @@ function ChapterImages() {
                 pageZoomVal = parseFloat(event.target.value);
             }
         };
+        const resetZoom = (event) => {
+
+        };
         return (
             <div className={"position-relative bottom-0"}>
                 <Navbar fixed={"bottom"}>
@@ -88,6 +102,7 @@ function ChapterImages() {
                             <Form className={"flex-fill"} style={{marginLeft:10, marginRight:10}}>
                                 <Form.Label>Zoom</Form.Label>
                                 <Form.Range min={"1"} max={"19"} defaultValue={isScroll ? scrollZoomVal : pageZoomVal} step={".5"} onChange={handleChange} id={"zoom"} name={"zoom"}/>
+                                {/*<Button variant={"primary"} onClick={() => resetZoom()}>Reset</Button>*/}
                             </Form>
                         </Navbar>
                     </Container>
