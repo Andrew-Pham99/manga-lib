@@ -8,7 +8,6 @@ import './Reader.css';
 // TODO : Add a button to return to the manga info page
 //        Left and Right arrows to change page
 //        CRTL + Left and Right arrows to chapter
-// TODO : Fetch the next part of the chapter list when at the end of the current part
 
 function FindNextChapter(context){
     // context is the object returned by a call to useLocation()
@@ -120,7 +119,7 @@ function ChapterImages() {
                 <Row xs={1} md={1} lg={1}>
                     {chapterImgUrlList.map((chapterImg, index) => (
                         <Col key={index}>
-                            <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{width:`${(scrollZoom / 10) * 50}%`}}/>
+                            <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{width:`${(scrollZoom / 10) * 50}%`}} className={"border border-dark"}/>
                         </Col>
                     ))}
                 </Row>
@@ -138,7 +137,7 @@ function ChapterImages() {
             }
             else {
                 // Go to next chapter because we are at the end of the current
-                HandleChapterChange(FindNextChapter(context), history);
+                HandleChapterChange(FindNextChapter(context),context, history);
             }
         };
         const prevImage = () => {
@@ -180,18 +179,20 @@ function ChapterImages() {
 
     return (
         <div>
-            <Button variant={isScroll ? "primary" : "success"} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
-            <Button variant={"primary"} onClick={() => goToMangaInfo()}>Back to MangaInfo</Button>
-                {isScroll ?
-                    <div>
-                        <ChapterScroll/>
-                    </div>
-                    :
-                    <div>
-                        <ChapterClick/>
-                    </div>
-                }
-                <ZoomBar/>
+            <Container className={"border border-dark position-relative"}>
+                <Button variant={"primary"} onClick={() => goToMangaInfo()} className={"position-absolute start-0"}>Back to MangaInfo</Button>
+                <Button variant={isScroll ? "primary" : "success"} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
+            </Container>
+            {isScroll ?
+                <div>
+                    <ChapterScroll/>
+                </div>
+                :
+                <div>
+                    <ChapterClick/>
+                </div>
+            }
+            <ZoomBar/>
         </div>
     );
 }
@@ -247,7 +248,14 @@ function Reader() {
             <div id="page-wrap">
                 <components.TopNavBar/>
                 <Container fluid>
-                    <h1>You are reading {context.state.manga.name} Chapter {context.state.curChapter.data.attributes.chapter}</h1>
+                    <h1>You are reading {context.state.manga.name}: Chapter
+                        {` ` + context.state.curChapter.data.attributes.chapter} -
+                        {context.state.curChapter.data.attributes.title !== "" ?
+                            ` ${context.state.curChapter.data.attributes.title}`
+                            :
+                            ``
+                        }
+                    </h1>
                     <NextChapterButtons/>
                     <ChapterImages/>
                 </Container>

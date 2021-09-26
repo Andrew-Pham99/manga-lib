@@ -122,7 +122,7 @@ function ChapterListNav() {
             .catch((error) => {
                 console.log(error)
             })
-    }
+    };
     React.useEffect(() => {getChapterList();}, []);
 
     const handlePageClick = (e) => {
@@ -131,9 +131,6 @@ function ChapterListNav() {
         setCurrentPage(selectedPage)
         setBottomPageVis(true)
     }
-
-    
-
 
     return (
         <div>
@@ -158,7 +155,7 @@ function ChapterListNav() {
                         disableInitialCallback={"true"}/>
                     <Navbar  className="ChapterList">
                         <Nav className={"flex-column"}>
-                            {chapterList.slice((currentPage * api.ch_limit),((currentPage * api.ch_limit) + 25)).map((chapter, index) => (
+                            {chapterList.slice((currentPage * api.ch_limit),((currentPage * api.ch_limit) + api.ch_limit)).map((chapter, index) => (
                                 <Nav.Item key={index}>
                                     <Nav.Link>
                                         <Link className="chapter" to={{pathname:`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`,
