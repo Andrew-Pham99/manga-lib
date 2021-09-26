@@ -128,7 +128,7 @@ const ch_limit = 25;
             url: base_url + '/chapter',
             responseType:'json',
             params: {
-                limit: ch_limit,
+                limit: 100,
                 translatedLanguage: ['en'],
                 order: {
                     chapter: 'asc'

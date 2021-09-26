@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import api from './api'
 import components from './components/components'
 import {useLocation, useHistory, Link} from 'react-router-dom'
@@ -23,8 +23,6 @@ function Info(props) {
         }
     })
     props.tags.forEach(tag => {
-        console.log("TAGS HERE:")
-        console.log(tag)
         if(tag.attributes.group === "theme"){
             themes.push(tag.attributes.name.en)
         }
@@ -40,7 +38,7 @@ function Info(props) {
         <Card style={{marginTop:20}}>
             <Row >
                 <Col xs={6} md={3}>
-                    <Card.Img class="img-fluid rounded"  src={props.img} ></Card.Img>
+                    <Card.Img className="img-fluid rounded"  src={props.img} ></Card.Img>
                 </Col>
                 <Col>
                     <Card.Body variant="right" className="card_body">
@@ -79,23 +77,46 @@ function ChapterListNav() {
     const [noChapters, setNoChapters] = React.useState(false);
 
     const getChapterList = () => {
-        setChapterList([])
+        let totalChapters, chaptersFetched = 0, remainingChaptersToFetch, offset = 100, totalOffset = 0, chapterArray = [], altArray = [];
+        setChapterList([]);
         setNoChapters(false);
         api.getChapterList({manga: context.state.id})
             .then((getChapterListResponse) => {
                 console.log(getChapterListResponse);
                 if(getChapterListResponse.data.data.length == 0){
                     setNoChapters(true);
+                    return;
                 }
+
+                totalChapters = getChapterListResponse.data.total;
+                chaptersFetched += getChapterListResponse.data.data.length;
+                remainingChaptersToFetch = totalChapters - chaptersFetched;
+                totalOffset += offset;
+                console.log("Total Chapters: " + (totalChapters) + "; Chapters Fetched: " + (chaptersFetched) + "; Remaining Chapters: " + (remainingChaptersToFetch) + ";");
+
                 getChapterListResponse.data.data.forEach((chapter, index) => {
-                    setChapterList(chapterList => [...chapterList, {data:chapter, relationships: chapter.relationships, result:chapter.result, listId:index}])
-                    console.log("CHAPTER LISTS")
-                    console.log(chapterList)
+                    setChapterList(chapterList => [...chapterList, {data:chapter, relationships: chapter.relationships, result:chapter.result, listId:(index)}])
                 })
-                console.log(getChapterListResponse)
-                setPageLength(Math.ceil(getChapterListResponse.data.total/api.ch_limit))
-                if(Math.ceil(getChapterListResponse.data.total/api.ch_limit) > 1) {
-                    setPageVis(true)
+                for(let i = 1; i < Math.ceil(remainingChaptersToFetch / chaptersFetched) + 1; i++){
+                    let thisOffset = totalOffset;
+                    api.getChapterList({manga: context.state.id, offset: totalOffset})
+                        .then((nextChapterListResponse) => {
+                            console.log(nextChapterListResponse);
+                            nextChapterListResponse.data.data.forEach((chapter, index) => {
+                                setChapterList(chapterList => [...chapterList, {data:chapter, relationships:chapter.relationships, result:chapter.result, listId:(index + thisOffset)}]);
+                            })
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+                    totalOffset += offset;
+                }
+
+                let pageLengthVal = Math.ceil(getChapterListResponse.data.total/api.ch_limit);
+                setPageLength(pageLengthVal);
+                if(pageLengthVal >= 1) {
+                    setPageVis(true);
+                    setBottomPageVis(true);
                 }
             })
             .catch((error) => {
@@ -106,18 +127,8 @@ function ChapterListNav() {
 
     const handlePageClick = (e) => {
         setBottomPageVis(false)
-        setChapterList([])
         const selectedPage = e.selected;
         setCurrentPage(selectedPage)
-        api.getChapterList({manga: context.state.id, offset:selectedPage*api.ch_limit})
-            .then((getChapterListResponse) => {
-                getChapterListResponse.data.data.forEach((chapter, index) => {
-                    setChapterList(chapterList => [...chapterList, {data:chapter, relationships: chapter.relationships, result:chapter.result, listId:index}])
-                })
-            })
-            .catch((error) => {
-                console.log(error)
-            })
         setBottomPageVis(true)
     }
 
@@ -125,7 +136,7 @@ function ChapterListNav() {
 
 
     return (
-        <div className>
+        <div>
             {noChapters ?
                 <p>No chapters could be found</p>
                 :
@@ -147,17 +158,17 @@ function ChapterListNav() {
                         disableInitialCallback={"true"}/>
                     <Navbar  className="ChapterList">
                         <Nav className={"flex-column"}>
-                            {chapterList.map((chapter, index) => (
+                            {chapterList.slice((currentPage * api.ch_limit),((currentPage * api.ch_limit) + 25)).map((chapter, index) => (
                                 <Nav.Item key={index}>
                                     <Nav.Link>
                                         <Link className="chapter" to={{pathname:`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`,
                                             state:{manga:context.state, curChapter:chapter, chapterList:chapterList}}}>
-                                        {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
-                                        `Chapter ${chapter.data.attributes.chapter}`}
+                                            {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
+                                                `Chapter ${chapter.data.attributes.chapter}`}
                                         </Link>
                                     </Nav.Link>
                                 </Nav.Item>
-                                ))}
+                            ))}
                         </Nav>
                     </Navbar>
                     <ReactPaginate
@@ -183,6 +194,7 @@ function ChapterListNav() {
 
 function MangaInfo() {
     const [context, setContext] = React.useState(useLocation());
+    console.log("Entering Manga Info");
     return (
         <div className="MangaInfo">
             <components.TopNavBar/>
