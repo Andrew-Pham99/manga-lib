@@ -16,21 +16,20 @@ function MangaCard(props){
     }
     return(
         <Card style={vis?{width: '25rem', marginLeft:10, marginBottom:10}:{width: '25rem', marginLeft:10, marginBottom:10, visibility:'visible'}} key={props.key} id={props.id}>
-            <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail"} width={100} height={550} onLoad={onLoad}/>
+            <Link to={{pathname:`/Info/manga=${props.id}`, state:props}}>
+                <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail"} width={100} height={550} onLoad={onLoad}/>
+            </Link>
             <Card.Body>
-                <Card.Title>
-                    {props.name}
-                </Card.Title>
+                <Link to={{pathname:`/Info/manga=${props.id}`, state:props}} style={{textDecoration: "none", color: "black"}}>
+                    <Card.Title>
+                        {props.name}
+                    </Card.Title>
+                </Link>
                 <Card.Text>
                     <div style={{overflowY:"auto", height:200, textAlign:"center"}}>
                         <p style={{fontSize:"smaller"}}>{props.description}</p>
                     </div>
                 </Card.Text>
-                <Link to={{pathname:`/Info/manga=${props.id}`, state:props}}>
-                    <Button variant={"primary"}>
-                        Read {props.name}
-                    </Button>
-                </Link>
             </Card.Body>
         </Card>
  
