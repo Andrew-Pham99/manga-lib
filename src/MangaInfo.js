@@ -3,7 +3,7 @@ import api from './api'
 import components from './components/components'
 import {useLocation, useHistory, Link} from 'react-router-dom'
 import './MangaInfo.css'
-import {Navbar, Nav, Container} from "react-bootstrap"
+import {Navbar, Nav, Container, Spinner} from "react-bootstrap"
 import {Card,Row, Col} from 'react-bootstrap'
 import ReactPaginate from 'react-paginate';
 
@@ -137,53 +137,61 @@ function ChapterListNav() {
             {noChapters ?
                 <p>No chapters could be found</p>
                 :
-                <div>
-                    <ReactPaginate
-                        previousLabel={"<"}
-                        nextLabel={">"}
-                        breakLabel={"..."}
-                        breakClassName={"break-me"}
-                        initialPage={0}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={5}
-                        pageCount={pageLength}
-                        forcePage={currentPage}
-                        containerClassName={(pageVis? "pagination" : "pagination hidden"  )}
-                        onPageChange={handlePageClick}
-                        subContainerClassName={"pages pagination"}
-                        activeClassName={"active"}
-                        disableInitialCallback={"true"}/>
-                    <Navbar  className="ChapterList">
-                        <Nav className={"flex-column"}>
-                            {chapterList.slice((currentPage * api.ch_limit),((currentPage * api.ch_limit) + api.ch_limit)).map((chapter, index) => (
-                                <Nav.Item key={index}>
-                                    <Nav.Link>
-                                        <Link className="chapter" to={{pathname:`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`,
-                                            state:{manga:context.state, curChapter:chapter, chapterList:chapterList}}}>
-                                            {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
-                                                `Chapter ${chapter.data.attributes.chapter}`}
-                                        </Link>
-                                    </Nav.Link>
-                                </Nav.Item>
-                            ))}
-                        </Nav>
-                    </Navbar>
-                    <ReactPaginate
-                    previousLabel={"<"}
-                    nextLabel={">"}
-                    breakLabel={"..."}
-                    breakClassName={"break-me"}
-                    initialPage={0}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
-                    pageCount={pageLength}
-                    forcePage={currentPage}
-                    containerClassName={(pageVis && bottomPageVis? "pagination" : "pagination hidden" )}
-                    onPageChange={handlePageClick}
-                    subContainerClassName={"pages pagination"}
-                    activeClassName={"active"}
-                    disableInitialCallback={"true"}/>
-                </div>
+                (pageVis ?
+                    <div>
+                        <ReactPaginate
+                            previousLabel={"<"}
+                            nextLabel={">"}
+                            breakLabel={"..."}
+                            breakClassName={"break-me"}
+                            initialPage={0}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={5}
+                            pageCount={pageLength}
+                            forcePage={currentPage}
+                            containerClassName={(pageVis? "pagination" : "pagination hidden"  )}
+                            onPageChange={handlePageClick}
+                            subContainerClassName={"pages pagination"}
+                            activeClassName={"active"}
+                            disableInitialCallback={"true"}/>
+                        <Navbar  className="ChapterList">
+                            <Nav className={"flex-column"}>
+                                {chapterList.slice((currentPage * api.ch_limit),((currentPage * api.ch_limit) + api.ch_limit)).map((chapter, index) => (
+                                    <Nav.Item key={index}>
+                                        <Nav.Link>
+                                            <Link className="chapter" to={{pathname:`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`,
+                                                state:{manga:context.state, curChapter:chapter, chapterList:chapterList}}}>
+                                                {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
+                                                    `Chapter ${chapter.data.attributes.chapter}`}
+                                            </Link>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                ))}
+                            </Nav>
+                        </Navbar>
+                        <ReactPaginate
+                            previousLabel={"<"}
+                            nextLabel={">"}
+                            breakLabel={"..."}
+                            breakClassName={"break-me"}
+                            initialPage={0}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={5}
+                            pageCount={pageLength}
+                            forcePage={currentPage}
+                            containerClassName={(pageVis && bottomPageVis? "pagination" : "pagination hidden" )}
+                            onPageChange={handlePageClick}
+                            subContainerClassName={"pages pagination"}
+                            activeClassName={"active"}
+                            disableInitialCallback={"true"}/>
+                    </div>
+                    :
+                    <Container align={"center"} style={{marginTop:30}}>
+                        <Spinner animation={"border"} role={"status"} variant={"primary"}>
+                            <span className={"visually-hidden"}>Loading...</span>
+                        </Spinner>
+                    </Container>
+                )
             }
         </div>
     );
