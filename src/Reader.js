@@ -158,6 +158,8 @@ function ChapterImages() {
         return (
             <div style={{marginBottom:100}} id={"readerWindow"}>
                 <Container className={"border border-dark position-relative"}>
+                    {/*TODO : Make the buttons span to half of the container and make the*/}
+                    {/*        container height as close to the default height of the image as possible*/}
                     {chapterImgUrlList[curPage] != undefined ?
                         <div>
                             <Button variant={"outline-primary"} className={"position-absolute top-0 start-0 flex-shrink-1 h-100"} onClick={prevImage}>{chapterImgUrlList[curPage].index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
@@ -239,6 +241,10 @@ function ChapterListHamburgerMenu() {
 
 function Reader() {
     const context = useLocation();
+    if(context.state == undefined){
+        context.state = JSON.parse(localStorage.getItem("READER_STATE"));
+        localStorage.removeItem("READER_STATE");
+    }
     React.useEffect(()=> console.log(context),[context]);
     return (
         // TODO : Style this whole page

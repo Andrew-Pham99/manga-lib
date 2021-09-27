@@ -6,25 +6,35 @@ import api from './api';
 import components from './components/components';
 import {Container, Spinner} from "react-bootstrap";
 import Grid from '@material-ui/core/Grid';
-import {Link, useLocation} from 'react-router-dom';
+import {Link, useLocation, useHistory} from 'react-router-dom';
 
 function MangaCard(props){
     const [vis, setVis] = React.useState(false)
+    const [history, setHistory] = React.useState(useHistory());
 
     const onLoad = () => {
         setVis(true)
-    }
+    };
+
+    const handleMangaClick = () => {
+        history.push({pathname:`/Info/manga=${props.id}`, state:props})
+    };
+
+    const handleMouseDown = (event) => {
+        console.log(event)
+        if(event.button == 1){
+            localStorage.setItem("MANGAINFO_STATE", JSON.stringify(props));
+            window.open(`/Info/manga=${props.id}`);
+        }
+    };
+
     return(
         <Card style={vis?{width: '25rem', marginLeft:10, marginBottom:10}:{width: '25rem', marginLeft:10, marginBottom:10, visibility:'visible'}} key={props.key} id={props.id}>
-            <Link to={{pathname:`/Info/manga=${props.id}`, state:props}}>
-                <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail"} width={100} height={550} onLoad={onLoad}/>
-            </Link>
+            <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail clickable"} width={100} height={550} onLoad={onLoad} onClick={handleMangaClick} onMouseDown={handleMouseDown}/>
             <Card.Body>
-                <Link to={{pathname:`/Info/manga=${props.id}`, state:props}} style={{textDecoration: "none", color: "black"}}>
-                    <Card.Title>
-                        {props.name}
-                    </Card.Title>
-                </Link>
+                <Card.Title onClick={handleMangaClick} onMouseDown={handleMouseDown} className={"clickable"}>
+                    {props.name}
+                </Card.Title>
                 <Card.Text>
                     <div style={{overflowY:"auto", height:200, textAlign:"center"}}>
                         <p style={{fontSize:"smaller"}}>{props.description}</p>
@@ -201,6 +211,11 @@ function SearchBar(){
 }
 
 function App() {
+    const context = useLocation();
+    if(context.state == undefined){
+        context.state = JSON.parse(localStorage.getItem("SEARCH_STATE"));
+        localStorage.removeItem("SEARCH_STATE");
+    }
     return (
         <div className="search-manga">
             <components.TopBar/>

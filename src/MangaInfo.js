@@ -6,6 +6,7 @@ import './MangaInfo.css'
 import {Navbar, Nav, Container, Spinner} from "react-bootstrap"
 import {Card,Row, Col} from 'react-bootstrap'
 import ReactPaginate from 'react-paginate';
+import {stringify} from "qs";
 
 
 function Info(props) {
@@ -69,6 +70,7 @@ function Info(props) {
 
 function ChapterListNav() {
     const [context, setContext] = React.useState(useLocation());
+    const [history, setHistory] = React.useState(useHistory());
     const [chapterList, setChapterList] = React.useState([]);
     const [pageLength, setPageLength] = React.useState(0);
     const [currentPage, setCurrentPage] = React.useState(0);
@@ -131,6 +133,15 @@ function ChapterListNav() {
         setCurrentPage(selectedPage)
         setBottomPageVis(true)
     }
+    const handleChapterChange = (chapter, context, history) => {
+        history.push({pathname:`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`, state:{manga:context.state, curChapter:chapter, chapterList:chapterList}});
+    };
+    const handleMouseDown = (event, chapter, context, history) => {
+        if(event.button == 1){
+            localStorage.setItem("READER_STATE", JSON.stringify({manga:context.state, curChapter:chapter, chapterList:chapterList}))
+            window.open(`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`)
+        }
+    };
 
     return (
         <div>
@@ -157,13 +168,10 @@ function ChapterListNav() {
                         <Navbar  className="ChapterList">
                             <Nav className={"flex-column"}>
                                 {chapterList.slice((currentPage * api.ch_limit),((currentPage * api.ch_limit) + api.ch_limit)).map((chapter, index) => (
-                                    <Nav.Item key={index}>
+                                    <Nav.Item key={index}  onClick={() => handleChapterChange(chapter, context, history)} onMouseDown={(event) => handleMouseDown(event, chapter, context, history)}>
                                         <Nav.Link>
-                                            <Link className="chapter" to={{pathname:`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`,
-                                                state:{manga:context.state, curChapter:chapter, chapterList:chapterList}}}>
-                                                {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
-                                                    `Chapter ${chapter.data.attributes.chapter}`}
-                                            </Link>
+                                            {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
+                                                `Chapter ${chapter.data.attributes.chapter}`}
                                         </Nav.Link>
                                     </Nav.Item>
                                 ))}
@@ -198,7 +206,11 @@ function ChapterListNav() {
 }
 
 function MangaInfo() {
-    const [context, setContext] = React.useState(useLocation());
+    const context = useLocation();
+    if(context.state == undefined){
+        context.state = JSON.parse(localStorage.getItem("MANGAINFO_STATE"));
+        localStorage.removeItem("MANGAINFO_STATE");
+    }
     console.log("Entering Manga Info");
     return (
         <div className="MangaInfo">

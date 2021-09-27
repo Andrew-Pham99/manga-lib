@@ -70,15 +70,32 @@ const TopNavBar = () => {
     const gotoAdvancedSearch = () => {
         history.push(`/AdvancedSearch`);
     };
+    const gotoAdvancedSearchNewTab = (event) => {
+        if(event.button == 1){
+            window.open(`/AdvancedSearch`);
+        }
+    };
     const handleChange = (e) => {
         setSearchObject({...searchObject, [e.target.name]: e.target.value});
     };
     const TopNavBarSearch = () => {
         history.push({pathname:`/`, state:{searchObject:searchObject}});
     };
-    const TopNavBarRandSearch = () => {
-        history.push({pathname:`/`, state:{searchObject:{...searchObject, rand: true}}})
+    const TopNavBarSearchNewTab = (event) => {
+        if(event.button == 1){
+            localStorage.setItem("SEARCH_STATE", JSON.stringify({searchObject:searchObject}));
+            window.open(`/`);
+        }
     };
+    const TopNavBarRandSearch = () => {
+        history.push({pathname:`/`, state:{searchObject:{...searchObject, rand: true}}});
+    };
+    const TopNavBarRandSearchNewTab = (event) => {
+        if(event.button == 1){
+            localStorage.setItem("SEARCH_STATE", JSON.stringify({searchObject:{...searchObject, rand:true}}));
+            window.open(`/`);
+        }
+    }
     React.useEffect(()=>{console.log(searchObject);},[searchObject])
 
     return (
@@ -104,13 +121,13 @@ const TopNavBar = () => {
                                 </Form.Group>
                             </Col>
                             <Col lg={"auto"}>
-                                <Button variant="primary" type="submit">Search</Button>
+                                <Button variant="primary" type="submit" onMouseDown={TopNavBarSearchNewTab}>Search</Button>
                             </Col>
                             <Col lg={"auto"}>
-                                <Button variant="primary" onClick={TopNavBarRandSearch}>Random</Button>
+                                <Button variant="primary" onClick={TopNavBarRandSearch} onMouseDown={TopNavBarRandSearchNewTab}>Random</Button>
                             </Col>
                             <Col lg={"auto"}>
-                                <Button variant={"secondary"} onClick={gotoAdvancedSearch}>Advanced Search</Button>
+                                <Button variant={"secondary"} onClick={gotoAdvancedSearch} onMouseDown={gotoAdvancedSearchNewTab}>Advanced Search</Button>
                             </Col>
                         </Row>
                     </Form>
