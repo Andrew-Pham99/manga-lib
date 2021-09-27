@@ -25,6 +25,18 @@ function AdvancedSearchFields() {
 
     const getAllTags = () => {
         // This function grabs all the tags from the api then sorts each tag into its own hook depending on the type
+        const compareFunc = (a, b) => {
+            let aName = a.name.toUpperCase(), bName = b.name.toUpperCase();
+            if(aName < bName){
+                return -1;
+            }
+            else if(aName > bName){
+                return 1;
+            }
+            else {
+                return 0;
+            }
+        };
         setGenreTags([]);
         setThemeTags([]);
         setFormatTags([]);
@@ -65,14 +77,56 @@ function AdvancedSearchFields() {
                         default:
                             break;
                     }
-                    setTagsFetched(true);
+
                 })
+                setGenreTags(genreTags => genreTags.sort(function(a,b){
+                    let aName = a.name.toUpperCase(), bName = b.name.toUpperCase();
+                    if(aName < bName){
+                        return -1;
+                    }
+                    if(aName > bName){
+                        return 1;
+                    }
+                        return 0;
+                }));
+                setThemeTags(themeTags => themeTags.sort(function(a,b){
+                    let aName = a.name.toUpperCase(), bName = b.name.toUpperCase();
+                    if(aName < bName){
+                        return -1;
+                    }
+                    if(aName > bName){
+                        return 1;
+                    }
+                    return 0;
+                }));
+                setFormatTags(formatTags => formatTags.sort(function(a,b){
+                    let aName = a.name.toUpperCase(), bName = b.name.toUpperCase();
+                    if(aName < bName){
+                        return -1;
+                    }
+                    if(aName > bName){
+                        return 1;
+                    }
+                    return 0;
+                }));
+                setContentTags(contentTags => contentTags.sort(function(a,b){
+                    let aName = a.name.toUpperCase(), bName = b.name.toUpperCase();
+                    if(aName < bName){
+                        return -1;
+                    }
+                    if(aName > bName){
+                        return 1;
+                    }
+                    return 0;
+                }));
+                setTagsFetched(true);
             })
             .catch((error) => {
                 console.log(error);
             })
     };
     React.useLayoutEffect(() => {getAllTags();}, []);
+    React.useEffect(() => {console.log(genreTags)}, [genreTags])
     const handleTitleChange = (event) => {
         // Sets the title field of the searchObject
         setSearchObject({...searchObject, [event.target.name]: event.target.value});
@@ -163,7 +217,16 @@ function AdvancedSearchFields() {
                             <Form.Group controlId={"includedGenreTags"}>
                                 <Form.Label>Genres</Form.Label><br/>
                                 <Row lg={"10"}>
-                                    {genreTags.map((tag, index) => {
+                                    {genreTags.sort(function(a,b){
+                                        let aName = a.name.toUpperCase(), bName = b.name.toUpperCase();
+                                        if(aName < bName){
+                                            return -1;
+                                        }
+                                        if(aName > bName){
+                                            return 1;
+                                        }
+                                        return 0;
+                                    }).map((tag, index) => {
                                         return (
                                             <Col lg={"2"} key={index}>
                                                 <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
@@ -175,7 +238,16 @@ function AdvancedSearchFields() {
                             <Form.Group controlId={"includedThemeTags"}>
                                 <Form.Label>Themes</Form.Label><br/>
                                 <Row lg={"10"}>
-                                    {themeTags.map((tag, index) => {
+                                    {themeTags.sort(function(a,b){
+                                        let aName = a.name.toUpperCase(), bName = b.name.toUpperCase();
+                                        if(aName < bName){
+                                            return -1;
+                                        }
+                                        if(aName > bName){
+                                            return 1;
+                                        }
+                                        return 0;
+                                    }).map((tag, index) => {
                                         return (
                                             <Col lg={"2"} key={index}>
                                                 <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
@@ -187,7 +259,16 @@ function AdvancedSearchFields() {
                             <Form.Group controlId={"includedFormatTags"}>
                                 <Form.Label>Formats</Form.Label><br/>
                                 <Row lg={"10"}>
-                                    {formatTags.map((tag, index) => {
+                                    {formatTags.sort(function(a,b){
+                                        let aName = a.name.toUpperCase(), bName = b.name.toUpperCase();
+                                        if(aName < bName){
+                                            return -1;
+                                        }
+                                        if(aName > bName){
+                                            return 1;
+                                        }
+                                        return 0;
+                                    }).map((tag, index) => {
                                         return (
                                             <Col lg={"2"} key={index}>
                                                 <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
@@ -199,7 +280,16 @@ function AdvancedSearchFields() {
                             <Form.Group controlId={"includedContentTags"}>
                                 <Form.Label>Content</Form.Label><br/>
                                 <Row lg={"10"}>
-                                    {contentTags.map((tag, index) => {
+                                    {contentTags.sort(function(a,b){
+                                        let aName = a.name.toUpperCase(), bName = b.name.toUpperCase();
+                                        if(aName < bName){
+                                            return -1;
+                                        }
+                                        if(aName > bName){
+                                            return 1;
+                                        }
+                                        return 0;
+                                    }).map((tag, index) => {
                                         return (
                                             <Col lg={"2"} key={index}>
                                                 <Form.Check inline key={index} type={"checkbox"} onChange={handleIncludedTagChange} label={tag.name} name={tag.name} id={"included" + tag.name} tagid={tag.id}/>
@@ -215,7 +305,16 @@ function AdvancedSearchFields() {
                             <Form.Group controlId={"excludedGenreTags"}>
                                 <Form.Label>Genres</Form.Label><br/>
                                     <Row lg={"10"}>
-                                        {genreTags.map((tag, index) => {
+                                        {genreTags.sort(function(a,b){
+                                            let aName = a.name.toUpperCase(), bName = b.name.toUpperCase();
+                                            if(aName < bName){
+                                                return -1;
+                                            }
+                                            if(aName > bName){
+                                                return 1;
+                                            }
+                                            return 0;
+                                        }).map((tag, index) => {
                                             return (
                                                 <Col lg={"2"} key={index}>
                                                     <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
@@ -227,7 +326,16 @@ function AdvancedSearchFields() {
                             <Form.Group controlId={"excludedThemeTags"}>
                                 <Form.Label>Themes</Form.Label><br/>
                                 <Row lg={"10"}>
-                                    {themeTags.map((tag, index) => {
+                                    {themeTags.sort(function(a,b){
+                                        let aName = a.name.toUpperCase(), bName = b.name.toUpperCase();
+                                        if(aName < bName){
+                                            return -1;
+                                        }
+                                        if(aName > bName){
+                                            return 1;
+                                        }
+                                        return 0;
+                                    }).map((tag, index) => {
                                         return (
                                             <Col lg={"2"} key={index}>
                                                 <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
@@ -239,7 +347,16 @@ function AdvancedSearchFields() {
                             <Form.Group controlId={"excludedFormatTags"}>
                                 <Form.Label>Formats</Form.Label><br/>
                                 <Row lg={"10"}>
-                                    {formatTags.map((tag, index) => {
+                                    {formatTags.sort(function(a,b){
+                                        let aName = a.name.toUpperCase(), bName = b.name.toUpperCase();
+                                        if(aName < bName){
+                                            return -1;
+                                        }
+                                        if(aName > bName){
+                                            return 1;
+                                        }
+                                        return 0;
+                                    }).map((tag, index) => {
                                         return (
                                             <Col lg={"2"} key={index}>
                                                 <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
@@ -251,7 +368,16 @@ function AdvancedSearchFields() {
                             <Form.Group controlId={"excludedContentTags"}>
                                 <Form.Label>Content</Form.Label><br/>
                                 <Row lg={"10"}>
-                                    {contentTags.map((tag, index) => {
+                                    {contentTags.sort(function(a,b){
+                                        let aName = a.name.toUpperCase(), bName = b.name.toUpperCase();
+                                        if(aName < bName){
+                                            return -1;
+                                        }
+                                        if(aName > bName){
+                                            return 1;
+                                        }
+                                        return 0;
+                                    }).map((tag, index) => {
                                         return (
                                             <Col lg={"2"} key={index}>
                                                 <Form.Check inline key={index} type={"checkbox"} onChange={handleExcludedTagChange} label={tag.name} name={tag.name} id={"excluded" + tag.name} tagid={tag.id}/>
