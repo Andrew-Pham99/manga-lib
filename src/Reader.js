@@ -41,6 +41,12 @@ function HandleChapterChange(newChapter, context, history){
     // history is the object returned by a call to useHistory()
     history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
 }
+function HandleChapterChangeNewTab(event, newChapter, context, history){
+    if(event.button == 1){
+        localStorage.setItem("READER_STATE", JSON.stringify({manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}));
+        window.open(`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`);
+    }
+}
 
 function ChapterImages() {
     const context = useLocation();
@@ -77,6 +83,12 @@ function ChapterImages() {
     };
     const goToMangaInfo = () => {
         history.push({pathname:`/Info/manga=${context.state.manga.id}`, state:context.state.manga});
+    };
+    const goToMangaInfoNewTab = (event) => {
+        if(event.button == 1){
+            localStorage.setItem("MANGAINFO_STATE", JSON.stringify(context.state.manga));
+            window.open(`/Info/manga=${context.state.manga.id}`);
+        }
     };
     function ZoomBar(){
         // TODO : Add tooltip to display value of zoom
@@ -181,7 +193,7 @@ function ChapterImages() {
     return (
         <div>
             <Container className={"border border-dark position-relative"}>
-                <Button variant={"primary"} onClick={() => goToMangaInfo()} className={"position-absolute start-0"}>Back to MangaInfo</Button>
+                <Button variant={"primary"} onClick={() => goToMangaInfo()} onMouseDown={(event) => goToMangaInfoNewTab(event)} className={"position-absolute start-0"}>Back to MangaInfo</Button>
                 <Button variant={isScroll ? "primary" : "success"} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
             </Container>
             {isScroll ?
@@ -205,10 +217,10 @@ function NextChapterButtons() {
     // TODO : Style this element and figure out where to put it on the reader that makes sense
     return (
         <div>
-            <Button onClick={() => HandleChapterChange(FindPrevChapter(context), context, history)}>
+            <Button onClick={() => HandleChapterChange(FindPrevChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindPrevChapter(context), context, history)}>
                 Prev Chapter
             </Button>
-            <Button onClick={() => HandleChapterChange(FindNextChapter(context), context, history)}>
+            <Button onClick={() => HandleChapterChange(FindNextChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindNextChapter(context), context, history)}>
                 Next Chapter
             </Button>
         </div>
