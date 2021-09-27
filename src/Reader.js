@@ -81,7 +81,6 @@ function ChapterImages() {
     function ZoomBar(){
         // TODO : Add tooltip to display value of zoom
         // TODO : Make the zoom bar toggle-able so that it may be hidden
-        // TODO : Add a reset button to reset the zoom value
         const handleChange = (event) => {
             console.log(event.target.value);
             if(isScroll){
@@ -93,8 +92,8 @@ function ChapterImages() {
                 pageZoomVal = parseFloat(event.target.value);
             }
         };
-        const resetZoom = (event) => {
-
+        const resetZoom = () => {
+            isScroll ? setScrollZoom(defaultZoom) : setPageZoom(defaultZoom);
         };
         return (
             <div className={"position-relative bottom-0"}>
@@ -104,7 +103,7 @@ function ChapterImages() {
                             <Form className={"flex-fill"} style={{marginLeft:10, marginRight:10}}>
                                 <Form.Label>Zoom</Form.Label>
                                 <Form.Range min={"1"} max={"19"} defaultValue={isScroll ? scrollZoomVal : pageZoomVal} step={".5"} onChange={handleChange} id={"zoom"} name={"zoom"}/>
-                                {/*<Button variant={"primary"} onClick={() => resetZoom()}>Reset</Button>*/}
+                                <Button variant={"primary"} onClick={resetZoom}>Reset</Button>
                             </Form>
                         </Navbar>
                     </Container>
@@ -153,16 +152,16 @@ function ChapterImages() {
         const handleKeyDown = (event) => {
             console.log(event);
             // TODO : Make left and right arrow keys change the current chapter image
-            // Need to handle key presses on the document so that the the onClick event can be triggered
+            //          Need to handle key presses on the document so that the the onClick event can be triggered
 
         };
         return (
-            <div style={{marginBottom:100}}>
-                <Container className={"border border-dark position-relative "}>
+            <div style={{marginBottom:100}} id={"readerWindow"}>
+                <Container className={"border border-dark position-relative"}>
                     {chapterImgUrlList[curPage] != undefined ?
                         <div>
                             <Button variant={"outline-primary"} className={"position-absolute top-0 start-0 flex-shrink-1 h-100"} onClick={prevImage}>{chapterImgUrlList[curPage].index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
-                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 50}%`}} className={"border border-dark flex-grow-1 mw-100"}/>
+                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 50}%`}} className={"border border-dark mw-100"}/>
                             <Button variant={"outline-primary"} className={"position-absolute top-0 end-0 flex-shrink-1 h-100"} onClick={nextImage}>{chapterImgUrlList[curPage].index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
                         </div>
                         :
