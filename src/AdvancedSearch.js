@@ -25,18 +25,6 @@ function AdvancedSearchFields() {
 
     const getAllTags = () => {
         // This function grabs all the tags from the api then sorts each tag into its own hook depending on the type
-        const compareFunc = (a, b) => {
-            let aName = a.name.toUpperCase(), bName = b.name.toUpperCase();
-            if(aName < bName){
-                return -1;
-            }
-            else if(aName > bName){
-                return 1;
-            }
-            else {
-                return 0;
-            }
-        };
         setGenreTags([]);
         setThemeTags([]);
         setFormatTags([]);
@@ -126,7 +114,6 @@ function AdvancedSearchFields() {
             })
     };
     React.useLayoutEffect(() => {getAllTags();}, []);
-    React.useEffect(() => {console.log(genreTags)}, [genreTags])
     const handleTitleChange = (event) => {
         // Sets the title field of the searchObject
         setSearchObject({...searchObject, [event.target.name]: event.target.value});
