@@ -41,7 +41,10 @@ function HandleChapterChange(newChapter, context, history){
     // history is the object returned by a call to useHistory()
     history.push({pathname:`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`, state:{manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}});
 }
-function HandleChapterChangeNewTab(event, newChapter, context, history){
+function HandleChapterChangeNewTab(event, newChapter, context){
+    // event is passed from the DOM event handler
+    // newChapter is the chapter object you wish to switch to
+    // context is the object returned by a call to useLocation()
     if(event.button == 1){
         localStorage.setItem("READER_STATE", JSON.stringify({manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}));
         window.open(`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`);
@@ -217,10 +220,10 @@ function NextChapterButtons() {
     // TODO : Style this element and figure out where to put it on the reader that makes sense
     return (
         <div>
-            <Button onClick={() => HandleChapterChange(FindPrevChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindPrevChapter(context), context, history)}>
+            <Button onClick={() => HandleChapterChange(FindPrevChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindPrevChapter(context), context)}>
                 Prev Chapter
             </Button>
-            <Button onClick={() => HandleChapterChange(FindNextChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindNextChapter(context), context, history)}>
+            <Button onClick={() => HandleChapterChange(FindNextChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindNextChapter(context), context)}>
                 Next Chapter
             </Button>
         </div>
