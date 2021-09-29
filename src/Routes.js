@@ -1,5 +1,5 @@
 import React from 'react'
-import {Route, Switch, Link, Router} from 'react-router-dom'
+import {Route, Switch} from 'react-router-dom'
 import App from "./App"
 import MangaInfo from "./MangaInfo"
 import Reader from "./Reader"
