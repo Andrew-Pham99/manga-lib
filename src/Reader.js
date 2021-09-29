@@ -62,6 +62,8 @@ function ChapterImages() {
     const defaultZoom = 10.0;
     const [scrollZoom, setScrollZoom] = React.useState(defaultZoom);
     const [pageZoom, setPageZoom] = React.useState(defaultZoom);
+    const [showZoom, setShowZoom] = React.useState(false);
+    //React.useEffect(() => {localStorage.setItem("SHOW_ZOOM_BAR", showZoom ? "true" : "false");}, [showZoom]);
     let pageZoomVal = pageZoom, scrollZoomVal = scrollZoom;
 
     const getChapterImages = (chapterId) => {
@@ -95,7 +97,6 @@ function ChapterImages() {
     };
     function ZoomBar(){
         // TODO : Add tooltip to display value of zoom
-        // TODO : Make the zoom bar toggle-able so that it may be hidden
         const handleChange = (event) => {
             console.log(event.target.value);
             if(isScroll){
@@ -110,11 +111,18 @@ function ChapterImages() {
         const resetZoom = () => {
             isScroll ? setScrollZoom(defaultZoom) : setPageZoom(defaultZoom);
         };
+        const toggleZoomOn = () => {
+            setShowZoom(true);
+        };
+        const toggleZoomOff = () => {
+            setShowZoom(false);
+        }
+
         return (
-            <div className={"position-relative bottom-0"}>
+            <div className={"position-relative bottom-0"} onMouseEnter={toggleZoomOn} onMouseLeave={toggleZoomOff}>
                 <Navbar fixed={"bottom"}>
                     <Container>
-                        <Navbar bg={"light"} className={"flex-fill"}>
+                        <Navbar bg={"light"} className={"flex-fill"} style={{visibility: showZoom ? "visible" : "hidden"}}>
                             <Form className={"flex-fill"} style={{marginLeft:10, marginRight:10}}>
                                 <Form.Label>Zoom</Form.Label>
                                 <Form.Range min={"1"} max={"19"} defaultValue={isScroll ? scrollZoomVal : pageZoomVal} step={".5"} onChange={handleChange} id={"zoom"} name={"zoom"}/>
@@ -171,15 +179,15 @@ function ChapterImages() {
 
         };
         return (
-            <div style={{marginBottom:100}} id={"readerWindow"}>
-                <Container className={"border border-dark position-relative"}>
+            <div id={"readerWindow"}>
+                <Container className={"border border-dark position-relative"} fluid>
                     {/*TODO : Make the buttons span to half of the container and make the*/}
                     {/*        container height as close to the default height of the image as possible*/}
                     {chapterImgUrlList[curPage] != undefined ?
                         <div>
-                            <Button variant={"outline-primary"} className={"position-absolute top-0 start-0 flex-shrink-1 h-100"} onClick={prevImage}>{chapterImgUrlList[curPage].index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
-                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 50}%`}} className={"border border-dark mw-100"}/>
-                            <Button variant={"outline-primary"} className={"position-absolute top-0 end-0 flex-shrink-1 h-100"} onClick={nextImage}>{chapterImgUrlList[curPage].index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
+                            <Button variant={"outline-primary"} className={"position-absolute top-0 start-0 flex-shrink-1 h-100 w-25"} onClick={prevImage} onContextMenu={(e) => console.log(e)}>{chapterImgUrlList[curPage].index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
+                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} /*style={{width: `${(pageZoom / 10) * 50}%`}}*/ className={"border border-dark vh-100 mw-100"} onContextMenu={(e) => console.log(e)}/>
+                            <Button variant={"outline-primary"} className={"position-absolute top-0 end-0 flex-shrink-1 h-100 w-25"} onClick={nextImage}>{chapterImgUrlList[curPage].index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
                         </div>
                         :
                         <Container style={{align:'center'}}>
@@ -269,9 +277,9 @@ function Reader() {
                 <components.TopNavBar/>
                 <Container fluid>
                     <h1>You are reading {context.state.manga.name}: Chapter
-                        {` ` + context.state.curChapter.data.attributes.chapter} -
+                        {` ` + context.state.curChapter.data.attributes.chapter}
                         {context.state.curChapter.data.attributes.title !== "" ?
-                            ` ${context.state.curChapter.data.attributes.title}`
+                            ` - ${context.state.curChapter.data.attributes.title}`
                             :
                             ``
                         }
