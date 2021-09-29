@@ -52,6 +52,8 @@ function HandleChapterChangeNewTab(event, newChapter, context){
 }
 
 function ChapterImages() {
+
+
     const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
     const [chapterImgUrlList, setChapterImgUrlList] = React.useState([]);
@@ -151,7 +153,31 @@ function ChapterImages() {
     function ChapterClick() {
         // This function will handle the rendering of the click version of the chapter
         // TODO : Make it so that clicking on the right of the image will go to the next image, and the left goes to the previous
+        document.onkeydown = checkKey;
 
+        function checkKey(e) {
+            e = e || window.event;
+            if (e.keyCode == '37') {
+               // left arrow
+               // HandleChapterChange(FindPrevChapter(context), context, history)
+               prevImage()
+            }
+            else if (e.keyCode == '39') {
+               // right arrow
+               nextImage()
+            }
+
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === "ArrowRight") {
+                HandleChapterChange(FindNextChapter(context),context, history);
+            }
+            else if (event.ctrlKey && event.key === "ArrowLeft") {
+                HandleChapterChange(FindPrevChapter(context),context, history);
+            }
+          });
+        
         const nextImage = () => {
             if(chapterImgUrlList[curPage].index < chapterImgUrlList.length - 1){
                 console.log("Going to page: " + (chapterImgUrlList[curPage].index + 1));
