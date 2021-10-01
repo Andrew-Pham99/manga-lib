@@ -78,7 +78,7 @@ function ChapterListNav() {
     const [noChapters, setNoChapters] = React.useState(false);
 
     const getChapterList = () => {
-        let totalChapters, chaptersFetched = 0, remainingChaptersToFetch, offset = 100, totalOffset = 0, chapterArray = [], altArray = [];
+        let totalChapters, chaptersFetched = 0, remainingChaptersToFetch, offset = 100, totalOffset = 0;
         setChapterList([]);
         setNoChapters(false);
         api.getChapterList({manga: context.state.id})
