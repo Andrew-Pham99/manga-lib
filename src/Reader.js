@@ -4,7 +4,6 @@ import {useLocation, useHistory} from "react-router-dom";
 import {Container, Image, Navbar, Nav, Button, Spinner, Form, Row, Col, OverlayTrigger, Tooltip} from "react-bootstrap";
 import components from "./components/components";
 import { slide as Menu } from "react-burger-menu";
-import "react-step-progress-bar/styles.css"
 import './Reader.css';
 
 function FindNextChapter(context){
