@@ -196,16 +196,28 @@ function ChapterImages() {
             //          Need to handle key presses on the document so that the the onClick event can be triggered
 
         };
+
+        /*
+        sandwiched the img src
+        <Button variant={"outline-primary"} className={"position-absolute top-0 start-0 flex-shrink-1 h-100"} onClick={prevImage}>{chapterImgUrlList[curPage].index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
+        <Button variant={"outline-primary"} className={"position-absolute top-0 end-0 flex-shrink-1 h-100"} onClick={nextImage}>{chapterImgUrlList[curPage].index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
+        */
         return (
             <div style={{marginBottom:100}} id={"readerWindow"}>
-                <Container className={"border border-dark position-relative"}>
+                <Container className={"border border-white position-relative"}>
                     {/*TODO : Make the buttons span to half of the container and make the*/}
                     {/*        container height as close to the default height of the image as possible*/}
                     {chapterImgUrlList[curPage] != undefined ?
                         <div>
-                            <Button variant={"outline-primary"} className={"position-absolute top-0 start-0 flex-shrink-1 h-100"} onClick={prevImage}>{chapterImgUrlList[curPage].index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
-                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 50}%`}} className={"border border-dark mw-100"}/>
-                            <Button variant={"outline-primary"} className={"position-absolute top-0 end-0 flex-shrink-1 h-100"} onClick={nextImage}>{chapterImgUrlList[curPage].index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
+                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 50}%`, margin:"auto"}} className={"border border-dark mw-100"} />
+                            
+                            <Button type="submit" style={{ float: "left",    background:"transparent", border:"none", color:"transparent" 
+                            ,boxShadow:"none",height: "100%", width:"50%", position:"absolute", top:0, left:0}}
+                                onClick={prevImage} />
+
+                            <Button type="submit" style={{ float: "right", background:"transparent", border:"none", color:"transparent" 
+                            ,boxShadow:"none",height: "100%", width:"50%", position:"absolute", top:0, left:"50%"}}
+                                onClick={nextImage}/>
                         </div>
                         :
                         <Container style={{align:'center'}}>
@@ -219,11 +231,14 @@ function ChapterImages() {
         );
     }
 
+    /* <Button variant={"primary"} className={"position-absoute start--1"} onClick={() => {navigator.clipboard.writeText(chapterImgUrlList[curPage].url)}}> Copy Panel </Button>
+    */
     return (
-        <div>
-            <Container className={"border border-dark position-relative"}>
+        <div style={{marginTop:10}}>
+            <Container className={"position-relative"}>
                 <Button variant={"primary"} onClick={() => goToMangaInfo()} onMouseDown={(event) => goToMangaInfoNewTab(event)} className={"position-absolute start-0"}>Back to MangaInfo</Button>
-                <Button variant={isScroll ? "primary" : "success"} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
+                    <Button variant={"primary"} className={"position-absolute"} style={{right:"10px"}} onClick={() => {navigator.clipboard.writeText(chapterImgUrlList[curPage].url)}}> Copy Panel </Button>
+                <Button variant={isScroll ? "primary" : "success"} style={{textAlign:"center"}} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
             </Container>
             {isScroll ?
                 <div>
@@ -246,7 +261,7 @@ function NextChapterButtons() {
     // TODO : Style this element and figure out where to put it on the reader that makes sense
     return (
         <div>
-            <Button onClick={() => HandleChapterChange(FindPrevChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindPrevChapter(context), context)}>
+            <Button style={{marginRight: 10}} onClick={() => HandleChapterChange(FindPrevChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindPrevChapter(context), context)}>
                 Prev Chapter
             </Button>
             <Button onClick={() => HandleChapterChange(FindNextChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindNextChapter(context), context)}>
@@ -294,7 +309,7 @@ function Reader() {
             <div id="page-wrap">
                 <components.TopNavBar/>
                 <Container fluid>
-                    <h1>You are reading {context.state.manga.name}: Chapter
+                    <h1>{context.state.manga.name}: Chapter
                         {` ` + context.state.curChapter.data.attributes.chapter} -
                         {context.state.curChapter.data.attributes.title !== "" ?
                             ` ${context.state.curChapter.data.attributes.title}`
