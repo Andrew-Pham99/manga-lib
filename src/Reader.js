@@ -259,9 +259,9 @@ function ChapterImages() {
                 :
                 <div>
                     <ChapterClick/>
+                    <ChapterProgress/>
                 </div>
             }
-            <ChapterProgress/>
             <ZoomBar/>
         </div>
     );
