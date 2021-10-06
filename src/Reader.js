@@ -1,13 +1,10 @@
 import React from "react";
 import api from "./api";
 import {useLocation, useHistory} from "react-router-dom";
-import {Container, Image, Navbar, Nav, Button, Spinner, Form, Row, Col} from "react-bootstrap";
+import {Container, Image, Navbar, Nav, Button, Spinner, Form, Row, Col, OverlayTrigger, Tooltip} from "react-bootstrap";
 import components from "./components/components";
 import { slide as Menu } from "react-burger-menu";
 import './Reader.css';
-// TODO : Add a button to return to the manga info page
-//        Left and Right arrows to change page
-//        CRTL + Left and Right arrows to chapter
 
 function FindNextChapter(context){
     // context is the object returned by a call to useLocation()
@@ -52,8 +49,6 @@ function HandleChapterChangeNewTab(event, newChapter, context){
 }
 
 function ChapterImages() {
-
-
     const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
     const [chapterImgUrlList, setChapterImgUrlList] = React.useState([]);
@@ -64,6 +59,7 @@ function ChapterImages() {
     const defaultZoom = 10.0;
     const [scrollZoom, setScrollZoom] = React.useState(defaultZoom);
     const [pageZoom, setPageZoom] = React.useState(defaultZoom);
+    const [showZoom, setShowZoom] = React.useState(false);
     let pageZoomVal = pageZoom, scrollZoomVal = scrollZoom;
 
     const getChapterImages = (chapterId) => {
@@ -97,7 +93,13 @@ function ChapterImages() {
     };
     function ZoomBar(){
         // TODO : Add tooltip to display value of zoom
-        // TODO : Make the zoom bar toggle-able so that it may be hidden
+        const zoomToolTip = () => {
+            return (
+                <Tooltip id={"zoom-bar-tooltip"}>
+                    {isScroll ? scrollZoomVal : pageZoomVal}
+                </Tooltip>
+            );
+        }
         const handleChange = (event) => {
             console.log(event.target.value);
             if(isScroll){
@@ -112,14 +114,21 @@ function ChapterImages() {
         const resetZoom = () => {
             isScroll ? setScrollZoom(defaultZoom) : setPageZoom(defaultZoom);
         };
+        const toggleZoomOn = () => {
+            setShowZoom(true);
+        };
+        const toggleZoomOff = () => {
+            setShowZoom(false);
+        }
+
         return (
-            <div className={"position-relative bottom-0"}>
+            <div className={"position-relative bottom-0"} onMouseEnter={toggleZoomOn} onMouseLeave={toggleZoomOff}>
                 <Navbar fixed={"bottom"}>
                     <Container>
-                        <Navbar bg={"light"} className={"flex-fill"}>
+                        <Navbar bg={"light"} className={"flex-fill"} style={{visibility: showZoom ? "visible" : "hidden"}}>
                             <Form className={"flex-fill"} style={{marginLeft:10, marginRight:10}}>
                                 <Form.Label>Zoom</Form.Label>
-                                <Form.Range min={"1"} max={"19"} defaultValue={isScroll ? scrollZoomVal : pageZoomVal} step={".5"} onChange={handleChange} id={"zoom"} name={"zoom"}/>
+                                <Form.Range min={"1"} max={"19"} defaultValue={isScroll ? scrollZoomVal : pageZoomVal} step={".5"} onChange={handleChange} id={"zoom"} name={"zoom"} tooltip={"auto"}/>
                                 <Button variant={"primary"} onClick={resetZoom}>Reset</Button>
                             </Form>
                         </Navbar>
@@ -142,33 +151,56 @@ function ChapterImages() {
             </div>
         );
     }
+    function ChapterProgress(){
+        return (
+            <div className={"position-relative"}>
+                <Container fluid className={"border border-dark"}>
+                    <Navbar expand={"lg"}>
+                        {chapterImgUrlList.map((chapter, index) => {
+                            return (
+                                <Nav key={index} className={"flex-fill"}>
+                                    <Button variant={index <= curPage ? "primary" : "outline-primary"} onClick={() => setCurPage(index)} className={"align-self-center w-100"}></Button>
+                                </Nav>
+                            )
+                        })}
+                    </Navbar>
+                </Container>
+            </div>
+        );
+    }
     function ChapterClick() {
         // This function will handle the rendering of the click version of the chapter
         // TODO : Make it so that clicking on the right of the image will go to the next image, and the left goes to the previous
-        document.onkeydown = checkKey;
 
+        // TODO : Make a page indicator to display progress through the chapter
+
+        document.onkeydown = checkKey;
         function checkKey(e) {
-            e = e || window.event;
-            if (e.keyCode == '37') {
+            //e = e || window.event;
+            if (e.keyCode == '37' && !e.ctrlKey) {
                // left arrow
-               // HandleChapterChange(FindPrevChapter(context), context, history)
                prevImage()
             }
-            else if (e.keyCode == '39') {
+            else if (e.keyCode == '39' && !e.ctrlKey) {
                // right arrow
                nextImage()
             }
-
         }
 
-        document.addEventListener('keydown', function(event) {
-            if (event.ctrlKey && event.key === "ArrowRight") {
-                HandleChapterChange(FindNextChapter(context),context, history);
-            }
-            else if (event.ctrlKey && event.key === "ArrowLeft") {
-                HandleChapterChange(FindPrevChapter(context),context, history);
-            }
-          });
+        // function keyboardChapterChange(event){
+        //     event.preventDefault();
+        //     if (event.ctrlKey && event.key === 'ArrowLeft') {
+        //         HandleChapterChange(FindPrevChapter(context),context, history);
+        //     }
+        //     else if (event.ctrlKey && event.key === 'ArrowRight') {
+        //         HandleChapterChange(FindNextChapter(context),context, history);
+        //     }
+        // }
+        //
+        // React.useEffect(() => {
+        //     document.addEventListener('keydown', (event) => keyboardChapterChange(event), {once:true});
+        //     return () => document.removeEventListener('keydown', (event) => keyboardChapterChange(event));
+        // }, []);
         
         const nextImage = () => {
             if(chapterImgUrlList[curPage].index < chapterImgUrlList.length - 1){
@@ -190,10 +222,7 @@ function ChapterImages() {
                 HandleChapterChange(FindPrevChapter(context),context, history);
             }
         };
-        const handleKeyDown = (event) => {
-            console.log(event);
-            // TODO : Make left and right arrow keys change the current chapter image
-            //          Need to handle key presses on the document so that the the onClick event can be triggered
+
 
         };
 
@@ -205,10 +234,12 @@ function ChapterImages() {
         return (
             <div style={{marginBottom:100}} id={"readerWindow"}>
                 <Container className={"border border-white position-relative"}>
+
                     {/*TODO : Make the buttons span to half of the container and make the*/}
                     {/*        container height as close to the default height of the image as possible*/}
                     {chapterImgUrlList[curPage] != undefined ?
                         <div>
+
                             <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 50}%`, margin:"auto"}} className={"border border-dark mw-100"} />
                             
                             <Button type="submit" style={{ float: "left",    background:"transparent", border:"none", color:"transparent" 
@@ -218,6 +249,7 @@ function ChapterImages() {
                             <Button type="submit" style={{ float: "right", background:"transparent", border:"none", color:"transparent" 
                             ,boxShadow:"none",height: "100%", width:"50%", position:"absolute", top:0, left:"50%"}}
                                 onClick={nextImage}/>
+
                         </div>
                         :
                         <Container style={{align:'center'}}>
@@ -247,6 +279,7 @@ function ChapterImages() {
                 :
                 <div>
                     <ChapterClick/>
+                    <ChapterProgress/>
                 </div>
             }
             <ZoomBar/>
@@ -311,8 +344,9 @@ function Reader() {
                 <Container fluid>
                     <h1>{context.state.manga.name}: Chapter
                         {` ` + context.state.curChapter.data.attributes.chapter} -
+
                         {context.state.curChapter.data.attributes.title !== "" ?
-                            ` ${context.state.curChapter.data.attributes.title}`
+                            ` - ${context.state.curChapter.data.attributes.title}`
                             :
                             ``
                         }
