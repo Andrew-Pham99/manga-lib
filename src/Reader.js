@@ -224,7 +224,6 @@ function ChapterImages() {
         };
 
 
-        };
 
         /*
         sandwiched the img src
@@ -262,6 +261,7 @@ function ChapterImages() {
             </div>
         );
     }
+
 
     /* <Button variant={"primary"} className={"position-absoute start--1"} onClick={() => {navigator.clipboard.writeText(chapterImgUrlList[curPage].url)}}> Copy Panel </Button>
     */
