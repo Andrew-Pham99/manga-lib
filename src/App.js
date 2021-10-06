@@ -1,10 +1,8 @@
 import './App.css';
 import React from 'react';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
 import api from './api';
 import components from './components/components';
-import {Container, Spinner} from "react-bootstrap";
+import {Container, Spinner, Button, Card} from "react-bootstrap";
 import Grid from '@material-ui/core/Grid';
 import {Link, useLocation, useHistory} from 'react-router-dom';
 
