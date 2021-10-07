@@ -112,6 +112,7 @@ function ChapterListNav() {
                         })
                     totalOffset += offset;
                 }
+                setChapterList(chapterList => chapterList.sort());
 
                 let pageLengthVal = Math.ceil(getChapterListResponse.data.total/api.ch_limit);
                 setPageLength(pageLengthVal);
