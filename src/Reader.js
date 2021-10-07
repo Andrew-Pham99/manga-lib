@@ -1,6 +1,6 @@
 import React from "react";
 import api from "./api";
-import {useLocation, useHistory} from "react-router-dom";
+import {useLocation, useHistory, Link} from "react-router-dom";
 import {Container, Image, Navbar, Nav, Button, Spinner, Form, Row, Col, OverlayTrigger, Tooltip} from "react-bootstrap";
 import components from "./components/components";
 import { slide as Menu } from "react-burger-menu";
@@ -47,6 +47,15 @@ function HandleChapterChangeNewTab(event, newChapter, context){
         window.open(`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`);
     }
 }
+function goToMangaInfo(context, history){
+    history.push({pathname:`/Info/manga=${context.state.manga.id}`, state:context.state.manga});
+}
+function goToMangaInfoNewTab (event, context){
+    if(event.button == 1){
+        localStorage.setItem("MANGAINFO_STATE", JSON.stringify(context.state.manga));
+        window.open(`/Info/manga=${context.state.manga.id}`);
+    }
+}
 
 function ChapterImages() {
     const context = useLocation();
@@ -82,15 +91,6 @@ function ChapterImages() {
     const toggleScroll = () => {
         setIsScroll(!isScroll);
     };
-    const goToMangaInfo = () => {
-        history.push({pathname:`/Info/manga=${context.state.manga.id}`, state:context.state.manga});
-    };
-    const goToMangaInfoNewTab = (event) => {
-        if(event.button == 1){
-            localStorage.setItem("MANGAINFO_STATE", JSON.stringify(context.state.manga));
-            window.open(`/Info/manga=${context.state.manga.id}`);
-        }
-    };
     function ZoomBar(){
         // TODO : Add tooltip to display value of zoom
         // TODO : Add fade in/out animations and delays to the mouse over effects
@@ -123,9 +123,13 @@ function ChapterImages() {
         const toggleZoomOff = () => {
             setShowZoom(false);
         };
+        const toggleZoom = () => {
+            setShowZoom(!showZoom);
+        };
 
         return (
-            <div className={"position-relative bottom-0"} onMouseEnter={toggleZoomOn} onMouseLeave={toggleZoomOff} style={{marginTop:30}}>
+            <div className={"position-relative bottom-0"} /*onMouseEnter={toggleZoomOn} onMouseLeave={toggleZoomOff}*/ style={{marginTop:30}}>
+                <Button className={"fixed-bottom"} style={{marginBottom:35, marginLeft:10}} onClick={() => toggleZoom()}>{showZoom ? "Show Zoom" : "Hide Zoom"}</Button>
                 <Container className={"fixed-bottom"} style={{marginBottom:35}}>
                     <Navbar bg={"light"} className={"flex-fill rounded-3"} style={{visibility: showZoom ? "visible" : "hidden"}}>
                         <Form className={"flex-fill"} style={{marginLeft:10, marginRight:10}}>
@@ -278,7 +282,7 @@ function ChapterImages() {
     return (
         <div style={{marginTop:10}}>
             <Container className={"position-relative"} style={{marginBottom:10}}>
-                <Button variant={"primary"} onClick={() => goToMangaInfo()} onMouseDown={(event) => goToMangaInfoNewTab(event)} className={"position-absolute start-0"}>Back to MangaInfo</Button>
+                <Button variant={"primary"} onClick={() => goToMangaInfo(context, history)} onMouseDown={(event) => goToMangaInfoNewTab(event, context)} className={"position-absolute start-0"}>Back to MangaInfo</Button>
                 <Button variant={"primary"} className={"position-absolute end-0"} style={{right:"10px", visibility: isScroll ? "hidden" : "visible"}} onClick={() => {navigator.clipboard.writeText(chapterImgUrlList[curPage].url)}}> Copy Panel </Button>
                 <Button variant={isScroll ? "primary" : "success"} style={{textAlign:"center"}} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
             </Container>
@@ -342,6 +346,7 @@ function ChapterListHamburgerMenu() {
 
 function Reader() {
     const context = useLocation();
+    const [history, setHistory] = React.useState(useHistory());
     if(context.state == undefined){
         context.state = JSON.parse(localStorage.getItem("READER_STATE"));
         localStorage.removeItem("READER_STATE");
@@ -354,7 +359,9 @@ function Reader() {
             <div id="page-wrap">
                 <components.TopNavBar/>
                 <Container fluid>
-                    <h1>{context.state.manga.name}: Chapter
+                    <h1>
+                        {context.state.manga.name}
+                        : Chapter
                         {` ` + context.state.curChapter.data.attributes.chapter}
 
                         {context.state.curChapter.data.attributes.title !== "" ?
