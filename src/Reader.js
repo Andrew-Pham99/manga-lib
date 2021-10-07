@@ -56,7 +56,7 @@ function ChapterImages() {
     React.useEffect(() => {localStorage.setItem("IS_SCROLL", isScroll ? "true" : "false");}, [isScroll]);
     const [curPage, setCurPage] = React.useState(0);
     const [isLoaded, setIsLoaded] = React.useState(false);
-    const defaultZoom = 10.0;
+    const defaultZoom = 1.0;
     const [scrollZoom, setScrollZoom] = React.useState(defaultZoom);
     const [pageZoom, setPageZoom] = React.useState(defaultZoom);
     const [showZoom, setShowZoom] = React.useState(false);
@@ -93,6 +93,9 @@ function ChapterImages() {
     };
     function ZoomBar(){
         // TODO : Add tooltip to display value of zoom
+        // TODO : Add fade in/out animations and delays to the mouse over effects
+        //        Probably want to do that with some CSS fuckery
+        // TODO : Make zoom bar collapse behind a button press and remove mouse over effects
         const zoomToolTip = () => {
             return (
                 <Tooltip id={"zoom-bar-tooltip"}>
@@ -119,32 +122,34 @@ function ChapterImages() {
         };
         const toggleZoomOff = () => {
             setShowZoom(false);
-        }
+        };
 
         return (
-            <div className={"position-relative bottom-0"} onMouseEnter={toggleZoomOn} onMouseLeave={toggleZoomOff}>
-                <Navbar fixed={"bottom"}>
-                    <Container>
-                        <Navbar bg={"light"} className={"flex-fill"} style={{visibility: showZoom ? "visible" : "hidden"}}>
-                            <Form className={"flex-fill"} style={{marginLeft:10, marginRight:10}}>
-                                <Form.Label>Zoom</Form.Label>
-                                <Form.Range min={"1"} max={"19"} defaultValue={isScroll ? scrollZoomVal : pageZoomVal} step={".5"} onChange={handleChange} id={"zoom"} name={"zoom"} tooltip={"auto"}/>
-                                <Button variant={"primary"} onClick={resetZoom}>Reset</Button>
-                            </Form>
-                        </Navbar>
-                    </Container>
-                </Navbar>
+            <div className={"position-relative bottom-0"} onMouseEnter={toggleZoomOn} onMouseLeave={toggleZoomOff} style={{marginTop:30}}>
+                <Container className={"fixed-bottom"} style={{marginBottom:35}}>
+                    <Navbar bg={"light"} className={"flex-fill rounded-3"} style={{visibility: showZoom ? "visible" : "hidden"}}>
+                        <Form className={"flex-fill"} style={{marginLeft:10, marginRight:10}}>
+                            <Form.Label>Zoom</Form.Label>
+                            <Form.Range min={"0.1"} max={"1.9"} defaultValue={isScroll ? scrollZoomVal : pageZoomVal} step={"0.05"} onChange={handleChange} id={"zoom"} name={"zoom"} tooltip={"auto"}/>
+                            <Button variant={"primary"} onClick={resetZoom}>Reset</Button>
+                        </Form>
+                    </Navbar>
+                </Container>
             </div>
         );
     }
     function ChapterScroll() {
         // This function will handle the rendering of the scroll version of the chapter
+        const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        const vh = Math.min(document.documentElement.clientWidth || 0, window.innerHeight || 0);
+        console.log("Width = " + (vw) + ". Height = " + (vh + scrollZoom));
+
         return (
             <div>
                 <Row xs={1} md={1} lg={1}>
                     {chapterImgUrlList.map((chapterImg, index) => (
                         <Col key={index}>
-                            <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{width:`${(scrollZoom / 10) * 50}%`}} className={"border border-dark"}/>
+                            <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{height: `${(vh * scrollZoom)}px`, width: "auto"}} className={"border-start border-end border-dark"}/>
                         </Col>
                     ))}
                 </Row>
@@ -152,14 +157,23 @@ function ChapterImages() {
         );
     }
     function ChapterProgress(){
+        // TODO : Add fade in/out animations and delays to the mouse over effects
+        //        Probably want to do that with some CSS fuckery
+        const [showProgress, setShowProgress] = React.useState(false);
+        const toggleProgressOn = () => {
+            setShowProgress(true);
+        };
+        const toggleProgressOff = () => {
+            setShowProgress(false);
+        };
         return (
-            <div className={"position-relative"}>
-                <Container fluid className={"border border-dark"}>
-                    <Navbar expand={"lg"}>
+            <div className={"position-relative"} onMouseEnter={() => {toggleProgressOn()}} onMouseLeave={() => {toggleProgressOff()}}>
+                <Container fluid className={"reader-progress-bar fixed-bottom"}>
+                    <Navbar expand={"lg"} style={{visibility: showProgress ? "visible" : "hidden"}}>
                         {chapterImgUrlList.map((chapter, index) => {
                             return (
                                 <Nav key={index} className={"flex-fill"}>
-                                    <Button variant={index <= curPage ? "primary" : "outline-primary"} onClick={() => setCurPage(index)} className={"align-self-center w-100"}></Button>
+                                    <Button variant={index <= curPage ? "primary" : "outline-primary"} onClick={() => setCurPage(index)} className={`align-self-center w-100`}></Button>
                                 </Nav>
                             )
                         })}
@@ -170,10 +184,8 @@ function ChapterImages() {
     }
     function ChapterClick() {
         // This function will handle the rendering of the click version of the chapter
-        // TODO : Make it so that clicking on the right of the image will go to the next image, and the left goes to the previous
-
-        // TODO : Make a page indicator to display progress through the chapter
-
+        const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        const vh = Math.min(document.documentElement.clientWidth || 0, window.innerHeight || 0);
         document.onkeydown = checkKey;
         function checkKey(e) {
             //e = e || window.event;
@@ -223,29 +235,27 @@ function ChapterImages() {
             }
         };
 
-
-
         /*
         sandwiched the img src
         <Button variant={"outline-primary"} className={"position-absolute top-0 start-0 flex-shrink-1 h-100"} onClick={prevImage}>{chapterImgUrlList[curPage].index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
         <Button variant={"outline-primary"} className={"position-absolute top-0 end-0 flex-shrink-1 h-100"} onClick={nextImage}>{chapterImgUrlList[curPage].index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
         */
         return (
-            <div style={{marginBottom:100}} id={"readerWindow"}>
-                <Container className={"border border-white position-relative"}>
+            <div /*style={{marginBottom:100}}*/ id={"reader-window"}>
+                <Container className={"position-relative reader-window"} fluid>
 
                     {/*TODO : Make the buttons span to half of the container and make the*/}
                     {/*        container height as close to the default height of the image as possible*/}
                     {chapterImgUrlList[curPage] != undefined ?
                         <div>
 
-                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{width: `${(pageZoom / 10) * 50}%`, margin:"auto"}} className={"border border-dark mw-100"} />
-                            
-                            <Button type="submit" style={{ float: "left",    background:"transparent", border:"none", color:"transparent" 
+                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{height: `${(vh * pageZoom)}px`, width: "auto"}} className={"border border-dark mw-100 mh-100"} />
+
+                            <Button type="submit" style={{ float: "left",    background:"transparent", border:"none", color:"transparent"
                             ,boxShadow:"none",height: "100%", width:"50%", position:"absolute", top:0, left:0}}
                                 onClick={prevImage} />
 
-                            <Button type="submit" style={{ float: "right", background:"transparent", border:"none", color:"transparent" 
+                            <Button type="submit" style={{ float: "right", background:"transparent", border:"none", color:"transparent"
                             ,boxShadow:"none",height: "100%", width:"50%", position:"absolute", top:0, left:"50%"}}
                                 onClick={nextImage}/>
 
@@ -267,14 +277,16 @@ function ChapterImages() {
     */
     return (
         <div style={{marginTop:10}}>
-            <Container className={"position-relative"}>
+            <Container className={"position-relative"} style={{marginBottom:10}}>
                 <Button variant={"primary"} onClick={() => goToMangaInfo()} onMouseDown={(event) => goToMangaInfoNewTab(event)} className={"position-absolute start-0"}>Back to MangaInfo</Button>
-                    <Button variant={"primary"} className={"position-absolute"} style={{right:"10px"}} onClick={() => {navigator.clipboard.writeText(chapterImgUrlList[curPage].url)}}> Copy Panel </Button>
+                <Button variant={"primary"} className={"position-absolute end-0"} style={{right:"10px", visibility: isScroll ? "hidden" : "visible"}} onClick={() => {navigator.clipboard.writeText(chapterImgUrlList[curPage].url)}}> Copy Panel </Button>
                 <Button variant={isScroll ? "primary" : "success"} style={{textAlign:"center"}} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
             </Container>
             {isScroll ?
                 <div>
                     <ChapterScroll/>
+                    <div style={{margin:10}}/>
+                    <NextChapterButtons/>
                 </div>
                 :
                 <div>
@@ -312,10 +324,10 @@ function ChapterListHamburgerMenu() {
         <div>
             <Menu right  pageWrapId={"page-wrap"} outerContainerId={"App"}>
                 <Navbar  className="ChapterList">
-                    <Nav className={"flex-column"}>
+                    <Nav className={"flex-column"} activeKey={context.state.curChapter.data.listId}>
                         {context.state.chapterList.map((chapter, index) => (
                             <Nav.Item key={index} onClick={() => HandleChapterChange(chapter, context, history)}>
-                                <Nav.Link>
+                                <Nav.Link eventKey={index}>
                                         {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
                                             `Chapter ${chapter.data.attributes.chapter}`}
                                 </Nav.Link>
@@ -337,13 +349,13 @@ function Reader() {
     React.useEffect(()=> console.log(context),[context]);
     return (
         // TODO : Style this whole page
-        <div className={"Reader"} id="App">
+        <div className={"reader"} id="App">
             <ChapterListHamburgerMenu/>
             <div id="page-wrap">
                 <components.TopNavBar/>
                 <Container fluid>
                     <h1>{context.state.manga.name}: Chapter
-                        {` ` + context.state.curChapter.data.attributes.chapter} -
+                        {` ` + context.state.curChapter.data.attributes.chapter}
 
                         {context.state.curChapter.data.attributes.title !== "" ?
                             ` - ${context.state.curChapter.data.attributes.title}`
