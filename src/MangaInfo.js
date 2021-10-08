@@ -6,33 +6,67 @@ import './MangaInfo.css'
 import {Navbar, Nav, Container, Spinner} from "react-bootstrap"
 import {Card,Row, Col} from 'react-bootstrap'
 import ReactPaginate from 'react-paginate';
+import { isTaggedTemplateExpression } from 'typescript'
 
 
 function Info(props) {
-    let author, artist = 'N/A'
+    const [history, setHistory] = React.useState(useHistory());
+    const [searchObject, setSearchObject] = React.useState({
+        title:"",
+        status:[],
+        publicationDemographic:[],
+        includedTags:[],
+        excludedTags:[],
+        contentRating:[],
+        authors:[]
+    })
+
+
+    let author = []
+    let artist = []
     let themes = []
     let genres = []
     let format = []
+    let tagId = []
+
+    let themeId = []
+    let genreId = []
+    let formatId = []
+    let authId = []
+    let artId = []
 
     props.relationships.forEach(element => {
         if(element.type === "author"){
-            author = element.attributes ? element.attributes.name: 'N/A'
+
+            author.push(element.attributes ? element.attributes.name: 'N/A')
+            authId.push(element.id)
         }
         if(element.type === "artist"){
-            artist = element.attributes ? element.attributes.name: 'N/A'
+            artist.push(element.attributes ? element.attributes.name: 'N/A')
+            artId.push(element.id)
         }
     })
     props.tags.forEach(tag => {
         if(tag.attributes.group === "theme"){
             themes.push(tag.attributes.name.en)
+            themeId.push(tag.id)
         }
         if(tag.attributes.group === "genre"){
             genres.push(tag.attributes.name.en)
+            genreId.push(tag.id)
+            
         }
         if(tag.attributes.group === "format"){
             format.push(tag.attributes.name.en)
+            tagId.push(tag.id)
+            formatId.push(tag.id)
         }
     })
+    tagId = themeId.concat(genreId, formatId)
+
+    const handleSearch = (id, type) => {
+        history.push({pathname:"/", state:{searchObject: {[type]: [id]}, order:"followedCount"}})
+    }
 
     return(
         <Card style={{marginTop:20}}>
@@ -46,15 +80,39 @@ function Info(props) {
                         <Card.Subtitle>Publication Status:</Card.Subtitle>
                         <Card.Text>{props.status.charAt(0).toUpperCase() + props.status.slice(1)}</Card.Text>
                         <Card.Subtitle>Author(s):</Card.Subtitle>
-                        <Card.Text>{author}</Card.Text>
+                    
+                        {
+                        author.map((auth, index) => {
+                            return <span onClick={() => handleSearch(authId[index], "authors")} key={`demo_snap_${index}`}>
+                                    <span>{(index ? ', ' : '')}</span>
+                                    <span className="clickable tag">{auth}</span>
+                                </span>
+                        })
+                        }
                         <Card.Subtitle>Artist(s):</Card.Subtitle>
-                        <Card.Text>{artist}</Card.Text>
+                        {
+                        author.map((auth, index) => {
+                            return <span onClick={() => handleSearch(artId[index], "artists")} key={`demo_snap_${index}`}>
+                                    <span>{(index ? ', ' : '')}</span>
+                                    <span className="clickable tag">{auth}</span>
+                                </span>
+                        })
+                        }
                         <Card.Subtitle>Description:</Card.Subtitle>
                         <Card.Text>
                         {props.description}
                         </Card.Text>
                         <Card.Subtitle style={{fontSize:"smaller"}}>Tags:</Card.Subtitle>
-                        <Card.Text style={{fontSize:"smaller"}}>{themes.concat(genres,format).join(', ')}</Card.Text>
+                        {
+                        themes.concat(genres,format).map( (tag,index) => {
+                                return <span   onClick={() => handleSearch(tagId[index], "includedTags")} style={{fontSize:"smaller"}}key={`demo_snap_${index}`}>
+                                            <span>{(index ? ', ' : '')}</span>
+                                            <span className="clickable tag">{tag}</span>
+                                        </span>
+
+                            })
+                        }
+                        
 
                     </Card.Body>
                 </Col>

@@ -7,6 +7,7 @@ import components from './components/components';
 import {Container, Spinner} from "react-bootstrap";
 import Grid from '@material-ui/core/Grid';
 import {Link, useLocation, useHistory} from 'react-router-dom';
+import { ownerDocument } from '@material-ui/core';
 
 function MangaCard(props){
     const [vis, setVis] = React.useState(false)
@@ -30,7 +31,7 @@ function MangaCard(props){
 
     return(
         <Card style={vis?{width: '25rem', marginLeft:10, marginBottom:10}:{width: '25rem', marginLeft:10, marginBottom:10, visibility:'visible'}} key={props.key} id={props.id}>
-            <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail clickable"} width={100} height={550} onLoad={onLoad} onClick={handleMangaClick} onMouseDown={handleMouseDown}/>
+            <Card.Img variant={"top"} src={props.img+'.512.jpg'} loading="lazy" alt={"No Image Found"} className={"thumbnail clickable"} width={100} height={550} onLoad={onLoad} onClick={handleMangaClick} onMouseDown={handleMouseDown}/>
             <Card.Body>
                 <Card.Title onClick={handleMangaClick} onMouseDown={handleMouseDown} className={"clickable"}>
                     {props.name}
@@ -92,8 +93,13 @@ function SearchBar(){
         setSpinner(true)
         setOffset(api.limit)
         setShowButton(false)
+        let ord = ""
         setLoadObject(context.state != null ? (context.state.searchObject != null ? context.state.searchObject : searchObject) : searchObject)
-        api.queryManga(context.state != null ? (context.state.searchObject != null ? context.state.searchObject : searchObject) : searchObject)
+        if(context.state!= null && context.state.order){
+            ord = context.state.order
+        }
+        
+        api.queryManga(context.state != null ? (context.state.searchObject != null ? context.state.searchObject : searchObject) : searchObject, ord)
         .then((response) => {
             setOffset(api.limit)
             console.log(response)

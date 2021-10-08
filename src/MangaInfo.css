@@ -33,6 +33,15 @@
   color:#0275d8;
 }
 
+.tag{
+  color: black
+}
+
+
+.tag:hover{
+  color:#0275d8;
+}
+
 .hidden {
   visibility: hidden;
 }

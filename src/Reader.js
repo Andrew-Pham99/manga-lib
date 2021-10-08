@@ -79,6 +79,17 @@ function ChapterImages() {
         setIsLoaded(true);
     }
     React.useLayoutEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context]);
+    //Preload images.
+    React.useEffect(() => {
+        console.log("PRELOAD")
+        chapterImgUrlList.forEach((chapterImg) => {
+            const img = new Image().src = chapterImg
+            
+            
+        })
+        
+
+    },[])
     const toggleScroll = () => {
         setIsScroll(!isScroll);
     };
@@ -153,7 +164,7 @@ function ChapterImages() {
     }
     function ChapterProgress(){
         return (
-            <div className={"position-relative"}>
+            <div className={"position-relative"} >
                 <Container fluid className={"border border-dark"}>
                     <Navbar expand={"lg"}>
                         {chapterImgUrlList.map((chapter, index) => {
