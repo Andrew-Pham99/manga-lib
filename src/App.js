@@ -27,15 +27,15 @@ function MangaCard(props){
     };
 
     return(
-        <Card style={vis?{width: '25rem', marginLeft:10, marginBottom:10}:{width: '25rem', marginLeft:10, marginBottom:10, visibility:'visible'}} key={props.key} id={props.id}>
+        <Card style={vis ? {} : {visibility:"visible"}} key={props.key} id={props.id} className={"manga-card"}>
             <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail clickable"} width={100} height={550} onLoad={onLoad} onClick={handleMangaClick} onMouseDown={handleMouseDown}/>
             <Card.Body>
-                <Card.Title onClick={handleMangaClick} onMouseDown={handleMouseDown} className={"clickable"}>
+                <Card.Title onClick={handleMangaClick} onMouseDown={handleMouseDown} className={"clickable manga-card-text color"}>
                     {props.name}
                 </Card.Title>
-                <Card.Text>
-                    <div style={{overflowY:"auto", height:200, textAlign:"center"}}>
-                        <p style={{fontSize:"smaller"}}>{props.description}</p>
+                <Card.Text className={"manga-card-text color"}>
+                    <div className={"format"}>
+                        <p>{props.description}</p>
                     </div>
                 </Card.Text>
             </Card.Body>
@@ -201,7 +201,7 @@ function SearchBar(){
                 </Grid>
             </ul>
             }
-            <Button variant="primary" onClick={loadMore} style={{visibility: showButton ? 'visible' : 'hidden' }}>
+            <Button variant="primary" onClick={loadMore} style={{visibility: showButton ? 'visible' : 'hidden', marginBottom:15}}>
                 Load More
             </Button>
         </div>
@@ -215,7 +215,7 @@ function App() {
         localStorage.removeItem("SEARCH_STATE");
     }
     return (
-        <div className="search-manga">
+        <div className={"search-manga"}>
             <components.TopBar/>
             <Container style={{marginTop:50}}>
                 <SearchBar/>

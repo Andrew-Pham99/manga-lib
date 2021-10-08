@@ -1,3 +1,41 @@
+@import "../css_globals.css";
+
+.search-bar {
+
+}
+
+.search-bar .search-button {
+  background-color: var(--primary-color);
+  outline-color: red;
+  color: black;
+
+  margin-top: 20px;
+  margin-bottom : 20px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+input.search-bar-field{
+  background-color: var(--tertiary-color);
+  color: var(--text-color);
+  height: 37px;
+}
+
+.top-bar{
+  background-color: var(--tertiary-color);
+}
+
+.top-bar .text{
+  color: var(--text-color);
+}
+
+.top-bar .image{
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
 .bm-burger-button {
     position: fixed;
     width: 36px;

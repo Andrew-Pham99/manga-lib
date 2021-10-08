@@ -14,22 +14,19 @@ const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => 
     };
 
     return (
-        <div className="Search">
-            <span className="SearchSpan">
-            </span>
+        <div className={"Search search-bar"}>
             <input
                 size={75}
-                className="SearchInput"
-                type="text"
+                className={"SearchInput search-bar-field"}
+                type={"text"}
                 onChange={onChange}
                 placeholder={placeholder}
-                style={{height:37}}
                 onKeyDown={onKeyDown}
             />
             <br/>
-            <Button variant="primary" onClick={onClick} type="submit" style={{marginTop:20, marginBottom:20}}>Search</Button>
-            <Button variant="primary"  onClick={onClickRand} type="submit" style={{marginLeft:10, marginTop:20, marginBottom:20}}>Random</Button>
-            <Button variant={"secondary"} onClick={gotoAdvancedSearch} style={{marginLeft:10}}>Advanced Search</Button>
+            <Button onClick={onClick} type="submit" className={"search-button"}>Search</Button>
+            <Button variant="primary"  onClick={onClickRand} type="submit" className={"search-button"}>Random</Button>
+            <Button onClick={gotoAdvancedSearch} className={"search-button"}>Advanced Search</Button>
         </div>
     );
   };
@@ -38,14 +35,12 @@ const TopBar = () => {
     return (
       <div>
           <Container>
-              <Navbar bg={"light"} expand={"lg"}>
+              <Navbar expand={"lg"} className={"top-bar"}>
                   <LinkContainer to={"/"}>
-                      <Navbar.Brand>
+                      <Navbar.Brand className={"text"}>
                           <Image
                               src={logo}
-                              width={"40"}
-                              height={"40"}
-                              style={{marginRight:10, marginLeft:10}}
+                              className={"image"}
                           />
                           Manga Lib
                       </Navbar.Brand>
