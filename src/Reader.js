@@ -155,11 +155,11 @@ function ChapterImages() {
         // This function will handle the rendering of the scroll version of the chapter
         const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
         const vh = Math.min(document.documentElement.clientWidth || 0, window.innerHeight || 0);
-        console.log("Width = " + (vw) + ". Height = " + (vh + scrollZoom));
+        React.useEffect(() => {document.getElementById("reader-window-scroll").scrollIntoView();}, []);
 
         return (
             <div>
-                <Row xs={1} md={1} lg={1}>
+                <Row xs={1} md={1} lg={1} id={"reader-window-scroll"}>
                     {chapterImgUrlList.map((chapterImg, index) => (
                         <Col key={index}>
                             <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{height: `${(vh * scrollZoom)}px`, width: "auto"}} className={"border-start border-end border-dark"}/>

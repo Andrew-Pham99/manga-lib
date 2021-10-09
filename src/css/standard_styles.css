@@ -41,8 +41,8 @@
 
 /*Default themed buttons alt style*/
 .button-themed-alt{
-    background-color: darkslateblue;
-    border-color: darkslateblue;
+    background-color: transparent;
+    border-color: transparent;
     color: black;
 }
 
