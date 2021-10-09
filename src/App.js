@@ -1,4 +1,5 @@
-import './App.css';
+import './css/App.css';
+import './css/standard_styles.css'
 import React from 'react';
 import api from './api';
 import components from './components/components';
@@ -201,7 +202,7 @@ function SearchBar(){
                 </Grid>
             </ul>
             }
-            <Button variant="primary" onClick={loadMore} style={{visibility: showButton ? 'visible' : 'hidden', marginBottom:15}}>
+            <Button onClick={loadMore} style={{visibility: showButton ? 'visible' : 'hidden', marginBottom:15}} className={"button-themed"}>
                 Load More
             </Button>
         </div>

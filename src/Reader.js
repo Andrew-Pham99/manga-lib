@@ -4,7 +4,7 @@ import {useLocation, useHistory, Link} from "react-router-dom";
 import {Container, Image, Navbar, Nav, Button, Spinner, Form, Row, Col, OverlayTrigger, Tooltip} from "react-bootstrap";
 import components from "./components/components";
 import { slide as Menu } from "react-burger-menu";
-import './Reader.css';
+import './css/Reader.css';
 
 function FindNextChapter(context){
     // context is the object returned by a call to useLocation()

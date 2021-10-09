@@ -2,7 +2,7 @@ import React from "react";
 import api from "./api";
 import components from "./components/components";
 import {useHistory} from "react-router-dom";
-import "./AdvancedSearch.css"
+import "./css/AdvancedSearch.css"
 import {Container, Button, Form, Row, Col, Spinner} from "react-bootstrap";
 
 function AdvancedSearchFields() {
@@ -377,7 +377,7 @@ function AdvancedSearchFields() {
                     </Form.Group>
                     :
                     <Container align={'center'}>
-                        <Spinner animation={"border"} role={"status"} variant={"primary"}>
+                        <Spinner animation={"border"} role={"status"} variant={"primary"} className={""}>
                             <span className={"visually-hidden"}>Loading...</span>
                         </Spinner>
                     </Container>
@@ -395,7 +395,7 @@ function AdvancedSearchFields() {
 
 function AdvancedSearch() {
     return (
-        <div>
+        <div className={"AdvancedSearch"}>
             <Container>
                 <components.TopBar/>
                 <AdvancedSearchFields/>

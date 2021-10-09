@@ -1,11 +1,11 @@
-import Button from 'react-bootstrap/Button'
 import React from "react";
-import {Navbar, Container, Image, Form, Row, Col} from "react-bootstrap";
+import {Navbar, Container, Button, Image, Form, Row, Col} from "react-bootstrap";
 import {LinkContainer} from "react-router-bootstrap"
-import {useHistory} from "react-router-dom";
+import {useHistory, Link} from "react-router-dom";
 import logo from "../images/logo.png";
 import { slide as Menu } from "react-burger-menu";
-import './components.css'
+import '../css/components.css';
+import '../css/standard_styles.css'
 
 const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => {
     const history = useHistory();
@@ -14,19 +14,19 @@ const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => 
     };
 
     return (
-        <div className={"Search search-bar"}>
+        <div className={"search-bar"}>
             <input
                 size={75}
-                className={"SearchInput search-bar-field"}
+                className={"search-bar-field"}
                 type={"text"}
                 onChange={onChange}
                 placeholder={placeholder}
                 onKeyDown={onKeyDown}
             />
             <br/>
-            <Button onClick={onClick} type="submit" className={"search-button"}>Search</Button>
-            <Button variant="primary"  onClick={onClickRand} type="submit" className={"search-button"}>Random</Button>
-            <Button onClick={gotoAdvancedSearch} className={"search-button"}>Advanced Search</Button>
+            <Button onClick={onClick} type="submit" className={"button-themed search-button-format"}>Search</Button>
+            <Button onClick={onClickRand} type="submit" className={"button-themed search-button-format"}>Random</Button>
+            <Button onClick={gotoAdvancedSearch} className={"button-themed-alt search-button-format"}>Advanced Search</Button>
         </div>
     );
   };

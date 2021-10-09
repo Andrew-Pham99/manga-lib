@@ -1,7 +1,9 @@
 :root{
     --bg-color: #2b2b2b;
     --primary-color: #a98eda;
+    --primary-color-hover: #8c68cd;
     --secondary-color: #3cf41;
     --tertiary-color: #313335;
     --text-color: #dedede;
+
 }

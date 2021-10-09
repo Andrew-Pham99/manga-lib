@@ -1,24 +1,56 @@
-@import "../css_globals.css";
+@import "css_globals.css";
 
 .search-bar {
+  align-content: center;
+  align-items: center;
+  align-self: center;
+}
+
+.search-button {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: black;
 
 }
 
-.search-bar .search-button {
-  background-color: var(--primary-color);
-  outline-color: red;
+.search-button:hover, search-button.hover{
+  background-color: var(--primary-color-hover);
+  border-color: var(--primary-color-hover);
   color: black;
+}
 
+.search-button:focus, search-button.focus{
+  background-color: var(--primary-color-hover);
+  border-color: var(--primary-color-hover);
+  color: black;
+  outline: var(--primary-color) solid thick;
+  box-shadow: none;
+}
+
+.search-button:active, search-button.active, search-button:focus{
+  outline: var(--primary-color) solid thick;
+  box-shadow: none;
+}
+
+.search-bar .search-button-format {
   margin-top: 20px;
   margin-bottom : 20px;
   margin-left: 5px;
   margin-right: 5px;
+
 }
 
 input.search-bar-field{
   background-color: var(--tertiary-color);
   color: var(--text-color);
+  border-color: var(--primary-color);
   height: 37px;
+}
+
+input.search-bar-field:focus{
+  outline: var(--primary-color-hover) solid thin;
+  /*outline-color: white;*/
+
 }
 
 .top-bar{

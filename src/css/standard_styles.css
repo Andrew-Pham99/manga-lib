@@ -1,0 +1,35 @@
+@import "./css_globals.css";
+
+.button-themed{
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: black;
+}
+
+.button-themed:hover, .button-themed.hover{
+    background-color: var(--primary-color-hover);
+    border-color: var(--primary-color-hover);
+    color: black;
+}
+
+.button-themed:focus, .button-themed.focus{
+    background-color: var(--primary-color-hover);
+    border-color: var(--primary-color-hover);
+    color: black;
+    outline: 0;
+    box-shadow: none;
+}
+
+.button-themed:active, .button-themed.active{
+    background-color: var(--primary-color-hover);
+    border-color: var(--primary-color-hover);
+    color: black;
+    outline: 0;
+    box-shadow: none;
+}
+
+.button-themed-alt{
+    background-color: darkslateblue;
+    border-color: darkslateblue;
+    color: black;
+}

@@ -2,7 +2,7 @@ import React from 'react'
 import api from './api'
 import components from './components/components'
 import {useLocation, useHistory, Link} from 'react-router-dom'
-import './MangaInfo.css'
+import './css/MangaInfo.css'
 import {Navbar, Nav, Container, Spinner} from "react-bootstrap"
 import {Card,Row, Col} from 'react-bootstrap'
 import ReactPaginate from 'react-paginate';
