@@ -128,6 +128,17 @@ function ChapterListNav() {
     const [pageVis, setPageVis] = React.useState(false);
     const [bottomPageVis, setBottomPageVis] = React.useState(false);
     const [noChapters, setNoChapters] = React.useState(false);
+    const chapterSort = (a, b) => {
+        console.log(a);
+        let aChapter = parseFloat(a.data.attributes.chapter), bChapter = parseFloat(b.data.attributes.chapter);
+        if(aChapter < bChapter){
+            return -1;
+        }
+        if(aChapter > bChapter){
+            return 1;
+        }
+        return 0;
+    };
 
     const getChapterList = () => {
         let totalChapters, chaptersFetched = 0, remainingChaptersToFetch, offset = 100, totalOffset = 0;
@@ -164,7 +175,7 @@ function ChapterListNav() {
                         })
                     totalOffset += offset;
                 }
-                setChapterList(chapterList => chapterList.sort());
+                setChapterList(chapterList => chapterList.sort((a,b) => {chapterSort(a,b)}));
 
                 let pageLengthVal = Math.ceil(getChapterListResponse.data.total/api.ch_limit);
                 setPageLength(pageLengthVal);
