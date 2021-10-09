@@ -61,9 +61,7 @@ function SearchBar(){
     const [responseData, setResponseData] = React.useState([]);
     const [offset, setOffset] = React.useState(api.limit);
     const [showButton, setShowButton] = React.useState(false);
-
-
-    const [spinner, setSpinner] = React.useState(false); 
+    const [spinner, setSpinner] = React.useState(false);
 
     const handleChange = e => {
         setSearchObject({...searchObject, title: e.target.value});
@@ -180,12 +178,13 @@ function SearchBar(){
             onClick={handleInput}
             onClickRand={handleRand}
             />
-            {spinner?
+            {spinner ?
                     <Container align={"center"}>
-                        <Spinner animation={"border"} role={"status"} variant={"primary"}>
+                        <Spinner animation={"border"} role={"status"} className={"spinner-themed"}>
                             <span className={"visually-hidden"}>Loading...</span>
                         </Spinner>
-                    </Container> : 
+                    </Container>
+                :
             <ul>
                 <Grid container spacing={3}>
                     <Grid item md={12}>

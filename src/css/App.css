@@ -7,7 +7,6 @@
 
 .search-manga{
   text-align: center;
-  margin-top: 50px;
   background: var(--bg-color);
 }
 
@@ -48,10 +47,6 @@
 .themed-button:active, search-button.active, search-button:focus{
   outline: var(--primary-color) solid thick;
   box-shadow: none;
-}
-
-.loading-spinner{
-
 }
 
 .clickable{
