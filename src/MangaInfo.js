@@ -70,7 +70,7 @@ function Info(props) {
         <Card className={"info-card"}>
             <Row >
                 <Col xs={6} md={3}>
-                    <Card.Img className="img-fluid rounded"  src={props.img} ></Card.Img>
+                    <Card.Img className="img-fluid rounded" alt="..."  src={props.img} ></Card.Img>
                 </Col>
                 <Col>
                     <Card.Body variant="right" className="card_body">
@@ -257,9 +257,115 @@ function ChapterListNav() {
     );
 }
 
+
+function ApiInfo(){
+    const [loading, setLoading] = React.useState(true)
+    const [err, setErr] = React.useState(false)
+    const [history, setHistory] = React.useState(useHistory());
+    const [context, setContext] = React.useState(useLocation());
+    const [test, setTest] = React.useState(false)
+    const [mInfo, setMInfo] = React.useState( {
+        description:"",
+        img:"",
+        title:"",
+        status:"",
+        demographic:"",
+        relationships:[],
+        tags:[]
+    })
+
+    const loadInfo = () => {
+
+        let id = history.location.pathname
+        console.log('id', id)
+
+        const match = RegExp("(\/Info\/)(manga=)?(.*)", "i").exec(id)
+        id = match[match.length-1]
+        console.log(id)
+        api.getManga(id)
+        .then((response)=>{
+            console.log("SUCCESS!")
+            setLoading(false)
+            setErr(true)
+            let im = ''
+            const attributes = response.data.data.attributes
+            response.data.data.relationships.forEach(relationship => {
+                if (relationship.type === "cover_art") {
+                    im= `https://uploads.mangadex.org/covers/${response.data.data.id}/${relationship.attributes.fileName}`;
+                }
+            })
+            setMInfo({
+                description:attributes.description.en? attributes.description.en.replace(/[^.]*\[.*/g, ''): '',
+                img:im,
+                title:attributes.title.en? attributes.title.en:attributes.title.jp,
+                status:attributes.status,
+                demographic:attributes.publicationDemographic? attributes.publicationDemographic: 'N/A',
+                relationships:response.data.data.relationships,
+                tags:attributes.tags
+            })
+        })
+        .catch((error)=>{
+            setLoading(false)
+            setErr(false)
+            console.log(error)
+        })
+    }
+
+    const loadChapters = () => {
+        console.log("THIS IS CONTEXT", context)
+        setTest(true)
+
+    }
+
+    React.useEffect(() => {loadInfo();}, [])
+    React.useEffect(() => {loadChapters();}, [])
+
+    console.log(loading)
+    return(
+            <div>
+                {
+                    loading? 
+                        <Container align={"center"} style={{marginTop:30}}>
+                            <Spinner animation={"border"} role={"status"} className={"spinner-themed"}>
+                                <span className={"visually-hidden"}>Loading...</span>
+                            </Spinner>                
+                        </Container>
+                        :
+                        [
+                            err?
+                                <Container>
+                                    <Info
+                                    description={mInfo.description}
+                                    img={mInfo.img}
+                                    title={mInfo.title}
+                                    status={mInfo.status}
+                                    demographic={mInfo.demographic}
+                                    relationships={mInfo.relationships}
+                                    tags={mInfo.tags}
+                                    />
+                                </Container>
+                                :
+                                <h3 style={{color:"var(--text-color)", marginTop:20}}>Sorry, this page could not be found!</h3>
+                        ]
+                }
+            </div>
+    )
+}
+
+
 function MangaInfo() {
     const context = useLocation();
-    if(context.state == undefined){
+    if(context.state == undefined || context.state == null){
+        if (localStorage.getItem("MANGAINFO_STATE") == null){
+            return (
+                <div className="MangaInfo">
+                    <components.TopNavBar/>
+                    <ApiInfo/>
+                        
+                    
+                </div>
+            )
+        }
         context.state = JSON.parse(localStorage.getItem("MANGAINFO_STATE"));
         localStorage.removeItem("MANGAINFO_STATE");
     }
