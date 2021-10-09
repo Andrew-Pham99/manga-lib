@@ -1,21 +1,26 @@
 .MangaInfo {
     text-align: center;
-    
-  }
+}
 
 .ChapterList{
   text-align: center;
   display: inline-block
 }
 
-
+.info-card{
+  background-color: var(--tertiary-color);
+  margin-top: 20px;
+}
 
 .info-img{
   margin:0;
   display:flex;
   border: 5px solid #333;
-
   margin-bottom: 2rem;
+}
+
+.text-color{
+  color: var(--text-color) !important;
 }
 
 .info-text{
@@ -25,21 +30,12 @@
 }
 
 .chapter{
+  color: var(--text-color) !important;
   text-decoration: none;
-  color: gray;
 }
 
-.chapter:hover + div{
-  color:#0275d8;
-}
-
-.tag{
-  color: black
-}
-
-
-.tag:hover{
-  color:#0275d8;
+.chapter:hover, .tag:hover{
+  color: var(--primary-color) !important;
 }
 
 .hidden {
@@ -52,22 +48,27 @@
   display: flex;
   list-style: none;
   outline: none;
-  color:gray
+  color: var(--text-color-muted);
 }
 .pagination > .active > a{
   background-color: #0275d8 ;
   border-color: #0275d8 ;
-  color: #fff;
+  color: black;
 }
 .pagination > li > a{
-  border: 1px solid #0275d8 ;
+  border: 1px solid var(--primary-color) ;
   padding: 5px 10px;
   outline: none;
   cursor: pointer;
 }
+
+.pagination > .previous, .pagination > .next{
+  color: var(--text-color);
+}
+
 .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
-  background-color: #0275d8 ;
-  border-color: #0275d8;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
   outline: none ;
 }
 .pagination > li > a, .pagination > li > span{

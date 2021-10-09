@@ -21,14 +21,12 @@ function Info(props) {
         authors:[]
     })
 
-
     let author = []
     let artist = []
     let themes = []
     let genres = []
     let format = []
     let tagId = []
-
     let themeId = []
     let genreId = []
     let formatId = []
@@ -69,61 +67,57 @@ function Info(props) {
     }
 
     return(
-        <Card style={{marginTop:20}}>
+        <Card className={"info-card"}>
             <Row >
                 <Col xs={6} md={3}>
                     <Card.Img className="img-fluid rounded"  src={props.img} ></Card.Img>
                 </Col>
                 <Col>
                     <Card.Body variant="right" className="card_body">
-                        <Card.Title style={{fontSize:32, marginBottom:10}}>{props.title}</Card.Title>
-                        <Card.Subtitle>Publication Status:</Card.Subtitle>
-                        <Card.Text>{props.status.charAt(0).toUpperCase() + props.status.slice(1)}</Card.Text>
-                        <Card.Subtitle>Author(s):</Card.Subtitle>
+                        <Card.Title style={{fontSize:32, marginBottom:10}} className={"text-color"}>{props.title}</Card.Title>
+                        <Card.Subtitle className={"text-color"}>Publication Status:</Card.Subtitle>
+                        <Card.Text className={"text-color"}>{props.status.charAt(0).toUpperCase() + props.status.slice(1)}</Card.Text>
+                        <Card.Subtitle className={"text-color"}>Author(s):</Card.Subtitle>
                     
                         {
                         author.map((auth, index) => {
-                            return <span onClick={() => handleSearch(authId[index], "authors")} key={`demo_snap_${index}`}>
+                            return <span onClick={() => handleSearch(authId[index], "authors")} key={`demo_snap_${index}`} className={"text-color"}>
                                     <span>{(index ? ', ' : '')}</span>
                                     <span className="clickable tag">{auth}</span>
                                 </span>
                         })
                         }
-                        <Card.Subtitle>Artist(s):</Card.Subtitle>
+                        <div style={{margin:"1rem"}}/>
+                        <Card.Subtitle className={"text-color"}>Artist(s):</Card.Subtitle>
                         {
                         author.map((auth, index) => {
-                            return <span onClick={() => handleSearch(artId[index], "artists")} key={`demo_snap_${index}`}>
+                            return <span onClick={() => handleSearch(artId[index], "artists")} key={`demo_snap_${index}`} className={"text-color"}>
                                     <span>{(index ? ', ' : '')}</span>
                                     <span className="clickable tag">{auth}</span>
                                 </span>
                         })
                         }
-                        <Card.Subtitle>Description:</Card.Subtitle>
-                        <Card.Text>
+                        <div style={{margin:"1rem"}}/>
+                        <Card.Subtitle className={"text-color"}>Description:</Card.Subtitle>
+                        <Card.Text className={"text-color"}>
                         {props.description}
                         </Card.Text>
-                        <Card.Subtitle style={{fontSize:"smaller"}}>Tags:</Card.Subtitle>
+                        <Card.Subtitle style={{fontSize:"smaller"}} className={"text-color"}>Tags:</Card.Subtitle>
                         {
                         themes.concat(genres,format).map( (tag,index) => {
-                                return <span   onClick={() => handleSearch(tagId[index], "includedTags")} style={{fontSize:"smaller"}}key={`demo_snap_${index}`}>
+                                return <span   onClick={() => handleSearch(tagId[index], "includedTags")} style={{fontSize:"smaller"}}key={`demo_snap_${index}`} className={"text-color"}>
                                             <span>{(index ? ', ' : '')}</span>
                                             <span className="clickable tag">{tag}</span>
                                         </span>
 
                             })
                         }
-                        
-
                     </Card.Body>
                 </Col>
             </Row>
         </Card>
     )
 }
-/*                        <Card.Text>THEMES: {themes.join(', ')}</Card.Text>
-                        <Card.Text>GENRES: {genres.join(', ')}</Card.Text>
-                        <Card.Text>FORMAT: {format.join(', ')}</Card.Text>
-*/
 
 function ChapterListNav() {
     const [context, setContext] = React.useState(useLocation());
@@ -204,7 +198,7 @@ function ChapterListNav() {
     return (
         <div>
             {noChapters ?
-                <p>No chapters could be found</p>
+                <p className={"text-color"}>No chapters could be found</p>
                 :
                 (pageVis ?
                     <div>
@@ -227,7 +221,7 @@ function ChapterListNav() {
                             <Nav className={"flex-column"}>
                                 {chapterList.slice((currentPage * api.ch_limit),((currentPage * api.ch_limit) + api.ch_limit)).map((chapter, index) => (
                                     <Nav.Item key={index}  onClick={() => handleChapterChange(chapter, context, history)} onMouseDown={(event) => handleMouseDown(event, chapter, context)}>
-                                        <Nav.Link>
+                                        <Nav.Link className={"chapter"}>
                                             {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
                                                 `Chapter ${chapter.data.attributes.chapter}`}
                                         </Nav.Link>
@@ -253,7 +247,7 @@ function ChapterListNav() {
                     </div>
                     :
                     <Container align={"center"} style={{marginTop:30}}>
-                        <Spinner animation={"border"} role={"status"} variant={"primary"}>
+                        <Spinner animation={"border"} role={"status"} className={"spinner-themed"}>
                             <span className={"visually-hidden"}>Loading...</span>
                         </Spinner>
                     </Container>
