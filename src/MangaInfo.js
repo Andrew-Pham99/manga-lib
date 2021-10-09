@@ -68,9 +68,9 @@ function Info(props) {
 
     return(
         <Card className={"info-card"}>
-            <Row >
-                <Col xs={6} md={3}>
-                    <Card.Img className="img-fluid rounded"  src={props.img} ></Card.Img>
+            <Row>
+                <Col md={3} sm={6}>
+                    <Card.Img className={"rounded"}  src={props.img} ></Card.Img>
                 </Col>
                 <Col>
                     <Card.Body variant="right" className="card_body">

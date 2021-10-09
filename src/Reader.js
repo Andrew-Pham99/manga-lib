@@ -199,6 +199,7 @@ function ChapterImages() {
         // This function will handle the rendering of the click version of the chapter
         const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
         const vh = Math.min(document.documentElement.clientWidth || 0, window.innerHeight || 0);
+        React.useEffect(() => {document.getElementById("reader-window").scrollIntoView();}, []);
         document.onkeydown = checkKey;
         function checkKey(e) {
             //e = e || window.event;
@@ -211,21 +212,6 @@ function ChapterImages() {
                nextImage()
             }
         }
-
-        // function keyboardChapterChange(event){
-        //     event.preventDefault();
-        //     if (event.ctrlKey && event.key === 'ArrowLeft') {
-        //         HandleChapterChange(FindPrevChapter(context),context, history);
-        //     }
-        //     else if (event.ctrlKey && event.key === 'ArrowRight') {
-        //         HandleChapterChange(FindNextChapter(context),context, history);
-        //     }
-        // }
-        //
-        // React.useEffect(() => {
-        //     document.addEventListener('keydown', (event) => keyboardChapterChange(event), {once:true});
-        //     return () => document.removeEventListener('keydown', (event) => keyboardChapterChange(event));
-        // }, []);
         
         const nextImage = () => {
             if(chapterImgUrlList[curPage].index < chapterImgUrlList.length - 1){
@@ -248,13 +234,8 @@ function ChapterImages() {
             }
         };
 
-        /*
-        sandwiched the img src
-        <Button variant={"outline-primary"} className={"position-absolute top-0 start-0 flex-shrink-1 h-100"} onClick={prevImage}>{chapterImgUrlList[curPage].index == 0 ? "Prev Chapter" : "Prev Page"}</Button>
-        <Button variant={"outline-primary"} className={"position-absolute top-0 end-0 flex-shrink-1 h-100"} onClick={nextImage}>{chapterImgUrlList[curPage].index == chapterImgUrlList.length - 1 ? "Next Chapter" : "Next Page"}</Button>
-        */
         return (
-            <div /*style={{marginBottom:100}}*/ id={"reader-window"}>
+            <div id={"reader-window"}>
                 <Container className={"position-relative reader-window"} fluid>
 
                     {/*TODO : Make the buttons span to half of the container and make the*/}

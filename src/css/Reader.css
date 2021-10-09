@@ -34,8 +34,8 @@ input[type=range]:focus::-moz-range-thumb{
     position: fixed;
     width: 36px;
     height: 30px;
-    right: 36px;
-    top: 36px;
+    right: 100px;
+    top: 68px;
   }
   
   /* Color/shape of burger icon bars */
@@ -48,6 +48,7 @@ input[type=range]:focus::-moz-range-thumb{
   .bm-cross-button {
     height: 24px;
     width: 24px;
+    margin-right: 20px;
   }
   
   /* Color/shape of close button cross */
