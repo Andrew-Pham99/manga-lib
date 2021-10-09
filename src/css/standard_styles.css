@@ -1,5 +1,6 @@
 @import "./css_globals.css";
 
+/*Default themed buttons style*/
 .button-themed{
     background-color: var(--primary-color);
     border-color: var(--primary-color);
@@ -12,24 +13,29 @@
     color: black;
 }
 
-.button-themed:focus, .button-themed.focus{
+.button-themed:focus, .button-themed.focus, .button-themed:active, .button-themed.active{
     background-color: var(--primary-color-hover);
     border-color: var(--primary-color-hover);
     color: black;
-    outline: 0;
-    box-shadow: none;
+    box-shadow: 0 0 0 0.25rem var(--primary-color-hover-shadow) !important;
 }
 
-.button-themed:active, .button-themed.active{
-    background-color: var(--primary-color-hover);
-    border-color: var(--primary-color-hover);
-    color: black;
-    outline: 0;
-    box-shadow: none;
-}
-
+/*Default themed buttons alt style*/
 .button-themed-alt{
     background-color: darkslateblue;
     border-color: darkslateblue;
     color: black;
+}
+
+.button-themed-alt:hover, .button-themed-alt.hover{
+
+}
+
+.button-themed-alt:focus, .button-themed-alt.focus, .button-themed-alt:active, .button-themed-alt.active{
+
+}
+
+/*Default themed spinners*/
+.spinner-themed{
+    color: var(--primary-color);
 }
