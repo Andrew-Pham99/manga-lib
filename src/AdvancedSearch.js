@@ -2,7 +2,8 @@ import React from "react";
 import api from "./api";
 import components from "./components/components";
 import {useHistory} from "react-router-dom";
-import "./css/AdvancedSearch.css"
+import "./css/AdvancedSearch.css";
+import "./css/standard_styles.css";
 import {Container, Button, Form, Row, Col, Spinner} from "react-bootstrap";
 
 function AdvancedSearchFields() {
@@ -170,7 +171,7 @@ function AdvancedSearchFields() {
             <Form onSubmit={handleSubmit}>
                 <Form.Group  controlId={"title"}>
                     <Form.Label>Title</Form.Label>
-                    <Form.Control type={"text"} name={"title"} placeholder={"Title"} onChange={handleTitleChange}/>
+                    <Form.Control className={"search-bar-field"} type={"text"} name={"title"} placeholder={"Title"} onChange={handleTitleChange}/>
                 </Form.Group>
                 <Row>
                     <Form.Group controlId={"status"} as={Col}>
@@ -384,7 +385,7 @@ function AdvancedSearchFields() {
                 }
                 <br/>
                 <div className={"d-grid"}>
-                    <Button variant={"primary"} type={"submit"} size={"lg"}>Search</Button>
+                    <Button className={"button-themed"} type={"submit"} size={"lg"}>Search</Button>
                 </div>
                 <br/>
                 <br/>

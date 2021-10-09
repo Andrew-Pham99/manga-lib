@@ -1,3 +1,38 @@
+@import "css_globals.css";
+
 .AdvancedSearch {
 
+}
+
+label, p{
+    color: var(--text-color);
+}
+
+input.search-bar-field{
+    background-color: var(--tertiary-color);
+    color: var(--text-color);
+    border-color: var(--primary-color);
+    height: 37px;
+}
+
+input.search-bar-field:focus{
+    background-color: var(--tertiary-color);
+    outline: var(--primary-color-hover) solid thin;
+    color: var(--text-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.15rem var(--primary-color-hover-shadow);
+}
+
+input.form-check-input{
+    border: 1px solid var(--primary-color);
+}
+
+input.form-check-input:checked{
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+input.form-check-input:focus{
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.18rem var(--primary-color-shadow);
 }
