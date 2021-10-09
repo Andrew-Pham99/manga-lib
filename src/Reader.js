@@ -90,12 +90,13 @@ function ChapterImages() {
     }
     React.useLayoutEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context]);
     //Preload images.
-    // React.useEffect(() => {
+    // React.useLayoutEffect(() => {
     //     console.log("PRELOAD")
     //     chapterImgUrlList.forEach((chapterImg) => {
     //         const img = new Image().src = chapterImg;
     //     })
     // },[])
+
     const toggleScroll = () => {
         setIsScroll(!isScroll);
     };
@@ -274,7 +275,7 @@ function ChapterImages() {
                         </div>
                         :
                         <Container style={{align:'center'}}>
-                            <Spinner animation={"border"} role={"status"} variant={"primary"}>
+                            <Spinner animation={"border"} role={"status"} className={"spinner-themed"}>
                                 <span className={"visually-hidden"}>Loading...</span>
                             </Spinner>
                         </Container>
