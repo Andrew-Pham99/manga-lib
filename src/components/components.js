@@ -24,9 +24,9 @@ const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => 
                 onKeyDown={onKeyDown}
             />
             <br/>
-            <Button onClick={onClick} type="submit" className={"button-themed search-button-format"}>Search</Button>
-            <Button onClick={onClickRand} type="submit" className={"button-themed search-button-format"}>Random</Button>
-            <Button onClick={gotoAdvancedSearch} className={"button-themed-alt search-button-format"}>Advanced Search</Button>
+            <Button onClick={onClick} type="submit" className={"button-themed button-format"}>Search</Button>
+            <Button onClick={onClickRand} type="submit" className={"button-themed button-format"}>Random</Button>
+            <Button variant={"secondary"} onClick={gotoAdvancedSearch} className={"button-format"}>Advanced Search</Button>
         </div>
     );
   };
@@ -34,7 +34,7 @@ const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => 
 const TopBar = () => {
     return (
       <div>
-          <Container>
+          <Container className={"row nowrap d-inline-block"}>
               <Navbar expand={"lg"} className={"top-bar"}>
                   <LinkContainer to={"/"}>
                       <Navbar.Brand className={"text"}>
@@ -96,14 +96,12 @@ const TopNavBar = () => {
     return (
         <div>
             <Container className={"row nowrap d-inline-block"}>
-                <Navbar bg={"light"} >
+                <Navbar expand={"lg"} className={"top-bar"} >
                     <LinkContainer to={"/"}>
-                        <Navbar.Brand>
+                        <Navbar.Brand className={"text"}>
                             <Image
                                 src={logo}
-                                width={"40"}
-                                height={"40"}
-                                style={{marginRight:10, marginLeft:10}}
+                                className={"image"}
                             />
                             Manga Lib
                         </Navbar.Brand>
@@ -112,14 +110,14 @@ const TopNavBar = () => {
                         <Row>
                             <Col className={"flex-grow-1"}>
                                 <Form.Group controlId={"title"} className={"flex-fill"}>
-                                    <Form.Control type={"text"} name={"title"} placeholder={"Find a Manga!"} onChange={handleChange}/>
+                                    <Form.Control type={"text"} name={"title"} placeholder={"Find a Manga!"} onChange={handleChange} className={"search-bar-field"}/>
                                 </Form.Group>
                             </Col>
                             <Col lg={"auto"}>
-                                <Button variant="primary" type="submit" onMouseDown={TopNavBarSearchNewTab}>Search</Button>
+                                <Button className={"button-themed"} type="submit" onMouseDown={TopNavBarSearchNewTab}>Search</Button>
                             </Col>
                             <Col lg={"auto"}>
-                                <Button variant="primary" onClick={TopNavBarRandSearch} onMouseDown={TopNavBarRandSearchNewTab}>Random</Button>
+                                <Button className={"button-themed"} onClick={TopNavBarRandSearch} onMouseDown={TopNavBarRandSearchNewTab}>Random</Button>
                             </Col>
                             <Col lg={"auto"}>
                                 <Button variant={"secondary"} onClick={gotoAdvancedSearch} onMouseDown={gotoAdvancedSearchNewTab}>Advanced Search</Button>

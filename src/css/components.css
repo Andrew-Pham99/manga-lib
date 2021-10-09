@@ -6,37 +6,8 @@
   align-self: center;
 }
 
-.search-button {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-  color: black;
-
-}
-
-.search-button:hover, search-button.hover{
-  background-color: var(--primary-color-hover);
-  border-color: var(--primary-color-hover);
-  color: black;
-}
-
-.search-button:focus, search-button.focus{
-  background-color: var(--primary-color-hover);
-  border-color: var(--primary-color-hover);
-  color: black;
-  outline: var(--primary-color) solid thick;
-  box-shadow: none;
-}
-
-.search-button:active, search-button.active, search-button:focus{
-  outline: var(--primary-color) solid thick;
-  box-shadow: none;
-}
-
-.search-bar .search-button-format {
-  margin-top: 20px;
-  margin-bottom : 20px;
-  margin-left: 5px;
-  margin-right: 5px;
+.search-bar .button-format {
+  margin: 20px 5px 20px 5px;
 
 }
 
@@ -48,17 +19,30 @@ input.search-bar-field{
 }
 
 input.search-bar-field:focus{
+  background-color: var(--tertiary-color);
   outline: var(--primary-color-hover) solid thin;
-  /*outline-color: white;*/
-
+  color: var(--text-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.15rem var(--primary-color-hover-shadow);
 }
 
 .top-bar{
   background-color: var(--tertiary-color);
+  margin-top: 50px;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 .top-bar .text{
   color: var(--text-color);
+  align-self: center;
+  text-decoration: none solid currentColor;
+
+}
+
+.top-bar .text:hover, .text:active, .text:focus{
+  color: var(--text-color) !important;
+  text-decoration: none solid currentColor !important;
 }
 
 .top-bar .image{
@@ -67,6 +51,12 @@ input.search-bar-field:focus{
   margin-right: 10px;
   margin-left: 10px;
 }
+
+.top-nav-bar{
+  background-color: var(--tertiary-color);
+}
+
+
 
 .bm-burger-button {
     position: fixed;
