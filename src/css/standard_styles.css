@@ -20,6 +20,25 @@
     box-shadow: 0 0 0 0.25rem var(--primary-color-hover-shadow) !important;
 }
 
+.button-themed-outline{
+    background-color: var(--bg-color);
+    border-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.button-themed-outline:hover{
+    background-color: var(--primary-color-hover);
+    border-color: var(--primary-color-hover);
+    color: black;
+}
+
+.button-themed-outline:focus, .button-themed-outline:active{
+    background-color: var(--primary-color-hover);
+    border-color: var(--primary-color-hover);
+    color: black;
+    box-shadow: 0 0 0 0.25rem var(--primary-color-hover-shadow) !important;
+}
+
 /*Default themed buttons alt style*/
 .button-themed-alt{
     background-color: darkslateblue;
@@ -38,4 +57,8 @@
 /*Default themed spinners*/
 .spinner-themed{
     color: var(--primary-color);
+}
+
+.text-themed{
+    color: var(--text-color);
 }

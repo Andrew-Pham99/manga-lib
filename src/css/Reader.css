@@ -2,18 +2,30 @@
     align-content: center;
     text-align: center;
 }
+
 /*image styling*/
 .reader-chapter_images {
   width: 50%;
 }
 
-.reader-window {
-    /*background: #333333;*/
+.zoom-bar{
+  background-color: var(--tertiary-color);
 }
 
-.reader-progress-bar {
-    /*background: #333333;*/
+input[type=range]::-moz-range-thumb{
+  background-color: var(--primary-color);
+}
 
+input[type=range]::-moz-range-track{
+  background-color: var(--secondary-color);
+}
+
+input[type=range]::-moz-range-thumb:active{
+  background-color: var(--primary-color-hover);
+}
+
+input[type=range]:focus::-moz-range-thumb{
+  box-shadow: 0 0 0 1px var(--primary-color-hover), 0 0 0 .15rem var(--primary-color-hover-shadow);
 }
 
 /*burger menu styling*/
@@ -28,7 +40,7 @@
   
   /* Color/shape of burger icon bars */
   .bm-burger-bars {
-    background: #000000;
+    background: var(--primary-color);
   }
   
   /*#0275d8*/
@@ -40,12 +52,12 @@
   
   /* Color/shape of close button cross */
   .bm-cross {
-    background: #373a47;
+    background: var(--primary-color);
   }
   
   /* General sidebar styles */
   .bm-menu {
-    background: #F8F9FA;
+    background: var(--tertiary-color);
     padding: 2.5em 1.5em 0;
     font-size: 1.15em;
   }

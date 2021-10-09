@@ -5,6 +5,7 @@ import {Container, Image, Navbar, Nav, Button, Spinner, Form, Row, Col, OverlayT
 import components from "./components/components";
 import { slide as Menu } from "react-burger-menu";
 import './css/Reader.css';
+import "./css/standard_styles.css"
 
 function FindNextChapter(context){
     // context is the object returned by a call to useLocation()
@@ -89,16 +90,12 @@ function ChapterImages() {
     }
     React.useLayoutEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context]);
     //Preload images.
-    React.useEffect(() => {
-        console.log("PRELOAD")
-        chapterImgUrlList.forEach((chapterImg) => {
-            const img = new Image().src = chapterImg
-
-
-        })
-
-
-    },[])
+    // React.useEffect(() => {
+    //     console.log("PRELOAD")
+    //     chapterImgUrlList.forEach((chapterImg) => {
+    //         const img = new Image().src = chapterImg;
+    //     })
+    // },[])
     const toggleScroll = () => {
         setIsScroll(!isScroll);
     };
@@ -140,13 +137,13 @@ function ChapterImages() {
 
         return (
             <div className={"position-relative bottom-0"} /*onMouseEnter={toggleZoomOn} onMouseLeave={toggleZoomOff}*/ style={{marginTop:30}}>
-                <Button className={"fixed-bottom"} style={{marginBottom:35, marginLeft:10}} onClick={() => toggleZoom()}>{showZoom ? "Show Zoom" : "Hide Zoom"}</Button>
+                <Button className={"fixed-bottom button-themed"} style={{marginBottom:35, marginLeft:10}} onClick={() => toggleZoom()}>{showZoom ? "Hide Zoom" : "Show Zoom"}</Button>
                 <Container className={"fixed-bottom"} style={{marginBottom:35}}>
-                    <Navbar bg={"light"} className={"flex-fill rounded-3"} style={{visibility: showZoom ? "visible" : "hidden"}}>
+                    <Navbar className={"flex-fill rounded-3 zoom-bar"} style={{visibility: showZoom ? "visible" : "hidden"}}>
                         <Form className={"flex-fill"} style={{marginLeft:10, marginRight:10}}>
                             <Form.Label>Zoom</Form.Label>
                             <Form.Range min={"0.1"} max={"1.9"} defaultValue={isScroll ? scrollZoomVal : pageZoomVal} step={"0.05"} onChange={handleChange} id={"zoom"} name={"zoom"} tooltip={"auto"}/>
-                            <Button variant={"primary"} onClick={resetZoom}>Reset</Button>
+                            <Button className={"button-themed"} onClick={resetZoom}>Reset</Button>
                         </Form>
                     </Navbar>
                 </Container>
@@ -188,7 +185,7 @@ function ChapterImages() {
                         {chapterImgUrlList.map((chapter, index) => {
                             return (
                                 <Nav key={index} className={"flex-fill"}>
-                                    <Button variant={index <= curPage ? "primary" : "outline-primary"} onClick={() => setCurPage(index)} className={`align-self-center w-100`}></Button>
+                                    <Button onClick={() => setCurPage(index)} className={`align-self-center w-100 ${index <= curPage ? "button-themed" : "button-themed-outline"}`}></Button>
                                 </Nav>
                             )
                         })}
@@ -293,9 +290,9 @@ function ChapterImages() {
     return (
         <div style={{marginTop:10}}>
             <Container className={"position-relative"} style={{marginBottom:10}}>
-                <Button variant={"primary"} onClick={() => goToMangaInfo(context, history)} onMouseDown={(event) => goToMangaInfoNewTab(event, context)} className={"position-absolute start-0"}>Back to MangaInfo</Button>
-                <Button variant={"primary"} className={"position-absolute end-0"} style={{right:"10px", visibility: isScroll ? "hidden" : "visible"}} onClick={() => {navigator.clipboard.writeText(chapterImgUrlList[curPage].url)}}> Copy Panel </Button>
-                <Button variant={isScroll ? "primary" : "success"} style={{textAlign:"center"}} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
+                <Button onClick={() => goToMangaInfo(context, history)} onMouseDown={(event) => goToMangaInfoNewTab(event, context)} className={"position-absolute start-0 button-themed"}>Back to MangaInfo</Button>
+                <Button className={"position-absolute end-0 button-themed"} style={{right:"10px", visibility: isScroll ? "hidden" : "visible"}} onClick={() => {navigator.clipboard.writeText(chapterImgUrlList[curPage].url)}}> Copy Panel </Button>
+                <Button className={isScroll ? "btn-secondary" : "button-themed"} style={{textAlign:"center"}} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
             </Container>
             {isScroll ?
                 <div>
@@ -321,10 +318,10 @@ function NextChapterButtons() {
     // TODO : Style this element and figure out where to put it on the reader that makes sense
     return (
         <div>
-            <Button style={{marginRight: 10}} onClick={() => HandleChapterChange(FindPrevChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindPrevChapter(context), context)}>
+            <Button style={{marginRight: 10}} onClick={() => HandleChapterChange(FindPrevChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindPrevChapter(context), context)} className={"button-themed"}>
                 Prev Chapter
             </Button>
-            <Button onClick={() => HandleChapterChange(FindNextChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindNextChapter(context), context)}>
+            <Button onClick={() => HandleChapterChange(FindNextChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindNextChapter(context), context)} className={"button-themed"}>
                 Next Chapter
             </Button>
         </div>
@@ -340,9 +337,11 @@ function ChapterListHamburgerMenu() {
             <Menu right  pageWrapId={"page-wrap"} outerContainerId={"App"}>
                 <Navbar  className="ChapterList">
                     <Nav className={"flex-column"} activeKey={context.state.curChapter.data.listId}>
+                        <Nav.Item as={"h5"} className={"text-color clickable"} onClick={() => {goToMangaInfo(context, history);}}>{context.state.manga.name}</Nav.Item>
+                        <div style={{margin:10}}/>
                         {context.state.chapterList.map((chapter, index) => (
                             <Nav.Item key={index} onClick={() => HandleChapterChange(chapter, context, history)}>
-                                <Nav.Link eventKey={index}>
+                                <Nav.Link eventKey={index} className={"chapter"}>
                                         {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
                                             `Chapter ${chapter.data.attributes.chapter}`}
                                 </Nav.Link>
@@ -370,7 +369,7 @@ function Reader() {
             <div id="page-wrap">
                 <components.TopNavBar/>
                 <Container fluid>
-                    <h1>
+                    <h1 className={"text-themed"}>
                         {context.state.manga.name}
                         : Chapter
                         {` ` + context.state.curChapter.data.attributes.chapter}
