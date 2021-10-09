@@ -6,6 +6,7 @@ import components from './components/components';
 import {Container, Spinner, Button, Card} from "react-bootstrap";
 import Grid from '@material-ui/core/Grid';
 import {Link, useLocation, useHistory} from 'react-router-dom';
+import { ownerDocument } from '@material-ui/core';
 
 function MangaCard(props){
     const [vis, setVis] = React.useState(false)
@@ -91,8 +92,13 @@ function SearchBar(){
         setSpinner(true)
         setOffset(api.limit)
         setShowButton(false)
+        let ord = ""
         setLoadObject(context.state != null ? (context.state.searchObject != null ? context.state.searchObject : searchObject) : searchObject)
-        api.queryManga(context.state != null ? (context.state.searchObject != null ? context.state.searchObject : searchObject) : searchObject)
+        if(context.state!= null && context.state.order){
+            ord = context.state.order
+        }
+
+        api.queryManga(context.state != null ? (context.state.searchObject != null ? context.state.searchObject : searchObject) : searchObject, ord)
         .then((response) => {
             setOffset(api.limit)
             console.log(response)

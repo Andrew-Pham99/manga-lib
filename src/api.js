@@ -29,12 +29,18 @@ const ch_limit = 25;
      * @param {Object} queryParams 
      * @returns {Promise} GET response as a Promise
      */
-    const queryManga = (queryParams) => {
+    const queryManga = (queryParams, orderType ="") => {
         console.log("executing GET request for queried manga...")
         let order = {relevance: "desc"}
-        if(!queryParams || queryParams.title === ""){
-            order = {followedCount: "desc"}
+        if (orderType === "") {
+            if(!queryParams || queryParams.title === ""){
+                order = {followedCount: "desc"}
+            }
         }
+        else {
+            order = {[orderType]: "desc"}
+        }
+        
         return axios({
             method: 'get',
             url: base_url + '/manga',

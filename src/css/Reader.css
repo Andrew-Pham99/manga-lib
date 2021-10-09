@@ -63,3 +63,7 @@
   .bm-overlay {
     background: rgba(255, 255, 255, 0) !important; /* Will give you a white overlay */
   }
+
+  .clickable{
+    cursor: pointer;
+  }

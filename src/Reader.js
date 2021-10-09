@@ -88,6 +88,17 @@ function ChapterImages() {
         setIsLoaded(true);
     }
     React.useLayoutEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context]);
+    //Preload images.
+    React.useEffect(() => {
+        console.log("PRELOAD")
+        chapterImgUrlList.forEach((chapterImg) => {
+            const img = new Image().src = chapterImg
+
+
+        })
+
+
+    },[])
     const toggleScroll = () => {
         setIsScroll(!isScroll);
     };
