@@ -15,14 +15,16 @@ const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => 
 
     return (
         <div className={"search-bar"}>
-            <input
-                size={75}
-                className={"search-bar-field"}
-                type={"text"}
-                onChange={onChange}
-                placeholder={placeholder}
-                onKeyDown={onKeyDown}
-            />
+            <Container className={"w-50"}>
+                <input
+                    size={75}
+                    className={"search-bar-field form-control"}
+                    type={"text"}
+                    onChange={onChange}
+                    placeholder={placeholder}
+                    onKeyDown={onKeyDown}
+                />
+            </Container>
             <br/>
             <Button onClick={onClick} type="submit" className={"button-themed button-format"}>Search</Button>
             <Button onClick={onClickRand} type="submit" className={"button-themed button-format"}>Random</Button>
