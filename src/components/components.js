@@ -1,5 +1,5 @@
 import React from "react";
-import {Navbar, Container, Button, Image, Form, Row, Col} from "react-bootstrap";
+import {Navbar, Container, Button, Image, Form, Row, Col, Spinner} from "react-bootstrap";
 import {LinkContainer} from "react-router-bootstrap"
 import {useHistory, Link} from "react-router-dom";
 import logo from "../images/logo.png";
@@ -15,14 +15,16 @@ const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => 
 
     return (
         <div className={"search-bar"}>
-            <input
-                size={75}
-                className={"search-bar-field"}
-                type={"text"}
-                onChange={onChange}
-                placeholder={placeholder}
-                onKeyDown={onKeyDown}
-            />
+            <Container className={"w-50"}>
+                <input
+                    size={75}
+                    className={"search-bar-field form-control"}
+                    type={"text"}
+                    onChange={onChange}
+                    placeholder={placeholder}
+                    onKeyDown={onKeyDown}
+                />
+            </Container>
             <br/>
             <Button onClick={onClick} type="submit" className={"button-themed button-format"}>Search</Button>
             <Button onClick={onClickRand} type="submit" className={"button-themed button-format"}>Random</Button>
@@ -34,7 +36,7 @@ const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => 
 const TopBar = () => {
     return (
       <div>
-          <Container className={"row nowrap d-inline-block"}>
+          <Container className={"row nowrap d-inline-block position-relative"}>
               <Navbar expand={"lg"} className={"top-bar"}>
                   <LinkContainer to={"/"}>
                       <Navbar.Brand className={"text"}>
@@ -130,14 +132,31 @@ const TopNavBar = () => {
     );
 };
 
-const SampleText = () => {
+const AboutUs = () => {
+    const history = useHistory();
+    const gotoAboutUs = () => {
+        history.push(`/About`)
+    };
     return (
-        <p> lorem ipsum</p>
-    )
+        <div>
+            <Container className={"fixed-bottom"} fluid>
+                <p className={"aboutUs"} onClick={() => {gotoAboutUs();}}>About Us</p>
+            </Container>
+        </div>
+    );
 };
 
+const LoadingSpinner = () => {
+    return (
+        <Container align={"center"}>
+            <Spinner animation={"border"} role={"status"} className={"spinner-themed"}>
+                <span className={"visually-hidden"}>Loading...</span>
+            </Spinner>
+        </Container>
+    );
+};
 
-const components = {SearchBar, TopNavBar, TopBar, SampleText}
+const components = {SearchBar, TopNavBar, TopBar, LoadingSpinner, AboutUs}
 export default components;
 
 //<button onClick={onClick} type="submit"><i class="fa fa-search"></i></button>

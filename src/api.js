@@ -5,9 +5,6 @@ Global rate limit of 5 requests a second per IP address in affect for most reque
 Optimal to use larger batch requests than smaller individual ones.
 */
 
-
-//TODO: RETRIEVE IMAGES FROM CHAPTERS, COVER ART, ETC.
-
 const base_url = 'https://api.mangadex.org'
 const limit = 30;
 const ch_limit = 25;

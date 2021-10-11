@@ -68,9 +68,9 @@ function Info(props) {
 
     return(
         <Card className={"info-card"}>
-            <Row >
-                <Col xs={6} md={3}>
-                    <Card.Img className="img-fluid rounded" alt="..."  src={props.img} ></Card.Img>
+            <Row>
+                <Col md={3} sm={6}>
+                    <Card.Img className={"rounded"}  src={props.img} ></Card.Img>
                 </Col>
                 <Col>
                     <Card.Body variant="right" className="card_body">
@@ -128,6 +128,17 @@ function ChapterListNav(props) {
     const [pageVis, setPageVis] = React.useState(false);
     const [bottomPageVis, setBottomPageVis] = React.useState(false);
     const [noChapters, setNoChapters] = React.useState(false);
+    const chapterSort = (a, b) => {
+        console.log(a);
+        let aChapter = parseFloat(a.data.attributes.chapter), bChapter = parseFloat(b.data.attributes.chapter);
+        if(aChapter < bChapter){
+            return -1;
+        }
+        if(aChapter > bChapter){
+            return 1;
+        }
+        return 0;
+    };
 
     const getChapterList = () => {
         let totalChapters, chaptersFetched = 0, remainingChaptersToFetch, offset = 100, totalOffset = 0;
@@ -164,7 +175,7 @@ function ChapterListNav(props) {
                         })
                     totalOffset += offset;
                 }
-                setChapterList(chapterList => chapterList.sort());
+                setChapterList(chapterList => chapterList.sort((a,b) => {chapterSort(a,b)}));
 
                 let pageLengthVal = Math.ceil(getChapterListResponse.data.total/api.ch_limit);
                 setPageLength(pageLengthVal);
@@ -198,7 +209,7 @@ function ChapterListNav(props) {
     return (
         <div>
             {noChapters ?
-                <p className={"text-color"}>No chapters could be found</p>
+                <p className={"text-color"} style={{marginTop:30}}>No chapters could be found</p>
                 :
                 (pageVis ?
                     <div>
@@ -246,11 +257,7 @@ function ChapterListNav(props) {
                             disableInitialCallback={"true"}/>
                     </div>
                     :
-                    <Container align={"center"} style={{marginTop:30}}>
-                        <Spinner animation={"border"} role={"status"} className={"spinner-themed"}>
-                            <span className={"visually-hidden"}>Loading...</span>
-                        </Spinner>
-                    </Container>
+                    <components.LoadingSpinner/>
                 )
             }
         </div>
@@ -384,6 +391,7 @@ function MangaInfo() {
                     state={context.state}
                 />
             </Container>
+            <components.AboutUs/>
         </div>
     );
 };

@@ -179,12 +179,9 @@ function SearchBar(){
             onClickRand={handleRand}
             />
             {spinner ?
-                    <Container align={"center"}>
-                        <Spinner animation={"border"} role={"status"} className={"spinner-themed"}>
-                            <span className={"visually-hidden"}>Loading...</span>
-                        </Spinner>
-                    </Container>
+                <components.LoadingSpinner/>
                 :
+
             <ul>
                 <Grid container spacing={3}>
                     <Grid item md={12}>
@@ -202,10 +199,10 @@ function SearchBar(){
                                 tags={item.attributes.tags}
                             />
                             ))}
+
                         </Grid>
                     </Grid>
-                </Grid>
-            </ul>
+                </ul>
             }
             <Button onClick={loadMore} style={{visibility: showButton ? 'visible' : 'hidden', marginBottom:15}} className={"button-themed"}>
                 Load More
@@ -226,6 +223,7 @@ function App() {
             <Container style={{marginTop:50}}>
                 <SearchBar/>
             </Container>
+            <components.AboutUs/>
         </div>
     );
 };

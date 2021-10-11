@@ -377,11 +377,7 @@ function AdvancedSearchFields() {
                         </Form.Group>
                     </Form.Group>
                     :
-                    <Container align={'center'}>
-                        <Spinner animation={"border"} role={"status"} variant={"primary"} className={""}>
-                            <span className={"visually-hidden"}>Loading...</span>
-                        </Spinner>
-                    </Container>
+                    <components.LoadingSpinner/>
                 }
                 <br/>
                 <div className={"d-grid"}>

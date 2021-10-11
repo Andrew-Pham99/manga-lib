@@ -28,14 +28,48 @@ input[type=range]:focus::-moz-range-thumb{
   box-shadow: 0 0 0 1px var(--primary-color-hover), 0 0 0 .15rem var(--primary-color-hover-shadow);
 }
 
+.reader-window .button-next{
+  float: right;
+  background: transparent;
+  border: none;
+  color: transparent;
+  box-shadow: none;
+  height: 100%;
+  width: 50%;
+  position: absolute;
+  top: 0;
+  left: 50%;
+}
+
+.reader-window .button-prev{
+  float: left;
+  background: transparent;
+  border: none;
+  color: transparent;
+  box-shadow: none;
+  height: 100%;
+  width: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.button-chapter-nav .next{
+
+}
+
+.button-chapter-nav .prev{
+
+}
+
 /*burger menu styling*/
 
 .bm-burger-button {
     position: fixed;
     width: 36px;
     height: 30px;
-    right: 36px;
-    top: 36px;
+    right: 100px;
+    top: 68px;
   }
   
   /* Color/shape of burger icon bars */
@@ -48,6 +82,7 @@ input[type=range]:focus::-moz-range-thumb{
   .bm-cross-button {
     height: 24px;
     width: 24px;
+    margin-right: 20px;
   }
   
   /* Color/shape of close button cross */

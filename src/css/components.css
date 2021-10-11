@@ -52,6 +52,20 @@ input.search-bar-field:focus{
   margin-left: 10px;
 }
 
+.aboutUs{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin-bottom: 2rem;
+  margin-right: 2rem;
+  color: var(--text-color-muted);
+  cursor: pointer;
+}
+
+.aboutUs:hover{
+  color: var(--primary-color);
+}
+
 .top-nav-bar{
   background-color: var(--tertiary-color);
 }
