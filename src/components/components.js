@@ -12,6 +12,11 @@ const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => 
     const gotoAdvancedSearch = () => {
         history.push(`/AdvancedSearch`);
     };
+    const gotoAdvancedSearchNewTab = (event) => {
+        if(event.button == 1){
+            window.open(`/AdvancedSearch`);
+        }
+    };
 
     return (
         <div className={"search-bar"}>
@@ -28,7 +33,7 @@ const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => 
             <br/>
             <Button onClick={onClick} type="submit" className={"button-themed button-format"}>Search</Button>
             <Button onClick={onClickRand} type="submit" className={"button-themed button-format"}>Random</Button>
-            <Button variant={"secondary"} onClick={gotoAdvancedSearch} className={"button-format"}>Advanced Search</Button>
+            <Button variant={"secondary"} onClick={gotoAdvancedSearch} onMouseDown={gotoAdvancedSearchNewTab} className={"button-format"}>Advanced Search</Button>
         </div>
     );
   };
@@ -137,10 +142,15 @@ const AboutUs = () => {
     const gotoAboutUs = () => {
         history.push(`/About`)
     };
+    const gotoAboutUsNewTab = (event) => {
+        if(event.button == 1){
+            window.open(`/About`);
+        }
+    };
     return (
         <div>
             <Container className={"fixed-bottom"} fluid>
-                <p className={"aboutUs"} onClick={() => {gotoAboutUs();}}>About Us</p>
+                <p className={"aboutUs"} onClick={() => {gotoAboutUs();}} onMouseDown={(event) => {gotoAboutUsNewTab(event)}}>About Us</p>
             </Container>
         </div>
     );
