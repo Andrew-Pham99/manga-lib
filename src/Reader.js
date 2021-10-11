@@ -70,6 +70,8 @@ function ChapterImages() {
     const [scrollZoom, setScrollZoom] = React.useState(defaultZoom);
     const [pageZoom, setPageZoom] = React.useState(defaultZoom);
     const [showZoom, setShowZoom] = React.useState(false);
+    const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const vh = Math.min(document.documentElement.clientWidth || 0, window.innerHeight || 0);
     let pageZoomVal = pageZoom, scrollZoomVal = scrollZoom;
 
     const getChapterImages = (chapterId) => {
@@ -152,8 +154,6 @@ function ChapterImages() {
     }
     function ChapterScroll() {
         // This function will handle the rendering of the scroll version of the chapter
-        const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-        const vh = Math.min(document.documentElement.clientWidth || 0, window.innerHeight || 0);
         React.useEffect(() => {document.getElementById("reader-window-scroll").scrollIntoView();}, []);
 
         return (
@@ -202,8 +202,6 @@ function ChapterImages() {
     }
     function ChapterClick() {
         // This function will handle the rendering of the click version of the chapter
-        const vw = Math.min(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-        const vh = Math.min(document.documentElement.clientWidth || 0, window.innerHeight || 0);
         React.useEffect(() => {document.getElementById("reader-window").scrollIntoView();}, []);
         document.onkeydown = checkKey;
         function checkKey(e) {
@@ -217,7 +215,17 @@ function ChapterImages() {
                nextImage()
             }
         }
-        
+
+        const handleClick = (event) => {
+            const clickableWidth = document.getElementById("reader-clickable").clientWidth;
+            const threshold = clickableWidth / 2;
+            if(event.clientX < threshold){
+                prevImage();
+            }
+            else if(event.clientX > threshold) {
+                nextImage();
+            }
+        };
         const nextImage = () => {
             if(chapterImgUrlList[curPage].index < chapterImgUrlList.length - 1){
                 console.log("Going to page: " + (chapterImgUrlList[curPage].index + 1));
@@ -241,12 +249,12 @@ function ChapterImages() {
 
         return (
             <div id={"reader-window"}>
-                <Container className={"position-relative reader-window"} fluid>
+                <Container id={"reader-clickable"} className={"position-relative reader-window"} fluid onClick={(event) => {handleClick(event);}}>
                     {chapterImgUrlList[curPage] != undefined ?
                         <div>
-                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} id={`panelImage_${curPage}`} style={{height: `${(vh * pageZoom)}px`, width: "auto"}} className={"border border-dark mw-100 mh-100"} />
-                            <Button type="submit" className={"button-prev"} onClick={prevImage} />
-                            <Button type="submit" className={"button-next"} onClick={nextImage}/>
+                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} id={`panelImage_${curPage}`}
+                                   style={{height: `${(vh * pageZoom)}px`, width: "auto"}}
+                                   className={"border border-dark mw-100 mh-100"}/>
                         </div>
                         :
                         <components.LoadingSpinner/>
