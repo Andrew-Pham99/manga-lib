@@ -1,5 +1,5 @@
 import React from "react";
-import {Navbar, Container, Button, Image, Form, Row, Col} from "react-bootstrap";
+import {Navbar, Container, Button, Image, Form, Row, Col, Spinner} from "react-bootstrap";
 import {LinkContainer} from "react-router-bootstrap"
 import {useHistory, Link} from "react-router-dom";
 import logo from "../images/logo.png";
@@ -132,14 +132,17 @@ const TopNavBar = () => {
     );
 };
 
-const SampleText = () => {
+const LoadingSpinner = () => {
     return (
-        <p> lorem ipsum</p>
-    )
+        <Container align={"center"}>
+            <Spinner animation={"border"} role={"status"} className={"spinner-themed"}>
+                <span className={"visually-hidden"}>Loading...</span>
+            </Spinner>
+        </Container>
+    );
 };
 
-
-const components = {SearchBar, TopNavBar, TopBar, SampleText}
+const components = {SearchBar, TopNavBar, TopBar, LoadingSpinner}
 export default components;
 
 //<button onClick={onClick} type="submit"><i class="fa fa-search"></i></button>

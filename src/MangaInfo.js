@@ -209,7 +209,7 @@ function ChapterListNav() {
     return (
         <div>
             {noChapters ?
-                <p className={"text-color"}>No chapters could be found</p>
+                <p className={"text-color"} style={{marginTop:30}}>No chapters could be found</p>
                 :
                 (pageVis ?
                     <div>
@@ -257,11 +257,7 @@ function ChapterListNav() {
                             disableInitialCallback={"true"}/>
                     </div>
                     :
-                    <Container align={"center"} style={{marginTop:30}}>
-                        <Spinner animation={"border"} role={"status"} className={"spinner-themed"}>
-                            <span className={"visually-hidden"}>Loading...</span>
-                        </Spinner>
-                    </Container>
+                    <components.LoadingSpinner/>
                 )
             }
         </div>

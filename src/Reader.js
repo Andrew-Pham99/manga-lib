@@ -158,14 +158,20 @@ function ChapterImages() {
         React.useEffect(() => {document.getElementById("reader-window-scroll").scrollIntoView();}, []);
 
         return (
-            <div>
-                <Row xs={1} md={1} lg={1} id={"reader-window-scroll"}>
-                    {chapterImgUrlList.map((chapterImg, index) => (
-                        <Col key={index}>
-                            <Image src={chapterImg.url} key={index} alt={"Not Found"} style={{height: `${(vh * scrollZoom)}px`, width: "auto"}} className={"border-start border-end border-dark"}/>
-                        </Col>
-                    ))}
-                </Row>
+            <div id={"reader-window-scroll"}>
+                {chapterImgUrlList.length != 0 ?
+                    <Row xs={1} md={1} lg={1}>
+                        {chapterImgUrlList.map((chapterImg, index) => (
+                            <Col key={index}>
+                                <Image src={chapterImg.url} key={index} alt={"Not Found"}
+                                       style={{height: `${(vh * scrollZoom)}px`, width: "auto"}}
+                                       className={"border-start border-end border-dark"}/>
+                            </Col>
+                        ))}
+                    </Row>
+                    :
+                    <components.LoadingSpinner/>
+                }
             </div>
         );
     }
@@ -255,11 +261,7 @@ function ChapterImages() {
 
                         </div>
                         :
-                        <Container style={{align:'center'}}>
-                            <Spinner animation={"border"} role={"status"} className={"spinner-themed"}>
-                                <span className={"visually-hidden"}>Loading...</span>
-                            </Spinner>
-                        </Container>
+                        <components.LoadingSpinner/>
                     }
                 </Container>
             </div>

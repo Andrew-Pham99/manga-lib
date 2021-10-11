@@ -179,11 +179,7 @@ function SearchBar(){
             onClickRand={handleRand}
             />
             {spinner ?
-                    <Container align={"center"}>
-                        <Spinner animation={"border"} role={"status"} className={"spinner-themed"}>
-                            <span className={"visually-hidden"}>Loading...</span>
-                        </Spinner>
-                    </Container>
+                <components.LoadingSpinner/>
                 :
             <ul>
                 <Grid container spacing={3}>
