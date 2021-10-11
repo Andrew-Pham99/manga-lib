@@ -373,7 +373,7 @@ function MangaInfo() {
                 <Info
                     description={context.state.description}
                     img={context.state.img}
-                    title={context.state.name}
+                    title={context.state.title}
                     status={context.state.status}
                     demographic={context.state.demographic}
                     relationships={context.state.relationships}

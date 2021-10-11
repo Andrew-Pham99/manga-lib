@@ -338,7 +338,7 @@ function ChapterListHamburgerMenu() {
             <Menu right  pageWrapId={"page-wrap"} outerContainerId={"App"}>
                 <Navbar  className="ChapterList">
                     <Nav className={"flex-column"} activeKey={context.state.curChapter.data.listId}>
-                        <Nav.Item as={"h5"} className={"text-color clickable"} onClick={() => {goToMangaInfo(context, history);}}>{context.state.manga.name}</Nav.Item>
+                        <Nav.Item as={"h5"} className={"text-color clickable"} onClick={() => {goToMangaInfo(context, history);}}>{context.state.manga.title}</Nav.Item>
                         <div style={{margin:10}}/>
                         {context.state.chapterList.map((chapter, index) => (
                             <Nav.Item key={index} onClick={() => HandleChapterChange(chapter, context, history)}>
@@ -371,7 +371,7 @@ function Reader() {
                 <components.TopNavBar/>
                 <Container fluid>
                     <h1 className={"text-themed"}>
-                        {context.state.manga.name}
+                        {context.state.manga.title}
                         : Chapter
                         {` ` + context.state.curChapter.data.attributes.chapter}
 

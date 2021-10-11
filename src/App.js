@@ -33,7 +33,7 @@ function MangaCard(props){
             <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail clickable"} width={100} height={550} onLoad={onLoad} onClick={handleMangaClick} onMouseDown={handleMouseDown}/>
             <Card.Body>
                 <Card.Title onClick={handleMangaClick} onMouseDown={handleMouseDown} className={"clickable manga-card-text color"}>
-                    {props.name}
+                    {props.title}
                 </Card.Title>
                 <Card.Text className={"manga-card-text color"}>
                     <div className={"format"}>
@@ -192,7 +192,7 @@ function SearchBar(){
                             {responseData.map((item,index) =>(
                             <MangaCard
                                 key={index}
-                                name={item.attributes.title.en ? item.attributes.title.en : item.attributes.title.jp}
+                                title={item.attributes.title.en ? item.attributes.title.en : item.attributes.title.jp}
                                 img={item.coverFile}
                                 description={item.attributes.description.en? item.attributes.description.en.replace(/[^.]*\[.*/g, ''): ''}
                                 id={item.id}
