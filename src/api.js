@@ -55,6 +55,18 @@ const ch_limit = 25;
         })
     }
 
+    const getManga = (id) => {
+        console.log("executing GET request for queried manga...")
+        return axios({
+            method:'get',
+            url: base_url + `/manga/${id}`,
+            responseType: 'json',
+            params: {
+                includes:["author", "artist", "cover_art", "tags"]
+            }
+        })
+    }
+
     /**
      * 
      * @param {Array} coverIds - Array of cover ids
@@ -187,6 +199,7 @@ const ch_limit = 25;
     const api = {
         getRandomManga,
         queryManga,
+        getManga,
         getCoverArtList,
         getChapterList,
         getCoverArt,

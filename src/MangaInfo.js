@@ -119,7 +119,7 @@ function Info(props) {
     )
 }
 
-function ChapterListNav() {
+function ChapterListNav(props) {
     const [context, setContext] = React.useState(useLocation());
     const [history, setHistory] = React.useState(useHistory());
     const [chapterList, setChapterList] = React.useState([]);
@@ -144,7 +144,7 @@ function ChapterListNav() {
         let totalChapters, chaptersFetched = 0, remainingChaptersToFetch, offset = 100, totalOffset = 0;
         setChapterList([]);
         setNoChapters(false);
-        api.getChapterList({manga: context.state.id})
+        api.getChapterList({manga: props.id})
             .then((getChapterListResponse) => {
                 console.log(getChapterListResponse);
                 if(getChapterListResponse.data.data.length == 0){
@@ -163,7 +163,7 @@ function ChapterListNav() {
                 })
                 for(let i = 1; i < Math.ceil(remainingChaptersToFetch / chaptersFetched) + 1; i++){
                     let thisOffset = totalOffset;
-                    api.getChapterList({manga: context.state.id, offset: totalOffset})
+                    api.getChapterList({manga: props.id, offset: totalOffset})
                         .then((nextChapterListResponse) => {
                             console.log(nextChapterListResponse);
                             nextChapterListResponse.data.data.forEach((chapter, index) => {
@@ -196,13 +196,13 @@ function ChapterListNav() {
         setCurrentPage(selectedPage)
         setBottomPageVis(true)
     }
-    const handleChapterChange = (chapter, context, history) => {
-        history.push({pathname:`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`, state:{manga:context.state, curChapter:chapter, chapterList:chapterList}});
+    const handleChapterChange = (chapter, history) => {
+        history.push({pathname:`/Reader/manga=${props.id}/chapter=${chapter.data.attributes.chapter}`, state:{manga:props.state, curChapter:chapter, chapterList:chapterList}});
     };
     const handleMouseDown = (event, chapter, context) => {
         if(event.button == 1){
-            localStorage.setItem("READER_STATE", JSON.stringify({manga:context.state, curChapter:chapter, chapterList:chapterList}))
-            window.open(`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`)
+            localStorage.setItem("READER_STATE", JSON.stringify({manga:props.state, curChapter:chapter, chapterList:chapterList}))
+            window.open(`/Reader/manga=${props.id}/chapter=${chapter.data.attributes.chapter}`)
         }
     };
 
@@ -231,7 +231,7 @@ function ChapterListNav() {
                         <Navbar  className="ChapterList">
                             <Nav className={"flex-column"}>
                                 {chapterList.slice((currentPage * api.ch_limit),((currentPage * api.ch_limit) + api.ch_limit)).map((chapter, index) => (
-                                    <Nav.Item key={index}  onClick={() => handleChapterChange(chapter, context, history)} onMouseDown={(event) => handleMouseDown(event, chapter, context)}>
+                                    <Nav.Item key={index}  onClick={() => handleChapterChange(chapter,  history)} onMouseDown={(event) => handleMouseDown(event, chapter)}>
                                         <Nav.Link className={"chapter"}>
                                             {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
                                                 `Chapter ${chapter.data.attributes.chapter}`}
@@ -264,9 +264,111 @@ function ChapterListNav() {
     );
 }
 
+
+function ApiInfo(){
+    const [loading, setLoading] = React.useState(true)
+    const [err, setErr] = React.useState(false)
+    const [history, setHistory] = React.useState(useHistory());
+    const [context, setContext] = React.useState(useLocation());
+    const [test, setTest] = React.useState(false)
+    const [mInfo, setMInfo] = React.useState( {
+        description:"",
+        img:"",
+        title:"",
+        status:"",
+        demographic:"",
+        relationships:[],
+        tags:[]
+    })
+
+    const match = RegExp("(\/Info\/)(manga=)?(.*)", "i").exec(history.location.pathname)
+    const id = match[match.length-1]
+
+    const loadInfo = () => {
+        api.getManga(id)
+        .then((response)=>{
+            console.log("SUCCESS!")
+            setLoading(false)
+            setErr(true)
+            let im = ''
+            const attributes = response.data.data.attributes
+            response.data.data.relationships.forEach(relationship => {
+                if (relationship.type === "cover_art") {
+                    im= `https://uploads.mangadex.org/covers/${response.data.data.id}/${relationship.attributes.fileName}`;
+                }
+            })
+            setMInfo({
+                description:attributes.description.en? attributes.description.en.replace(/[^.]*\[.*/g, ''): '',
+                img:im,
+                title:attributes.title.en? attributes.title.en:attributes.title.jp,
+                status:attributes.status,
+                demographic:attributes.publicationDemographic? attributes.publicationDemographic: 'N/A',
+                relationships:response.data.data.relationships,
+                tags:attributes.tags
+            })
+        })
+        .catch((error)=>{
+            setLoading(false)
+            setErr(false)
+            console.log(error)
+        })
+    }
+
+
+
+    React.useEffect(() => {loadInfo();}, [])
+
+
+    console.log(loading)
+    return(
+            <div>
+                {
+                    loading? 
+                        <Container align={"center"} style={{marginTop:30}}>
+                            <Spinner animation={"border"} role={"status"} className={"spinner-themed"}>
+                                <span className={"visually-hidden"}>Loading...</span>
+                            </Spinner>                
+                        </Container>
+                        :
+                        [
+                            err?
+                                <Container>
+                                    <Info
+                                    description={mInfo.description}
+                                    img={mInfo.img}
+                                    title={mInfo.title}
+                                    status={mInfo.status}
+                                    demographic={mInfo.demographic}
+                                    relationships={mInfo.relationships}
+                                    tags={mInfo.tags}
+                                    />
+                                    <ChapterListNav
+                                        id = {id}
+                                        state={mInfo}
+                                    />
+                                </Container>
+                                :
+                                <h3 style={{color:"var(--text-color)", marginTop:20}}>Sorry, this page could not be found!</h3>
+                        ]
+                }
+            </div>
+    )
+}
+
+
 function MangaInfo() {
     const context = useLocation();
-    if(context.state == undefined){
+    if(context.state == undefined || context.state == null){
+        if (localStorage.getItem("MANGAINFO_STATE") == null){
+            return (
+                <div className="MangaInfo">
+                    <components.TopNavBar/>
+                    <ApiInfo/>
+                        
+                    
+                </div>
+            )
+        }
         context.state = JSON.parse(localStorage.getItem("MANGAINFO_STATE"));
         localStorage.removeItem("MANGAINFO_STATE");
     }
@@ -278,13 +380,16 @@ function MangaInfo() {
                 <Info
                     description={context.state.description}
                     img={context.state.img}
-                    title={context.state.name}
+                    title={context.state.title}
                     status={context.state.status}
                     demographic={context.state.demographic}
                     relationships={context.state.relationships}
                     tags={context.state.tags}
                 />
-                <ChapterListNav/>
+                <ChapterListNav
+                    id={context.state.id}
+                    state={context.state}
+                />
             </Container>
             <components.AboutUs/>
         </div>
