@@ -218,6 +218,10 @@ function ChapterImages() {
                nextImage()
             }
         }
+
+        const exposePanel = () => {
+            document.getElementById(`panelImage_${curPage}`).focus();
+        };
         
         const nextImage = () => {
             if(chapterImgUrlList[curPage].index < chapterImgUrlList.length - 1){
@@ -241,7 +245,7 @@ function ChapterImages() {
         };
 
         return (
-            <div id={"reader-window"}>
+            <div id={"reader-window"} onContextMenu={() => {exposePanel()}}>
                 <Container className={"position-relative reader-window"} fluid>
 
                     {/*TODO : Make the buttons span to half of the container and make the*/}
@@ -249,15 +253,11 @@ function ChapterImages() {
                     {chapterImgUrlList[curPage] != undefined ?
                         <div>
 
-                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} style={{height: `${(vh * pageZoom)}px`, width: "auto"}} className={"border border-dark mw-100 mh-100"} />
+                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} id={`panelImage_${curPage}`} style={{height: `${(vh * pageZoom)}px`, width: "auto"}} className={"border border-dark mw-100 mh-100"} />
 
-                            <Button type="submit" style={{ float: "left",    background:"transparent", border:"none", color:"transparent"
-                            ,boxShadow:"none",height: "100%", width:"50%", position:"absolute", top:0, left:0}}
-                                onClick={prevImage} />
+                            <Button type="submit" className={"button-prev"} onClick={prevImage} />
 
-                            <Button type="submit" style={{ float: "right", background:"transparent", border:"none", color:"transparent"
-                            ,boxShadow:"none",height: "100%", width:"50%", position:"absolute", top:0, left:"50%"}}
-                                onClick={nextImage}/>
+                            <Button type="submit" className={"button-next"} onClick={nextImage}/>
 
                         </div>
                         :
