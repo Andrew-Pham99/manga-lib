@@ -119,7 +119,7 @@ function Info(props) {
     )
 }
 
-function ChapterListNav() {
+function ChapterListNav(props) {
     const [context, setContext] = React.useState(useLocation());
     const [history, setHistory] = React.useState(useHistory());
     const [chapterList, setChapterList] = React.useState([]);
@@ -133,7 +133,7 @@ function ChapterListNav() {
         let totalChapters, chaptersFetched = 0, remainingChaptersToFetch, offset = 100, totalOffset = 0;
         setChapterList([]);
         setNoChapters(false);
-        api.getChapterList({manga: context.state.id})
+        api.getChapterList({manga: props.id})
             .then((getChapterListResponse) => {
                 console.log(getChapterListResponse);
                 if(getChapterListResponse.data.data.length == 0){
@@ -152,7 +152,7 @@ function ChapterListNav() {
                 })
                 for(let i = 1; i < Math.ceil(remainingChaptersToFetch / chaptersFetched) + 1; i++){
                     let thisOffset = totalOffset;
-                    api.getChapterList({manga: context.state.id, offset: totalOffset})
+                    api.getChapterList({manga: props.id, offset: totalOffset})
                         .then((nextChapterListResponse) => {
                             console.log(nextChapterListResponse);
                             nextChapterListResponse.data.data.forEach((chapter, index) => {
@@ -185,13 +185,13 @@ function ChapterListNav() {
         setCurrentPage(selectedPage)
         setBottomPageVis(true)
     }
-    const handleChapterChange = (chapter, context, history) => {
-        history.push({pathname:`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`, state:{manga:context.state, curChapter:chapter, chapterList:chapterList}});
+    const handleChapterChange = (chapter, history) => {
+        history.push({pathname:`/Reader/manga=${props.id}/chapter=${chapter.data.attributes.chapter}`, state:{manga:props.state, curChapter:chapter, chapterList:chapterList}});
     };
     const handleMouseDown = (event, chapter, context) => {
         if(event.button == 1){
-            localStorage.setItem("READER_STATE", JSON.stringify({manga:context.state, curChapter:chapter, chapterList:chapterList}))
-            window.open(`/Reader/manga=${context.state.id}/chapter=${chapter.data.attributes.chapter}`)
+            localStorage.setItem("READER_STATE", JSON.stringify({manga:props.state, curChapter:chapter, chapterList:chapterList}))
+            window.open(`/Reader/manga=${props.id}/chapter=${chapter.data.attributes.chapter}`)
         }
     };
 
@@ -220,7 +220,7 @@ function ChapterListNav() {
                         <Navbar  className="ChapterList">
                             <Nav className={"flex-column"}>
                                 {chapterList.slice((currentPage * api.ch_limit),((currentPage * api.ch_limit) + api.ch_limit)).map((chapter, index) => (
-                                    <Nav.Item key={index}  onClick={() => handleChapterChange(chapter, context, history)} onMouseDown={(event) => handleMouseDown(event, chapter, context)}>
+                                    <Nav.Item key={index}  onClick={() => handleChapterChange(chapter,  history)} onMouseDown={(event) => handleMouseDown(event, chapter)}>
                                         <Nav.Link className={"chapter"}>
                                             {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :
                                                 `Chapter ${chapter.data.attributes.chapter}`}
@@ -274,14 +274,10 @@ function ApiInfo(){
         tags:[]
     })
 
+    const match = RegExp("(\/Info\/)(manga=)?(.*)", "i").exec(history.location.pathname)
+    const id = match[match.length-1]
+
     const loadInfo = () => {
-
-        let id = history.location.pathname
-        console.log('id', id)
-
-        const match = RegExp("(\/Info\/)(manga=)?(.*)", "i").exec(id)
-        id = match[match.length-1]
-        console.log(id)
         api.getManga(id)
         .then((response)=>{
             console.log("SUCCESS!")
@@ -311,14 +307,10 @@ function ApiInfo(){
         })
     }
 
-    const loadChapters = () => {
-        console.log("THIS IS CONTEXT", context)
-        setTest(true)
 
-    }
 
     React.useEffect(() => {loadInfo();}, [])
-    React.useEffect(() => {loadChapters();}, [])
+
 
     console.log(loading)
     return(
@@ -342,6 +334,10 @@ function ApiInfo(){
                                     demographic={mInfo.demographic}
                                     relationships={mInfo.relationships}
                                     tags={mInfo.tags}
+                                    />
+                                    <ChapterListNav
+                                        id = {id}
+                                        state={mInfo}
                                     />
                                 </Container>
                                 :
@@ -383,7 +379,10 @@ function MangaInfo() {
                     relationships={context.state.relationships}
                     tags={context.state.tags}
                 />
-                <ChapterListNav/>
+                <ChapterListNav
+                    id={context.state.id}
+                    state={context.state}
+                />
             </Container>
         </div>
     );
