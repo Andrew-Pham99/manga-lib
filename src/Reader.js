@@ -104,7 +104,6 @@ function ChapterImages() {
         // TODO : Add tooltip to display value of zoom
         // TODO : Add fade in/out animations and delays to the mouse over effects
         //        Probably want to do that with some CSS fuckery
-        // TODO : Make zoom bar collapse behind a button press and remove mouse over effects
         const zoomToolTip = () => {
             return (
                 <Tooltip id={"zoom-bar-tooltip"}>
@@ -218,10 +217,6 @@ function ChapterImages() {
                nextImage()
             }
         }
-
-        const exposePanel = () => {
-            document.getElementById(`panelImage_${curPage}`).focus();
-        };
         
         const nextImage = () => {
             if(chapterImgUrlList[curPage].index < chapterImgUrlList.length - 1){
@@ -245,20 +240,13 @@ function ChapterImages() {
         };
 
         return (
-            <div id={"reader-window"} onContextMenu={() => {exposePanel()}}>
+            <div id={"reader-window"}>
                 <Container className={"position-relative reader-window"} fluid>
-
-                    {/*TODO : Make the buttons span to half of the container and make the*/}
-                    {/*        container height as close to the default height of the image as possible*/}
                     {chapterImgUrlList[curPage] != undefined ?
                         <div>
-
                             <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} id={`panelImage_${curPage}`} style={{height: `${(vh * pageZoom)}px`, width: "auto"}} className={"border border-dark mw-100 mh-100"} />
-
                             <Button type="submit" className={"button-prev"} onClick={prevImage} />
-
                             <Button type="submit" className={"button-next"} onClick={nextImage}/>
-
                         </div>
                         :
                         <components.LoadingSpinner/>
@@ -298,14 +286,12 @@ function ChapterImages() {
 function NextChapterButtons() {
     const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
-
-    // TODO : Style this element and figure out where to put it on the reader that makes sense
     return (
-        <div>
-            <Button style={{marginRight: 10}} onClick={() => HandleChapterChange(FindPrevChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindPrevChapter(context), context)} className={"button-themed"}>
+        <div className={"button-chapter-nav"}>
+            <Button style={{marginRight: 10}} onClick={() => HandleChapterChange(FindPrevChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindPrevChapter(context), context)} className={"button-themed prev"}>
                 Prev Chapter
             </Button>
-            <Button onClick={() => HandleChapterChange(FindNextChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindNextChapter(context), context)} className={"button-themed"}>
+            <Button onClick={() => HandleChapterChange(FindNextChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindNextChapter(context), context)} className={"button-themed next"}>
                 Next Chapter
             </Button>
         </div>
@@ -347,7 +333,6 @@ function Reader() {
     }
     React.useEffect(()=> console.log(context),[context]);
     return (
-        // TODO : Style this whole page
         <div className={"reader"} id="App">
             <ChapterListHamburgerMenu/>
             <div id="page-wrap">
