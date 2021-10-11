@@ -36,7 +36,7 @@ const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => 
 const TopBar = () => {
     return (
       <div>
-          <Container className={"row nowrap d-inline-block"}>
+          <Container className={"row nowrap d-inline-block position-relative"}>
               <Navbar expand={"lg"} className={"top-bar"}>
                   <LinkContainer to={"/"}>
                       <Navbar.Brand className={"text"}>
@@ -132,6 +132,20 @@ const TopNavBar = () => {
     );
 };
 
+const AboutUs = () => {
+    const history = useHistory();
+    const gotoAboutUs = () => {
+        history.push(`/About`)
+    };
+    return (
+        <div>
+            <Container className={"fixed-bottom"} fluid>
+                <p className={"aboutUs"} onClick={() => {gotoAboutUs();}}>About Us</p>
+            </Container>
+        </div>
+    );
+};
+
 const LoadingSpinner = () => {
     return (
         <Container align={"center"}>
@@ -142,7 +156,7 @@ const LoadingSpinner = () => {
     );
 };
 
-const components = {SearchBar, TopNavBar, TopBar, LoadingSpinner}
+const components = {SearchBar, TopNavBar, TopBar, LoadingSpinner, AboutUs}
 export default components;
 
 //<button onClick={onClick} type="submit"><i class="fa fa-search"></i></button>

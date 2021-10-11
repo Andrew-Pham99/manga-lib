@@ -181,27 +181,27 @@ function SearchBar(){
             {spinner ?
                 <components.LoadingSpinner/>
                 :
-            <ul>
-                <Grid container spacing={3}>
-                    <Grid item md={12}>
-                        <Grid container justifyContent="center" spacing={2}>
-                            {responseData.map((item,index) =>(
-                            <MangaCard
-                                key={index}
-                                name={item.attributes.title.en ? item.attributes.title.en : item.attributes.title.jp}
-                                img={item.coverFile}
-                                description={item.attributes.description.en? item.attributes.description.en.replace(/[^.]*\[.*/g, ''): ''}
-                                id={item.id}
-                                relationships={item.relationships}
-                                status={item.attributes.status}
-                                demographic={item.attributes.publicationDemographic? item.attributes.publicationDemographic :'N/A'}
-                                tags={item.attributes.tags}
-                            />
-                            ))}
+                <ul>
+                    <Grid container spacing={3}>
+                        <Grid item md={12}>
+                            <Grid container justifyContent="center" spacing={2}>
+                                {responseData.map((item,index) =>(
+                                <MangaCard
+                                    key={index}
+                                    name={item.attributes.title.en ? item.attributes.title.en : item.attributes.title.jp}
+                                    img={item.coverFile}
+                                    description={item.attributes.description.en? item.attributes.description.en.replace(/[^.]*\[.*/g, ''): ''}
+                                    id={item.id}
+                                    relationships={item.relationships}
+                                    status={item.attributes.status}
+                                    demographic={item.attributes.publicationDemographic? item.attributes.publicationDemographic :'N/A'}
+                                    tags={item.attributes.tags}
+                                />
+                                ))}
+                            </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-            </ul>
+                </ul>
             }
             <Button onClick={loadMore} style={{visibility: showButton ? 'visible' : 'hidden', marginBottom:15}} className={"button-themed"}>
                 Load More
@@ -222,6 +222,7 @@ function App() {
             <Container style={{marginTop:50}}>
                 <SearchBar/>
             </Container>
+            <components.AboutUs/>
         </div>
     );
 };

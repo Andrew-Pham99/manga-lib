@@ -353,6 +353,7 @@ function Reader() {
                     <ChapterImages/>
                 </Container>
             </div>
+            <components.AboutUs/>
         </div>
     );
 }

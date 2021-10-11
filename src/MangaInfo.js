@@ -286,6 +286,7 @@ function MangaInfo() {
                 />
                 <ChapterListNav/>
             </Container>
+            <components.AboutUs/>
         </div>
     );
 };
