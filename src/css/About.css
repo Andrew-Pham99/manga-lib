@@ -1,0 +1,26 @@
+.About{
+    align-content: center;
+    align-self: center;
+    align-items: center;
+}
+
+.dev-card{
+    background: var(--tertiary-color);
+    border: thin solid;
+    width: inherit;
+}
+
+.dev-card .card-title{
+    color: var(--text-color);
+    font-weight: bold;
+    margin-left: 1rem;
+    margin-top: 1rem;
+}
+
+.dev-card .card-body{
+    color: var(--text-color);
+}
+
+.dev-card .card-img{
+
+}
