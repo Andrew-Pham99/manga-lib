@@ -199,9 +199,10 @@ function SearchBar(){
                                 tags={item.attributes.tags}
                             />
                             ))}
-
+                        
                         </Grid>
                     </Grid>
+                </Grid>
                 </ul>
             }
             <Button onClick={loadMore} style={{visibility: showButton ? 'visible' : 'hidden', marginBottom:15}} className={"button-themed"}>
