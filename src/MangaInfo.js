@@ -118,7 +118,6 @@ function ChapterListNav(props) {
     const [bottomPageVis, setBottomPageVis] = React.useState(false);
     const [noChapters, setNoChapters] = React.useState(false);
     const chapterSort = (a, b) => {
-        console.log(a);
         let aChapter = parseFloat(a.data.attributes.chapter), bChapter = parseFloat(b.data.attributes.chapter);
         if(aChapter < bChapter){
             return -1;
@@ -219,7 +218,7 @@ function ChapterListNav(props) {
                             disableInitialCallback={"true"}/>
                         <Navbar  className="ChapterList">
                             <Nav className={"flex-column"}>
-                                {chapterList.slice((currentPage * api.ch_limit),((currentPage * api.ch_limit) + api.ch_limit)).map((chapter, index) => (
+                                {chapterList.sort((a, b) => chapterSort(a, b)).slice((currentPage * api.ch_limit),((currentPage * api.ch_limit) + api.ch_limit)).map((chapter, index) => (
                                     <Nav.Item key={index}  onClick={() => handleChapterChange(chapter,  history)} onMouseDown={(event) => handleMouseDown(event, chapter)}>
                                         <Nav.Link className={"chapter"}>
                                             {chapter.data.attributes.title !== "" ? `Chapter ${chapter.data.attributes.chapter} - ${chapter.data.attributes.title}` :

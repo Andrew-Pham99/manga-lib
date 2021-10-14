@@ -28,16 +28,14 @@ function MangaCard(props){
     };
 
     return(
-        <Card style={vis ? {} : {visibility:"visible"}} key={props.key} id={props.id} className={"manga-card"}>
+        <Card style={vis ? {} : {visibility:"visible"}}  id={props.id} className={"manga-card"}>
             <Card.Img variant={"top"} src={props.img} alt={"No Image Found"} className={"thumbnail clickable"} width={100} height={550} onLoad={onLoad} onClick={handleMangaClick} onMouseDown={handleMouseDown}/>
             <Card.Body>
                 <Card.Title onClick={handleMangaClick} onMouseDown={handleMouseDown} className={"clickable manga-card-text color"}>
                     {props.title}
                 </Card.Title>
-                <Card.Text className={"manga-card-text color"}>
-                    <div className={"format"}>
-                        <p>{props.description}</p>
-                    </div>
+                <Card.Text className={"manga-card-text color format"}>
+                    {props.description}
                 </Card.Text>
             </Card.Body>
         </Card>

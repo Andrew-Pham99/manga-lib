@@ -21,10 +21,10 @@
   color: var(--text-color);
 }
 
-.manga-card-text .format{
+.manga-card-text.format{
   text-align: center;
   overflow-y: auto;
-  height: 200px;
+  height: 12.5rem;
   font-size: smaller;
 }
 
