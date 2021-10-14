@@ -3,7 +3,6 @@ import {Navbar, Container, Button, Image, Form, Row, Col, Spinner} from "react-b
 import {LinkContainer} from "react-router-bootstrap"
 import {useHistory, Link} from "react-router-dom";
 import logo from "../images/logo.png";
-import { slide as Menu } from "react-burger-menu";
 import '../css/components.css';
 import '../css/standard_styles.css'
 
@@ -13,7 +12,7 @@ const SearchBar = ({onChange, placeholder, onClick, onClickRand, onKeyDown}) => 
         history.push(`/AdvancedSearch`);
     };
     const gotoAdvancedSearchNewTab = (event) => {
-        if(event.button == 1){
+        if(event.button === 1){
             window.open(`/AdvancedSearch`);
         }
     };
@@ -67,13 +66,13 @@ const TopNavBar = () => {
         excludedTags:["b13b2a48-c720-44a9-9c77-39c9979373fb"],
         contentRating:[]
     };
-    const [history, setHistory] = React.useState(useHistory());
+    const history = useHistory();
     const [searchObject, setSearchObject] = React.useState(initialSearchState);
     const gotoAdvancedSearch = () => {
         history.push(`/AdvancedSearch`);
     };
     const gotoAdvancedSearchNewTab = (event) => {
-        if(event.button == 1){
+        if(event.button === 1){
             window.open(`/AdvancedSearch`);
         }
     };
@@ -84,7 +83,7 @@ const TopNavBar = () => {
         history.push({pathname:`/`, state:{searchObject:searchObject}});
     };
     const TopNavBarSearchNewTab = (event) => {
-        if(event.button == 1){
+        if(event.button === 1){
             localStorage.setItem("SEARCH_STATE", JSON.stringify({searchObject:searchObject}));
             window.open(`/`);
         }
@@ -93,7 +92,7 @@ const TopNavBar = () => {
         history.push({pathname:`/`, state:{searchObject:{...searchObject, rand: true}}});
     };
     const TopNavBarRandSearchNewTab = (event) => {
-        if(event.button == 1){
+        if(event.button === 1){
             localStorage.setItem("SEARCH_STATE", JSON.stringify({searchObject:{...searchObject, rand:true}}));
             window.open(`/`);
         }
@@ -161,5 +160,3 @@ const LoadingSpinner = () => {
 
 const components = {SearchBar, TopNavBar, TopBar, LoadingSpinner, AboutUs}
 export default components;
-
-//<button onClick={onClick} type="submit"><i class="fa fa-search"></i></button>

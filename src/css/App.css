@@ -14,9 +14,7 @@
   background: var(--tertiary-color);
   border: thin solid;
   width: 25rem;
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-bottom: 10px;
+  margin: 10px;
 }
 
 .manga-card-text.color{
@@ -30,13 +28,13 @@
   font-size: smaller;
 }
 
-.themed-button:hover, search-button.hover{
+.themed-button:hover, .search-button.hover{
   background-color: var(--primary-color-hover);
   border-color: var(--primary-color-hover);
   color: black;
 }
 
-.themed-button:focus, search-button.focus{
+.themed-button:focus, .search-button.focus{
   background-color: var(--primary-color-hover);
   border-color: var(--primary-color-hover);
   color: black;
@@ -44,7 +42,7 @@
   box-shadow: none;
 }
 
-.themed-button:active, search-button.active, search-button:focus{
+.themed-button:active, .search-button.active, .search-button:focus{
   outline: var(--primary-color) solid thick;
   box-shadow: none;
 }

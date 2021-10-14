@@ -3,14 +3,13 @@ import './css/standard_styles.css'
 import React from 'react';
 import api from './api';
 import components from './components/components';
-import {Container, Spinner, Button, Card} from "react-bootstrap";
+import {Container, Button, Card} from "react-bootstrap";
 import Grid from '@material-ui/core/Grid';
-import {Link, useLocation, useHistory} from 'react-router-dom';
-import { ownerDocument } from '@material-ui/core';
+import {useLocation, useHistory} from 'react-router-dom';
 
 function MangaCard(props){
     const [vis, setVis] = React.useState(false)
-    const [history, setHistory] = React.useState(useHistory());
+    const history = useHistory();
 
     const onLoad = () => {
         setVis(true)
@@ -22,7 +21,7 @@ function MangaCard(props){
 
     const handleMouseDown = (event) => {
         console.log(event)
-        if(event.button == 1){
+        if(event.button === 1){
             localStorage.setItem("MANGAINFO_STATE", JSON.stringify(props));
             window.open(`/Info/manga=${props.id}`);
         }
@@ -105,7 +104,7 @@ function SearchBar(){
                 console.log("shortened")
                 setShowButton(false);
             }
-            else {setShowButton(true)};
+            else {setShowButton(true)}
             response.data.data.forEach(result => {
                 result.relationships.forEach(relationship => {
                     if (relationship.type === "cover_art") {
@@ -137,7 +136,7 @@ function SearchBar(){
             if (response.data.data.length < api.limit || response.data.offset + api.limit === response.data.total) {
                 setShowButton(false)
             }
-            response.data.data.forEach(result => { // Preprocess cover art ids for api query
+            response.data.data.forEach(result => {
                 result.relationships.forEach(relationship => {
                     if (relationship.type === "cover_art") {
                         result["coverFile"] = `https://uploads.mangadex.org/covers/${result.id}/${relationship.attributes.fileName}`;
@@ -181,8 +180,6 @@ function SearchBar(){
             {spinner ?
                 <components.LoadingSpinner/>
                 :
-
-            <ul>
                 <Grid container spacing={3}>
                     <Grid item md={12}>
                         <Grid container justifyContent="center" spacing={2}>
@@ -199,11 +196,9 @@ function SearchBar(){
                                 tags={item.attributes.tags}
                             />
                             ))}
-                        
                         </Grid>
                     </Grid>
                 </Grid>
-                </ul>
             }
             <Button onClick={loadMore} style={{visibility: showButton ? 'visible' : 'hidden', marginBottom:15}} className={"button-themed"}>
                 Load More

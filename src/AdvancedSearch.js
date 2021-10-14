@@ -4,7 +4,7 @@ import components from "./components/components";
 import {useHistory} from "react-router-dom";
 import "./css/AdvancedSearch.css";
 import "./css/standard_styles.css";
-import {Container, Button, Form, Row, Col, Spinner} from "react-bootstrap";
+import {Container, Button, Form, Row, Col} from "react-bootstrap";
 
 function AdvancedSearchFields() {
     const initialSearchState = {
@@ -15,7 +15,7 @@ function AdvancedSearchFields() {
         excludedTags:[],
         contentRating:[]
     };
-    const [history, setHistory] = React.useState(useHistory()); // Do not remove setHistory hook even if it is flagged as unused. Doing so will break the functions that call history.push()
+    const history = useHistory();
     const [genreTags, setGenreTags] = React.useState([]);
     const [themeTags, setThemeTags] = React.useState([]);
     const [formatTags, setFormatTags] = React.useState([]);

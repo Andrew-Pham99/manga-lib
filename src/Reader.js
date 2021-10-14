@@ -1,7 +1,7 @@
 import React from "react";
 import api from "./api";
-import {useLocation, useHistory, Link} from "react-router-dom";
-import {Container, Image, Navbar, Nav, Button, Spinner, Form, Row, Col, OverlayTrigger, Tooltip} from "react-bootstrap";
+import {useLocation, useHistory} from "react-router-dom";
+import {Container, Image, Navbar, Nav, Button, Form, Row, Col, Tooltip} from "react-bootstrap";
 import components from "./components/components";
 import { slide as Menu } from "react-burger-menu";
 import './css/Reader.css';
@@ -43,7 +43,7 @@ function HandleChapterChangeNewTab(event, newChapter, context){
     // event is passed from the DOM event handler
     // newChapter is the chapter object you wish to switch to
     // context is the object returned by a call to useLocation()
-    if(event.button == 1){
+    if(event.button === 1){
         localStorage.setItem("READER_STATE", JSON.stringify({manga:context.state.manga, curChapter:newChapter, chapterList:context.state.chapterList}));
         window.open(`/Reader/manga=${context.state.manga.id}/chapter=${newChapter.data.attributes.chapter}`);
     }
@@ -52,7 +52,7 @@ function goToMangaInfo(context, history){
     history.push({pathname:`/Info/manga=${context.state.manga.id}`, state:context.state.manga});
 }
 function goToMangaInfoNewTab (event, context){
-    if(event.button == 1){
+    if(event.button === 1){
         localStorage.setItem("MANGAINFO_STATE", JSON.stringify(context.state.manga));
         window.open(`/Info/manga=${context.state.manga.id}`);
     }
@@ -60,12 +60,11 @@ function goToMangaInfoNewTab (event, context){
 
 function ChapterImages() {
     const context = useLocation();
-    const [history, setHistory] = React.useState(useHistory());
+    const history = useHistory();
     const [chapterImgUrlList, setChapterImgUrlList] = React.useState([]);
     const [isScroll, setIsScroll] = React.useState(localStorage.getItem("IS_SCROLL") == "true" ? true : false);
     React.useEffect(() => {localStorage.setItem("IS_SCROLL", isScroll ? "true" : "false");}, [isScroll]);
     const [curPage, setCurPage] = React.useState(0);
-    const [isLoaded, setIsLoaded] = React.useState(false);
     const defaultZoom = 1.0;
     const [scrollZoom, setScrollZoom] = React.useState(defaultZoom);
     const [pageZoom, setPageZoom] = React.useState(defaultZoom);
@@ -77,7 +76,6 @@ function ChapterImages() {
     const getChapterImages = (chapterId) => {
         setChapterImgUrlList([]);
         setCurPage(0);
-        setIsLoaded(false);
         api.getBaseUrl(chapterId)
             .then((getBaseUrlResponse) => {
                 console.log(getBaseUrlResponse)
@@ -88,16 +86,8 @@ function ChapterImages() {
             .catch((error) => {
                 console.log(error)
             })
-        setIsLoaded(true);
     }
     React.useLayoutEffect(() => {getChapterImages(context.state.curChapter.data.id);}, [context]);
-    //Preload images.
-    // React.useLayoutEffect(() => {
-    //     console.log("PRELOAD")
-    //     chapterImgUrlList.forEach((chapterImg) => {
-    //         const img = new Image().src = chapterImg;
-    //     })
-    // },[])
 
     const toggleScroll = () => {
         setIsScroll(!isScroll);
@@ -154,7 +144,7 @@ function ChapterImages() {
     }
     function ChapterScroll() {
         // This function will handle the rendering of the scroll version of the chapter
-        // React.useEffect(() => {document.getElementById("reader-window-scroll").scrollIntoView();}, []);
+        React.useEffect(() => {document.getElementById("reader-window-scroll").scrollIntoView();}, []);
         const handleClick = (event, index) => {
             const clickableWidth = document.getElementById(`scroll-frame-${index}`).clientWidth;
             const threshold = clickableWidth / 2;
@@ -164,17 +154,17 @@ function ChapterImages() {
             else if(event.clientX > threshold && index < chapterImgUrlList.length - 1) {
                 document.getElementById(`panelImage_${index + 1}`).scrollIntoView();
             }
-            else if(event.clientX > threshold && index == chapterImgUrlList.length - 1){
+            else if(event.clientX > threshold && index === chapterImgUrlList.length - 1){
                 HandleChapterChange(FindNextChapter(context), context, history);
             }
-            if(event.clientX < threshold && index == 0){
+            if(event.clientX < threshold && index === 0){
                 HandleChapterChange(FindPrevChapter(context), context, history);
             }
         };
 
         return (
             <div id={"reader-window-scroll"}>
-                {chapterImgUrlList.length != 0 ?
+                {chapterImgUrlList.length !== 0 ?
                     <Row xs={1} md={1} lg={1}>
                         {chapterImgUrlList.map((chapterImg, index) => (
                             <Col key={index} onClick={(event) => {handleClick(event, index)}} id={`scroll-frame-${index}`}>
@@ -282,7 +272,7 @@ function ChapterImages() {
         return (
             <div id={"reader-window"} className={"min-vh-100 vh-100"} onClick={(event) => {handleClick(event);}}>
                 <Container id={"reader-clickable"} className={"position-relative reader-window"} fluid>
-                    {chapterImgUrlList.length != 0 ?
+                    {chapterImgUrlList.length !== 0 ?
                         <div>
                             {chapterImgUrlList.map((chapterImg, index) => (
                                 <Image src={chapterImg.url} key={index} alt={"Not Found"} id={`panelImage_${index}`}
@@ -302,7 +292,6 @@ function ChapterImages() {
         <div style={{marginTop:10}}>
             <Container className={"position-relative"} style={{marginBottom:10}}>
                 <Button onClick={() => goToMangaInfo(context, history)} onMouseDown={(event) => goToMangaInfoNewTab(event, context)} className={"position-absolute start-0 button-themed"}>Back to MangaInfo</Button>
-                <Button className={"position-absolute end-0 button-themed"} style={{right:"10px", visibility: isScroll ? "hidden" : "visible"}} onClick={() => {navigator.clipboard.writeText(chapterImgUrlList[curPage].url)}}> Copy Panel </Button>
                 <Button className={isScroll ? "btn-secondary" : "button-themed"} style={{textAlign:"center"}} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
             </Container>
             {isScroll ?
@@ -324,7 +313,7 @@ function ChapterImages() {
 
 function NextChapterButtons() {
     const context = useLocation();
-    const [history, setHistory] = React.useState(useHistory());
+    const history = useHistory();
     return (
         <div className={"button-chapter-nav"}>
             <Button style={{marginRight: 10}} onClick={() => HandleChapterChange(FindPrevChapter(context), context, history)} onMouseDown={(event) => HandleChapterChangeNewTab(event, FindPrevChapter(context), context)} className={"button-themed prev"}>
@@ -339,7 +328,7 @@ function NextChapterButtons() {
 
 function ChapterListHamburgerMenu() {
     const context = useLocation();
-    const [history, setHistory] = React.useState(useHistory());
+    const history = useHistory();
 
     return (
         <div>

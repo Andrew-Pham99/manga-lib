@@ -1,16 +1,15 @@
 import React from 'react'
 import api from './api'
 import components from './components/components'
-import {useLocation, useHistory, Link} from 'react-router-dom'
+import {useLocation, useHistory} from 'react-router-dom'
 import './css/MangaInfo.css'
 import {Navbar, Nav, Container, Spinner} from "react-bootstrap"
 import {Card,Row, Col} from 'react-bootstrap'
 import ReactPaginate from 'react-paginate';
-import { isTaggedTemplateExpression } from 'typescript'
 
 
 function Info(props) {
-    const [history, setHistory] = React.useState(useHistory());
+    const history = useHistory();
     const [searchObject, setSearchObject] = React.useState({
         title:"",
         status:[],
@@ -20,18 +19,8 @@ function Info(props) {
         contentRating:[],
         authors:[]
     })
-
-    let author = []
-    let artist = []
-    let themes = []
-    let genres = []
-    let format = []
-    let tagId = []
-    let themeId = []
-    let genreId = []
-    let formatId = []
-    let authId = []
-    let artId = []
+    let author = [], artist = [], themes = [], genres = [], format = [], tagId = [],
+        themeId = [], genreId = [], formatId = [], authId = [], artId = [];
 
     props.relationships.forEach(element => {
         if(element.type === "author"){
@@ -70,7 +59,7 @@ function Info(props) {
         <Card className={"info-card"}>
             <Row>
                 <Col md={3} sm={6}>
-                    <Card.Img className={"rounded"}  src={props.img} ></Card.Img>
+                    <Card.Img className={"rounded"}  src={props.img}/>
                 </Col>
                 <Col>
                     <Card.Body variant="right" className="card_body">
@@ -120,8 +109,8 @@ function Info(props) {
 }
 
 function ChapterListNav(props) {
-    const [context, setContext] = React.useState(useLocation());
-    const [history, setHistory] = React.useState(useHistory());
+    const context = useLocation();
+    const history = useHistory();
     const [chapterList, setChapterList] = React.useState([]);
     const [pageLength, setPageLength] = React.useState(0);
     const [currentPage, setCurrentPage] = React.useState(0);
@@ -147,7 +136,7 @@ function ChapterListNav(props) {
         api.getChapterList({manga: props.id})
             .then((getChapterListResponse) => {
                 console.log(getChapterListResponse);
-                if(getChapterListResponse.data.data.length == 0){
+                if(getChapterListResponse.data.data.length === 0){
                     setNoChapters(true);
                     return;
                 }
@@ -200,7 +189,7 @@ function ChapterListNav(props) {
         history.push({pathname:`/Reader/manga=${props.id}/chapter=${chapter.data.attributes.chapter}`, state:{manga:props.state, curChapter:chapter, chapterList:chapterList}});
     };
     const handleMouseDown = (event, chapter, context) => {
-        if(event.button == 1){
+        if(event.button === 1){
             localStorage.setItem("READER_STATE", JSON.stringify({manga:props.state, curChapter:chapter, chapterList:chapterList}))
             window.open(`/Reader/manga=${props.id}/chapter=${chapter.data.attributes.chapter}`)
         }
@@ -268,7 +257,7 @@ function ChapterListNav(props) {
 function ApiInfo(){
     const [loading, setLoading] = React.useState(true)
     const [err, setErr] = React.useState(false)
-    const [history, setHistory] = React.useState(useHistory());
+    const history = useHistory();
     const [context, setContext] = React.useState(useLocation());
     const [test, setTest] = React.useState(false)
     const [mInfo, setMInfo] = React.useState( {
