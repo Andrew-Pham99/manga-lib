@@ -48,7 +48,27 @@ function About() {
                 <Card className={"dev-card"}>
                     <Card.Title className={""}>Andrew Pham</Card.Title>
                     <Card.Body>
-
+                        <Card.Text>
+                            Hi and welcome to our site! My name Andrew and I am a recent graduate from University of California,
+                            Irvine with a Bachelor's Degree in Computer Science. During my studies at UCI I specialized in 
+                            information, which pertains to information retrieval, database management systems, and machine learning.
+                            Though I had little front end knowledge prior to this project, I found it a great opportunity to expand
+                            my tech stack as well as working with a hobby of mine. Feel free to reach out at my email or LinkedIn 
+                            located below.
+                        </Card.Text>
+                    <ListGroup>
+                            <ListGroup.Item>
+                                <Card.Link onClick={(event) => {window.open(`mailto:andrewpham288@gmail.com`, `mail`); event.preventDefault()}} href={`mailto:cnicholsonrubidoux@gmail.com`}>
+                                    Andrewpham288@gmail.com
+                                </Card.Link>
+                                <Card.Link href={`https://www.linkedin.com/in/andrew-huy-pham/`} target={"_blank"}>
+                                    LinkedIn
+                                </Card.Link>
+                                <Card.Link href={`https://github.com/andrew-pham99`} target={"_blank"}>
+                                    Github
+                                </Card.Link>
+                            </ListGroup.Item>
+                        </ListGroup>
                     </Card.Body>
                 </Card>
             </Container>

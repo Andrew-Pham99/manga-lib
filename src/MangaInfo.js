@@ -6,10 +6,11 @@ import './css/MangaInfo.css'
 import {Navbar, Nav, Container, Spinner} from "react-bootstrap"
 import {Card,Row, Col} from 'react-bootstrap'
 import ReactPaginate from 'react-paginate';
+import { isTaggedTemplateExpression } from 'typescript'
 
 
 function Info(props) {
-    const history = useHistory();
+    const [history, setHistory] = React.useState(useHistory());
     const [searchObject, setSearchObject] = React.useState({
         title:"",
         status:[],
@@ -347,8 +348,8 @@ function ApiInfo(){
 
 function MangaInfo() {
     const context = useLocation();
-    if(context.state == undefined || context.state == null){
-        if (localStorage.getItem("MANGAINFO_STATE") == null){
+    if(context.state === undefined || context.state === null){
+        if (localStorage.getItem("MANGAINFO_STATE") === null){
             return (
                 <div className="MangaInfo">
                     <components.TopNavBar/>
@@ -364,6 +365,7 @@ function MangaInfo() {
     console.log("Entering Manga Info");
     return (
         <div className="MangaInfo">
+
             <components.TopNavBar/>
             <Container>
                 <Info

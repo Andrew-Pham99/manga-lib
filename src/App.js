@@ -209,7 +209,7 @@ function SearchBar(){
 
 function App() {
     const context = useLocation();
-    if(context.state == undefined){
+    if(context.state === undefined){
         context.state = JSON.parse(localStorage.getItem("SEARCH_STATE"));
         localStorage.removeItem("SEARCH_STATE");
     }
