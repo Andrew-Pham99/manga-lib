@@ -28,6 +28,12 @@ input[type=range]:focus::-moz-range-thumb{
   box-shadow: 0 0 0 1px var(--primary-color-hover), 0 0 0 .15rem var(--primary-color-hover-shadow);
 }
 
+.reader-window{
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
 .reader-window .button-next{
   float: right;
   background: transparent;
@@ -52,6 +58,15 @@ input[type=range]:focus::-moz-range-thumb{
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.reader-window .image-click{
+  position:absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  user-select: none;
+  width: auto;
 }
 
 .button-chapter-nav .next{

@@ -154,7 +154,7 @@ function ChapterImages() {
     }
     function ChapterScroll() {
         // This function will handle the rendering of the scroll version of the chapter
-        React.useEffect(() => {document.getElementById("reader-window-scroll").scrollIntoView();}, []);
+        // React.useEffect(() => {document.getElementById("reader-window-scroll").scrollIntoView();}, []);
 
         return (
             <div id={"reader-window-scroll"}>
@@ -162,7 +162,7 @@ function ChapterImages() {
                     <Row xs={1} md={1} lg={1}>
                         {chapterImgUrlList.map((chapterImg, index) => (
                             <Col key={index}>
-                                <Image src={chapterImg.url} key={index} alt={"Not Found"}
+                                <Image src={chapterImg.url} key={index} alt={"Not Found"} id={`panelImage_${index}`}
                                        style={{height: `${(vh * scrollZoom)}px`, width: "auto"}}
                                        className={"border-start border-end border-dark"}/>
                             </Col>
@@ -191,7 +191,9 @@ function ChapterImages() {
                         {chapterImgUrlList.map((chapter, index) => {
                             return (
                                 <Nav key={index} className={"flex-fill"}>
-                                    <Button onClick={() => setCurPage(index)} className={`align-self-center w-100 ${index <= curPage ? "button-themed" : "button-themed-outline"}`}></Button>
+                                    <Button onClick={() => setCurPage(index)} className={`align-self-center w-100 ${index <= curPage ? "button-themed" : "button-themed-outline"}`}>
+                                        <span className={"visually-hidden"}>Page {index}</span>
+                                    </Button>
                                 </Nav>
                             )
                         })}
@@ -203,6 +205,11 @@ function ChapterImages() {
     function ChapterClick() {
         // This function will handle the rendering of the click version of the chapter
         React.useEffect(() => {document.getElementById("reader-window").scrollIntoView();}, []);
+
+
+        // BIG
+        // Render every image then just swap visibilty with hook to prevent the loading pop in
+        // Big
         document.onkeydown = checkKey;
         function checkKey(e) {
             //e = e || window.event;
@@ -247,14 +254,30 @@ function ChapterImages() {
             }
         };
 
+        // <div id={"reader-window"} className={"min-vh-100 vh-100"} onClick={(event) => {handleClick(event);}}>
+        //     <Container id={"reader-clickable"} className={"position-relative reader-window"} fluid >
+        //         {chapterImgUrlList[curPage] != undefined ?
+        //             <div>
+        //                 <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} id={`panelImage_${curPage}`}
+        //                        style={{height: `${(vh * pageZoom)}px`, width: "auto"}}
+        //                        className={"border border-dark mw-100 mh-100"}/>
+        //             </div>
+        //             :
+        //             <components.LoadingSpinner/>
+        //         }
+        //     </Container>
+        // </div>
+
         return (
-            <div id={"reader-window"}>
-                <Container id={"reader-clickable"} className={"position-relative reader-window"} fluid onClick={(event) => {handleClick(event);}}>
-                    {chapterImgUrlList[curPage] != undefined ?
+            <div id={"reader-window"} className={"min-vh-100 vh-100"} onClick={(event) => {handleClick(event);}}>
+                <Container id={"reader-clickable"} className={"position-relative reader-window"} fluid>
+                    {chapterImgUrlList.length != 0 ?
                         <div>
-                            <Image src={chapterImgUrlList[curPage].url} alt={"Not Found"} id={`panelImage_${curPage}`}
-                                   style={{height: `${(vh * pageZoom)}px`, width: "auto"}}
-                                   className={"border border-dark mw-100 mh-100"}/>
+                            {chapterImgUrlList.map((chapterImg, index) => (
+                                <Image src={chapterImg.url} key={index} alt={"Not Found"} id={`panelImage_${index}`}
+                                       style={{height: `${(vh * pageZoom)}px`}}
+                                       className={`border border-dark image-click ${index == curPage ? "visible" : "invisible"}`}/>
+                            ))}
                         </div>
                         :
                         <components.LoadingSpinner/>
@@ -264,9 +287,6 @@ function ChapterImages() {
         );
     }
 
-
-    /* <Button variant={"primary"} className={"position-absoute start--1"} onClick={() => {navigator.clipboard.writeText(chapterImgUrlList[curPage].url)}}> Copy Panel </Button>
-    */
     return (
         <div style={{marginTop:10}}>
             <Container className={"position-relative"} style={{marginBottom:10}}>
@@ -275,13 +295,13 @@ function ChapterImages() {
                 <Button className={isScroll ? "btn-secondary" : "button-themed"} style={{textAlign:"center"}} onClick={() => toggleScroll()}>{isScroll ? "Switch to Page" : "Switch to Scroll"}</Button>
             </Container>
             {isScroll ?
-                <div>
+                <div id={"reader_scroll"}>
                     <ChapterScroll/>
                     <div style={{margin:10}}/>
                     <NextChapterButtons/>
                 </div>
                 :
-                <div>
+                <div id={"reader_click"}>
                     <ChapterClick/>
                     <ChapterProgress/>
                 </div>
