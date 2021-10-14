@@ -155,15 +155,31 @@ function ChapterImages() {
     function ChapterScroll() {
         // This function will handle the rendering of the scroll version of the chapter
         // React.useEffect(() => {document.getElementById("reader-window-scroll").scrollIntoView();}, []);
+        const handleClick = (event, index) => {
+            const clickableWidth = document.getElementById(`scroll-frame-${index}`).clientWidth;
+            const threshold = clickableWidth / 2;
+            if(event.clientX < threshold && index > 0){
+                document.getElementById(`panelImage_${index - 1}`).scrollIntoView();
+            }
+            else if(event.clientX > threshold && index < chapterImgUrlList.length - 1) {
+                document.getElementById(`panelImage_${index + 1}`).scrollIntoView();
+            }
+            else if(event.clientX > threshold && index == chapterImgUrlList.length - 1){
+                HandleChapterChange(FindNextChapter(context), context, history);
+            }
+            if(event.clientX < threshold && index == 0){
+                HandleChapterChange(FindPrevChapter(context), context, history);
+            }
+        };
 
         return (
             <div id={"reader-window-scroll"}>
                 {chapterImgUrlList.length != 0 ?
                     <Row xs={1} md={1} lg={1}>
                         {chapterImgUrlList.map((chapterImg, index) => (
-                            <Col key={index}>
+                            <Col key={index} onClick={(event) => {handleClick(event, index)}} id={`scroll-frame-${index}`}>
                                 <Image src={chapterImg.url} key={index} alt={"Not Found"} id={`panelImage_${index}`}
-                                       style={{height: `${(vh * scrollZoom)}px`, width: "auto"}}
+                                       style={{height: `${(vh * scrollZoom)}px`, width: "auto", userSelect:"none"}}
                                        className={"border-start border-end border-dark"}/>
                             </Col>
                         ))}
@@ -205,11 +221,6 @@ function ChapterImages() {
     function ChapterClick() {
         // This function will handle the rendering of the click version of the chapter
         React.useEffect(() => {document.getElementById("reader-window").scrollIntoView();}, []);
-
-
-        // BIG
-        // Render every image then just swap visibilty with hook to prevent the loading pop in
-        // Big
         document.onkeydown = checkKey;
         function checkKey(e) {
             //e = e || window.event;
