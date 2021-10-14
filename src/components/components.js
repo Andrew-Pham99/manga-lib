@@ -138,19 +138,12 @@ const TopNavBar = () => {
 };
 
 const AboutUs = () => {
-    const history = useHistory();
-    const gotoAboutUs = () => {
-        history.push(`/About`)
-    };
-    const gotoAboutUsNewTab = (event) => {
-        if(event.button == 1){
-            window.open(`/About`);
-        }
-    };
     return (
         <div>
             <Container className={"fixed-bottom"} fluid>
-                <p className={"aboutUs"} onClick={() => {gotoAboutUs();}} onMouseDown={(event) => {gotoAboutUsNewTab(event)}}>About Us</p>
+                <Link to={`/About`}>
+                    <p className={"aboutUs"}>About Us</p>
+                </Link>
             </Container>
         </div>
     );

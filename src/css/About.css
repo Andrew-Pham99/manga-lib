@@ -2,6 +2,7 @@
     align-content: center;
     align-self: center;
     align-items: center;
+    text-align: center;
 }
 
 .dev-card{
@@ -13,7 +14,7 @@
 .dev-card .card-title{
     color: var(--text-color);
     font-weight: bold;
-    margin-left: 1rem;
+    /*margin-left: 1rem;*/
     margin-top: 1rem;
 }
 
@@ -23,4 +24,20 @@
 
 .dev-card .card-img{
 
+}
+
+.dev-card .card-link{
+    color: var(--text-color);
+}
+
+.dev-card .card-link:hover{
+    color: var(--primary-color);
+}
+
+.dev-card .list-group{
+    background-color: var(--secondary-color);
+}
+
+.dev-card .list-group-item{
+    background-color: var(--secondary-color);
 }
