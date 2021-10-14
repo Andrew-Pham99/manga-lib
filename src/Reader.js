@@ -62,7 +62,7 @@ function ChapterImages() {
     const context = useLocation();
     const history = useHistory();
     const [chapterImgUrlList, setChapterImgUrlList] = React.useState([]);
-    const [isScroll, setIsScroll] = React.useState(localStorage.getItem("IS_SCROLL") == "true" ? true : false);
+    const [isScroll, setIsScroll] = React.useState(localStorage.getItem("IS_SCROLL") === "true" ? true : false);
     React.useEffect(() => {localStorage.setItem("IS_SCROLL", isScroll ? "true" : "false");}, [isScroll]);
     const [curPage, setCurPage] = React.useState(0);
     const defaultZoom = 1.0;
@@ -214,11 +214,11 @@ function ChapterImages() {
         document.onkeydown = checkKey;
         function checkKey(e) {
             //e = e || window.event;
-            if (e.keyCode == '37' && !e.ctrlKey) {
+            if (e.keyCode === '37' && !e.ctrlKey) {
                // left arrow
                prevImage()
             }
-            else if (e.keyCode == '39' && !e.ctrlKey) {
+            else if (e.keyCode === '39' && !e.ctrlKey) {
                // right arrow
                nextImage()
             }
@@ -277,7 +277,7 @@ function ChapterImages() {
                             {chapterImgUrlList.map((chapterImg, index) => (
                                 <Image src={chapterImg.url} key={index} alt={"Not Found"} id={`panelImage_${index}`}
                                        style={{height: `${(vh * pageZoom)}px`}}
-                                       className={`border border-dark image-click ${index == curPage ? "visible" : "invisible"}`}/>
+                                       className={`border border-dark image-click ${index === curPage ? "visible" : "invisible"}`}/>
                             ))}
                         </div>
                         :
@@ -355,7 +355,7 @@ function ChapterListHamburgerMenu() {
 function Reader() {
     const context = useLocation();
     const [history, setHistory] = React.useState(useHistory());
-    if(context.state == undefined){
+    if(context.state === undefined){
         context.state = JSON.parse(localStorage.getItem("READER_STATE"));
         localStorage.removeItem("READER_STATE");
     }
