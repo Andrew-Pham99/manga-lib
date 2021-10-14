@@ -1,7 +1,7 @@
 import React from "react";
 import api from "./api";
 import {useLocation, useHistory} from "react-router-dom";
-import {Container, Image, Navbar, Nav, Button, Form, Row, Col, Tooltip} from "react-bootstrap";
+import {Container, Image, Navbar, Nav, Button, Form, Row, Col} from "react-bootstrap";
 import components from "./components/components";
 import { slide as Menu } from "react-burger-menu";
 import './css/Reader.css';
@@ -74,6 +74,7 @@ function ChapterImages() {
     let pageZoomVal = pageZoom, scrollZoomVal = scrollZoom;
 
     const getChapterImages = (chapterId) => {
+        // Function handles the api calls to assemble the image urls and place them in an array
         setChapterImgUrlList([]);
         setCurPage(0);
         api.getBaseUrl(chapterId)
@@ -93,16 +94,7 @@ function ChapterImages() {
         setIsScroll(!isScroll);
     };
     function ZoomBar(){
-        // TODO : Add tooltip to display value of zoom
-        // TODO : Add fade in/out animations and delays to the mouse over effects
-        //        Probably want to do that with some CSS fuckery
-        const zoomToolTip = () => {
-            return (
-                <Tooltip id={"zoom-bar-tooltip"}>
-                    {isScroll ? scrollZoomVal : pageZoomVal}
-                </Tooltip>
-            );
-        }
+        // Function handles the zoom bar logic and design
         const handleChange = (event) => {
             console.log(event.target.value);
             if(isScroll){
@@ -117,18 +109,12 @@ function ChapterImages() {
         const resetZoom = () => {
             isScroll ? setScrollZoom(defaultZoom) : setPageZoom(defaultZoom);
         };
-        const toggleZoomOn = () => {
-            setShowZoom(true);
-        };
-        const toggleZoomOff = () => {
-            setShowZoom(false);
-        };
         const toggleZoom = () => {
             setShowZoom(!showZoom);
         };
 
         return (
-            <div className={"position-relative bottom-0"} /*onMouseEnter={toggleZoomOn} onMouseLeave={toggleZoomOff}*/ style={{marginTop:30}}>
+            <div className={"position-relative bottom-0"} style={{marginTop:30}}>
                 <Button className={"fixed-bottom button-themed"} style={{marginBottom:35, marginLeft:10}} onClick={() => toggleZoom()}>{showZoom ? "Hide Zoom" : "Show Zoom"}</Button>
                 <Container className={"fixed-bottom"} style={{marginBottom:35}}>
                     <Navbar className={"flex-fill rounded-3 zoom-bar"} style={{visibility: showZoom ? "visible" : "hidden"}}>
@@ -143,8 +129,7 @@ function ChapterImages() {
         );
     }
     function ChapterScroll() {
-        // This function will handle the rendering of the scroll version of the chapter
-        React.useEffect(() => {document.getElementById("reader-window-scroll").scrollIntoView();}, []);
+        // This function handles the rendering of the scroll version of the chapter
         const handleClick = (event, index) => {
             const clickableWidth = document.getElementById(`scroll-frame-${index}`).clientWidth;
             const threshold = clickableWidth / 2;
@@ -163,7 +148,7 @@ function ChapterImages() {
         };
 
         return (
-            <div id={"reader-window-scroll"}>
+            <div id={"reader-window-scroll mw-100"}>
                 {chapterImgUrlList.length !== 0 ?
                     <Row xs={1} md={1} lg={1}>
                         {chapterImgUrlList.map((chapterImg, index) => (
@@ -181,8 +166,7 @@ function ChapterImages() {
         );
     }
     function ChapterProgress(){
-        // TODO : Add fade in/out animations and delays to the mouse over effects
-        //        Probably want to do that with some CSS fuckery
+        // This function handles the logic and design of the progress bar at the bottom of the click view
         const [showProgress, setShowProgress] = React.useState(false);
         const toggleProgressOn = () => {
             setShowProgress(true);
@@ -209,21 +193,21 @@ function ChapterImages() {
         );
     }
     function ChapterClick() {
-        // This function will handle the rendering of the click version of the chapter
+        // This function handles the rendering of the click version of the chapter
         React.useEffect(() => {document.getElementById("reader-window").scrollIntoView();}, []);
         document.onkeydown = checkKey;
         function checkKey(e) {
-            //e = e || window.event;
             if (e.keyCode === '37' && !e.ctrlKey) {
+                e.preventDefault();
                // left arrow
                prevImage()
             }
             else if (e.keyCode === '39' && !e.ctrlKey) {
+                e.preventDefault();
                // right arrow
                nextImage()
             }
         }
-
         const handleClick = (event) => {
             const clickableWidth = document.getElementById("reader-clickable").clientWidth;
             const threshold = clickableWidth / 2;
@@ -235,7 +219,7 @@ function ChapterImages() {
             }
         };
         const nextImage = () => {
-            if(chapterImgUrlList[curPage].index < chapterImgUrlList.length - 1){
+            if(chapterImgUrlList[curPage].index < chapterImgUrlList.length - 1 && chapterImgUrlList[curPage] != undefined){
                 console.log("Going to page: " + (chapterImgUrlList[curPage].index + 1));
                 setCurPage(curPage + 1);
             }
@@ -245,7 +229,7 @@ function ChapterImages() {
             }
         };
         const prevImage = () => {
-            if(chapterImgUrlList[curPage].index > 0){
+            if(chapterImgUrlList[curPage].index > 0 && chapterImgUrlList[curPage] != undefined){
                 console.log("Going to page: " + (chapterImgUrlList[curPage].index - 1));
                 setCurPage(curPage - 1);
             }
@@ -277,7 +261,7 @@ function ChapterImages() {
                             {chapterImgUrlList.map((chapterImg, index) => (
                                 <Image src={chapterImg.url} key={index} alt={"Not Found"} id={`panelImage_${index}`}
                                        style={{height: `${(vh * pageZoom)}px`}}
-                                       className={`border border-dark image-click ${index === curPage ? "visible" : "invisible"}`}/>
+                                       className={`border border-dark mw-100 image-click ${index === curPage ? "visible" : "invisible"}`}/>
                             ))}
                         </div>
                         :
@@ -354,7 +338,7 @@ function ChapterListHamburgerMenu() {
 
 function Reader() {
     const context = useLocation();
-    const [history, setHistory] = React.useState(useHistory());
+    const history = useHistory();
     if(context.state === undefined){
         context.state = JSON.parse(localStorage.getItem("READER_STATE"));
         localStorage.removeItem("READER_STATE");

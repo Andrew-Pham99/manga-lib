@@ -8,6 +8,15 @@
   width: 50%;
 }
 
+.reader-progress-bar{
+  opacity: 0;
+}
+
+.reader-progress-bar:hover{
+  opacity: 100%;
+  transition: opacity .2s;
+}
+
 .zoom-bar{
   background-color: var(--tertiary-color);
 }
@@ -90,6 +99,10 @@ input[type=range]:focus::-moz-range-thumb{
   /* Color/shape of burger icon bars */
   .bm-burger-bars {
     background: var(--primary-color);
+  }
+
+  .bm-burger-bars:hover{
+    background: var(--primary-color-hover) !important;
   }
   
   /*#0275d8*/
