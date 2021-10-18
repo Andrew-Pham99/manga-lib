@@ -16,12 +16,6 @@ const ch_limit = 25;
         return axios({
             method: 'get',
             url: base_url + '/manga/random',
-            headers: {
-                "Access-Control-Allow-Origin" : "https://manga-oyasumi.web.app/",
-                "Access-Control-Allow-Credentials" : "true",
-                "Access-Control-Allow-Methods" : "GET, POST, OPTIONS",
-                "Access-Control-Allow-Headers" : "Origin, Content-Type, Accept"
-            },
             params: {includes:["author", "artist", "cover_art", "tags"]},
             responseType: 'json'
         })

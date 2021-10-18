@@ -48,7 +48,7 @@ const TopBar = () => {
                               src={logo}
                               className={"image"}
                           />
-                          Manga Lib
+                          Manga Oyasumi
                       </Navbar.Brand>
                   </LinkContainer>
               </Navbar>
@@ -109,7 +109,7 @@ const TopNavBar = () => {
                                 src={logo}
                                 className={"image"}
                             />
-                            Manga Lib
+                            Manga Oyasumi
                         </Navbar.Brand>
                     </LinkContainer>
                     <Form onSubmit={TopNavBarSearch} className={"flex-fill"}>
