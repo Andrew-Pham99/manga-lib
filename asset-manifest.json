@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/manga-lib/static/css/main.a8a9cf7a.chunk.css",
+    "main.js": "/manga-lib/static/js/main.cbe96aa8.chunk.js",
+    "main.js.map": "/manga-lib/static/js/main.cbe96aa8.chunk.js.map",
+    "runtime-main.js": "/manga-lib/static/js/runtime-main.a9f5b487.js",
+    "runtime-main.js.map": "/manga-lib/static/js/runtime-main.a9f5b487.js.map",
+    "static/css/2.ebe04f07.chunk.css": "/manga-lib/static/css/2.ebe04f07.chunk.css",
+    "static/js/2.57db9098.chunk.js": "/manga-lib/static/js/2.57db9098.chunk.js",
+    "static/js/2.57db9098.chunk.js.map": "/manga-lib/static/js/2.57db9098.chunk.js.map",
+    "index.html": "/manga-lib/index.html",
+    "static/css/2.ebe04f07.chunk.css.map": "/manga-lib/static/css/2.ebe04f07.chunk.css.map",
+    "static/css/main.a8a9cf7a.chunk.css.map": "/manga-lib/static/css/main.a8a9cf7a.chunk.css.map",
+    "static/js/2.57db9098.chunk.js.LICENSE.txt": "/manga-lib/static/js/2.57db9098.chunk.js.LICENSE.txt",
+    "static/media/logo.045c5b4f.png": "/manga-lib/static/media/logo.045c5b4f.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a9f5b487.js",
+    "static/css/2.ebe04f07.chunk.css",
+    "static/js/2.57db9098.chunk.js",
+    "static/css/main.a8a9cf7a.chunk.css",
+    "static/js/main.cbe96aa8.chunk.js"
+  ]
+}
